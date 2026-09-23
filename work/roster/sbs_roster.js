@@ -232,6 +232,19 @@ const DEFAULT_ANNUAL_LEAVE_RULES = Object.freeze({
 const storage = window.ShiftRosterStorage || null;
 let rosterReadOnly = false;
 let rosterInitialized = false;
+const rosterMutationEvents = ['beforeinput', 'input', 'change', 'click', 'dblclick', 'contextmenu', 'keydown', 'keypress', 'keyup', 'paste', 'cut', 'drop'];
+
+function blockReadOnlyRosterMutation(event) {
+  if (!rosterReadOnly) return;
+  event.preventDefault();
+  event.stopImmediatePropagation();
+}
+
+for (const table of [scheduleTable, lowerTable]) {
+  for (const eventName of rosterMutationEvents) {
+    table?.addEventListener(eventName, blockReadOnlyRosterMutation, true);
+  }
+}
 const DEFAULT_SETTINGS = Object.freeze({
   publicLeaveCount: 8,
   maxConsecutiveWorkDays: 6,
@@ -4205,10 +4218,12 @@ window.ShiftRosterApp = Object.freeze({
   setReadOnly: (value) => {
     rosterReadOnly = Boolean(value);
     document.body.classList.toggle('roster-read-only', rosterReadOnly);
-    scheduleTable?.querySelectorAll('input, button, [contenteditable="true"]').forEach((element) => {
-      if ('disabled' in element) element.disabled = rosterReadOnly;
-      if (rosterReadOnly && element.hasAttribute('contenteditable')) element.setAttribute('contenteditable', 'false');
-    });
+    for (const table of [scheduleTable, lowerTable]) {
+      table?.querySelectorAll('input, button, [contenteditable="true"]').forEach((element) => {
+        if ('disabled' in element) element.disabled = rosterReadOnly;
+        if (rosterReadOnly && element.hasAttribute('contenteditable')) element.setAttribute('contenteditable', 'false');
+      });
+    }
   },
   loadSnapshot: (year, month, snapshot) => {
     yearInput.value = String(year);

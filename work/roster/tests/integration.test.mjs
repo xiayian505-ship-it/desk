@@ -140,6 +140,30 @@ test('public mode removes private control surfaces instead of relying on CSS', a
   assert.match(integration, /\.remove\(\)/);
 });
 
+test('public roster is hydrated for viewing while mutation interactions are blocked', async () => {
+  const integration = await readFile(new URL('sbs_roster_integration.js', root), 'utf8');
+  const roster = await readFile(new URL('sbs_roster.js', root), 'utf8');
+
+  const publicInitializer = integration.slice(integration.indexOf('async function loadPublicMonth'), integration.indexOf('function makeRemoteBackup'));
+  assert.match(publicInitializer, /ShiftRosterPublic\.getMonth\(monthId\)/);
+  assert.match(publicInitializer, /ShiftRosterApp\.loadSnapshot\(year, month, emptyPublicSnapshot\(monthId, row\)\)/);
+  assert.match(publicInitializer, /ShiftRosterApp\.initialize\(\{[\s\S]*?mode: 'public',[\s\S]*?snapshot:/);
+
+  assert.match(roster, /rosterReadOnly = mode === 'public'/);
+  assert.match(roster, /const rosterMutationEvents = \[[^\]]*'beforeinput'[^\]]*'click'[^\]]*'dblclick'[^\]]*'contextmenu'[^\]]*'keydown'[^\]]*\]/);
+  assert.match(roster, /table\?\.addEventListener\(eventName, blockReadOnlyRosterMutation, true\)/);
+  assert.match(roster, /function blockReadOnlyRosterMutation\(event\) \{\s*if \(!rosterReadOnly\) return;\s*event\.preventDefault\(\);\s*event\.stopImmediatePropagation\(\);/);
+  assert.match(roster, /for \(const table of \[scheduleTable, lowerTable\]\) \{\s*table\?\.querySelectorAll\('input, button, \[contenteditable="true"\]'\)/);
+});
+
+test('editor and standalone roster mutation interactions remain enabled', async () => {
+  const roster = await readFile(new URL('sbs_roster.js', root), 'utf8');
+  assert.match(roster, /if \(!rosterReadOnly\) return;/);
+  assert.match(roster, /rosterReadOnly = mode === 'public'/);
+  assert.doesNotMatch(roster, /rosterReadOnly = mode === 'editor'/);
+  assert.match(roster, /ShiftRosterApp\.initialize\(\{ mode: 'standalone' \}\)/);
+});
+
 test('mode navigation is native and does not depend on DOMContentLoaded handlers', async () => {
   const html = await readFile(new URL('sbs_roster.html', root), 'utf8');
   const integration = await readFile(new URL('sbs_roster_integration.js', root), 'utf8');
