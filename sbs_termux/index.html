@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width,initial-scale=1" name="viewport"/>
+  <meta content="#11161c" name="theme-color"/>
+  <title>
+   慢慢終端機｜Termux 任務指令
+  </title>
+  <!-- 共用軍火庫：透過 HTTPS 直接載入，不複製零件到專案。 -->
+  <link href="https://lib.stillnessbyslowly.com/ui/responsive.css" rel="stylesheet"/>
+  <link href="https://lib.stillnessbyslowly.com/ui/custom_select.css" rel="stylesheet"/>
+  <link href="https://lib.stillnessbyslowly.com/ui/toast.css" rel="stylesheet"/>
+  <link href="https://lib.stillnessbyslowly.com/ui/confirm/confirm.css" rel="stylesheet"/>
+  <link href="sbs_termux_v2.css" rel="stylesheet"/>
+  <link href="sbs_termux_v2_style.css" rel="stylesheet"/>
+  <link href="sbs_termux_v2_interaction.css" rel="stylesheet"/>
+  <script defer="" src="https://lib.stillnessbyslowly.com/ui/custom_select.js">
+  </script>
+  <script defer="" src="https://lib.stillnessbyslowly.com/ui/clipboard/clipboard_copy.js">
+  </script>
+  <script defer="" src="https://lib.stillnessbyslowly.com/ui/toast.js">
+  </script>
+  <script defer="" src="https://lib.stillnessbyslowly.com/ui/confirm/confirm.js">
+  </script>
+  <script defer="" src="sbs_termux_v2.js">
+  </script>
+  <script defer="" src="sbs_termux_v2_style.js">
+  </script>
+  <script defer="" src="sbs_termux_v2_interaction.js">
+  </script>
+ </head>
+ <body>
+  <div class="shell">
+   <header class="site-header">
+    <div>
+     <h1>
+      慢慢終端機
+     </h1>
+    </div>
+   </header>
+   <main>
+    <section aria-label="選擇任務" class="panel">
+     <nav aria-label="選擇任務" class="tabs">
+      <button aria-selected="true" class="tab" data-task="setup" role="tab" type="button">
+       開始之前
+      </button>
+      <button aria-selected="false" class="tab" data-task="upload" role="tab" type="button">
+       本機 &rarr; GitHub
+      </button>
+      <button aria-selected="false" class="tab" data-task="download" role="tab" type="button">
+       GitHub &rarr; 本機
+      </button>
+     </nav>
+     <form data-form="setup" id="setup-form">
+      <p class="helper">
+       準備 Git、儲存空間權限、工作位置、GitHub SSH，並 Clone 一份 repo。已完成的步驟可以略過。
+      </p>
+      <div class="form-grid">
+       <label class="field">
+        GitHub 專案（owner/repo）
+        <input autocomplete="off" id="setup-repo" placeholder="例如 owner/repo" required=""/>
+       </label>
+       <label class="field">
+        Clone 後的資料夾名稱（可留空）
+        <input autocomplete="off" id="setup-folder" placeholder="留空則使用 repo 名稱"/>
+       </label>
+       <label class="field full">
+        實際工作位置／父目錄
+        <input autocomplete="off" id="setup-location" placeholder="例如 ~/storage/shared/Projects" required=""/>
+        <small>
+         請填你手機上實際存在的位置，不預設 Projects 或 Download。
+        </small>
+       </label>
+      </div>
+      <div class="actions">
+       <button class="primary" type="submit">
+        產生完整準備流程
+       </button>
+      </div>
+     </form>
+     <form data-form="upload" hidden="" id="upload-form">
+      <p class="helper">
+       適用於已經是 Git repo 的本機工作副本；支援指定多個、任意層級的子目錄，或上傳整個 repo。
+      </p>
+      <div class="form-grid">
+       <label class="field full">
+        本機 repo 根目錄
+        <input autocomplete="off" id="upload-location" placeholder="例如 ~/storage/shared/Projects/我的專案" required=""/>
+       </label>
+       <label class="field full">
+        要更新的子目錄（每行一筆，可留空）
+        <textarea id="upload-subpaths" placeholder="例如 work/roster
+index/assets/icons" spellcheck="false"></textarea>
+        <small>
+         留空＝整個 repo。填寫相對於 repo 根目錄的路徑，不限層數；新增、修改、刪除都會納入。
+        </small>
+       </label>
+       <label class="field full">
+        這次的 commit 訊息
+        <input autocomplete="off" id="upload-message" maxlength="180" required="" value="Update project"/>
+       </label>
+      </div>
+      <div class="actions">
+       <button class="primary" type="submit">
+        產生完整上傳流程
+       </button>
+      </div>
+     </form>
+     <form data-form="download" hidden="" id="download-form">
+      <p class="helper">
+       第一次下載使用 Clone；已經有本機副本則使用更新流程。
+      </p>
+      <div class="form-grid">
+       <label class="field">
+        我要做的事
+        <select aria-label="下載方式" data-slowly-select="" id="download-mode">
+         <option value="clone">
+          第一次 Clone repo
+         </option>
+         <option value="pull">
+          更新既有本機副本
+         </option>
+        </select>
+       </label>
+       <label class="field full">
+        <span id="download-location-label">
+         要存放 repo 的父目錄
+        </span>
+        <input autocomplete="off" id="download-location" placeholder="請填實際的 ~/ 或 / 絕對路徑" required=""/>
+       </label>
+       <label class="field" data-download-mode="clone">
+        GitHub 專案（owner/repo）
+        <input autocomplete="off" id="download-repo" placeholder="例如 owner/repo"/>
+       </label>
+       <label class="field" data-download-mode="clone">
+        Clone 後資料夾名稱（可留空）
+        <input autocomplete="off" id="download-folder" placeholder="留空則使用 repo 名稱"/>
+       </label>
+       <label class="field" data-download-mode="pull" hidden="">
+        目前要更新的分支
+        <input autocomplete="off" id="download-branch" value="main"/>
+       </label>
+       <label class="field full" data-download-mode="pull" hidden="">
+        更新後想查看的子目錄（每行一筆，可留空）
+        <textarea id="download-subpaths" placeholder="例如 work/roster
+docs/notes" spellcheck="false"></textarea>
+        <small>
+         Git pull 會更新整個 repo；這裡的子目錄只用於更新後查看。
+        </small>
+       </label>
+      </div>
+      <div class="actions">
+       <button class="primary" type="submit">
+        產生完整下載流程
+       </button>
+      </div>
+     </form>
+     <p aria-live="polite" class="error" id="error" role="alert">
+     </p>
+    </section>
+    <section aria-labelledby="results-title" class="panel" hidden="" id="results">
+     <div class="result-header">
+      <h2 id="results-title">
+       你的操作流程
+      </h2>
+      <span aria-live="polite" class="progress" id="progress">
+      </span>
+     </div>
+     <p class="helper">
+      勾選只記錄你在這個畫面上的進度，不代表指令已執行成功。每一步都要自行核對結果。
+     </p>
+     <div class="actions result-actions">
+      <button class="secondary" id="copy-all" type="button">
+       複製完整流程（文字）
+      </button>
+      <button class="secondary" id="reset-checks" type="button">
+       清除勾選
+      </button>
+     </div>
+     <ol class="steps" id="steps">
+     </ol>
+    </section>
+   </main>
+   <footer>
+    慢 慢 ｜ Stillness by Slowly
+   </footer>
+  </div>
+  <div aria-live="polite" class="slowly-toast" id="toast" role="status">
+  </div>
+ </body>
+</html>
+

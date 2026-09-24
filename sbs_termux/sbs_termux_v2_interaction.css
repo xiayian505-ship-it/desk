@@ -1,0 +1,97 @@
+/* 互動 UI：焦點、按壓、完成與操作回饋；不放裝飾特效。 */
+:where(button,input,textarea,select):focus-visible {
+  outline: 3px solid #687795;
+  outline-offset: 3px;
+}
+.tab:hover,.secondary:hover {
+  border-color: var(--accent);
+}
+.primary:hover {
+  filter: brightness(.94);
+}
+.copy-btn:hover {
+  background: #d3d8e4;
+}
+.check-label input {
+  width: 1.1rem;
+  height: 1.1rem;
+  accent-color: var(--accent);
+}
+.step.is-done .step-number {
+  color: #343b50;
+}
+/* 軍火庫負責顯示／隱藏狀態；本專案只覆寫視覺。 */
+#toast.slowly-toast {
+  position: fixed;
+  bottom: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #252a38;
+  color: white;
+  padding: .8rem 1.2rem;
+  border-radius: 0;
+  box-shadow: 0 8px 24px #0003;
+  max-width: calc(100vw - 2rem);
+  z-index: 1100;
+}
+
+/* 勾選進度保留原生語意與鍵盤能力，外觀不使用瀏覽器預設方框。 */
+.check-label input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  display: inline-grid;
+  place-content: center;
+  width: 1.25rem;
+  height: 1.25rem;
+  margin: 0;
+  border: 2px solid var(--accent);
+  border-radius: 0;
+  background: #fff;
+  cursor: pointer;
+}
+.check-label input[type="checkbox"]:checked {
+  background: var(--accent);
+}
+.check-label input[type="checkbox"]:checked::before {
+  content: '✓';
+  color: white;
+  font-weight: 900;
+  line-height: 1;
+}
+
+/* 文字按鈕的互動回饋不改成色塊。 */
+.tab:hover,
+.primary:hover,
+.secondary:hover,
+.copy-btn:hover {
+  background: transparent;
+  color: var(--accent);
+  filter: none;
+  text-decoration: underline;
+  text-underline-offset: .25em;
+}
+
+
+/* 深色主題的焦點、勾選與操作回饋。 */
+:where(button, input, textarea, select):focus-visible {
+  outline-color: var(--accent);
+}
+
+.check-label input[type="checkbox"] {
+  background: var(--bg);
+}
+
+.check-label input[type="checkbox"]:checked::before {
+  color: var(--bg);
+}
+
+.step.is-done .step-number {
+  color: var(--accent);
+}
+
+#toast.slowly-toast {
+  background: #263e38;
+  color: var(--ink);
+  border: 1px solid var(--line);
+  box-shadow: none;
+}

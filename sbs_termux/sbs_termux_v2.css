@@ -1,0 +1,155 @@
+/* 功能本體：步驟、指令及結果的語意呈現。 */
+[hidden] {
+  display: none !important;
+}
+.steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 1rem;
+}
+.step {
+  border: 1px solid var(--line);
+  border-radius: 0;
+  background: var(--paper);
+  overflow: hidden;
+}
+.step-head {
+  display: flex;
+  align-items: flex-start;
+  gap: .75rem;
+  padding: 1rem;
+}
+.step-number {
+  font-variant-numeric: tabular-nums;
+  font-weight: 800;
+  color: var(--accent);
+}
+.step-main {
+  flex: 1;
+  min-width: 0;
+}
+.step h3 {
+  font-size: 1rem;
+  margin: 0 0 .3rem;
+}
+.step .expected {
+  margin: .65rem 0 0;
+  color: var(--muted);
+  line-height: 1.65;
+}
+.step .caution {
+  margin: .7rem 0 0;
+  padding: .65rem .75rem;
+  background: #f6f2e7;
+  border-left: 3px solid #9a752e;
+  border-radius: 0;
+  line-height: 1.6;
+}
+.command-wrap {
+  border-top: 1px solid var(--line);
+  background: #1c1e24;
+  color: #f3f3f1;
+}
+.command-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: .6rem;
+  padding: .55rem .85rem;
+  border-bottom: 1px solid #ffffff24;
+}
+.command-toolbar span {
+  font-size: .78rem;
+  color: #d0d0d3;
+}
+.command-wrap pre {
+  margin: 0;
+  padding: 1rem;
+  overflow: auto;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  line-height: 1.65;
+  font-size: .88rem;
+}
+.check-label {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  cursor: pointer;
+  font-weight: 650;
+}
+.step.is-done {
+  border-color: #727d93;
+}
+.step.is-done .step-head {
+  background: #eff0f4;
+}
+.warning {
+  padding: .8rem 1rem;
+  border-radius: 0;
+  background: #f6f2e7;
+  border: 1px solid #d6c8a7;
+  line-height: 1.65;
+}
+.error {
+  color: #a22e35;
+  min-height: 1.5em;
+}
+.result-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.progress {
+  font-variant-numeric: tabular-nums;
+  color: var(--muted);
+}
+
+
+/* 深色終端機：步驟靠留白區隔，不再用一排排外框。 */
+.step {
+  border: 0;
+  background: var(--paper);
+}
+
+.step + .step {
+  margin-top: .35rem;
+}
+
+.step .caution,
+.warning {
+  background: #30291d;
+  color: #eed6a6;
+  border: 0;
+  border-left: 3px solid #c9a36b;
+}
+
+.command-wrap {
+  border: 0;
+  background: #0c1116;
+  color: #d9e9e2;
+}
+
+.command-toolbar {
+  border: 0;
+}
+
+.command-toolbar span {
+  color: #9baeb1;
+}
+
+.step.is-done {
+  border: 0;
+}
+
+.step.is-done .step-head {
+  background: #20342e;
+}
+
+.error {
+  color: #f0a7a7;
+}
