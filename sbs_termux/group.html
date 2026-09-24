@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width,initial-scale=1" name="viewport"/>
+  <title>
+   指令分類｜慢慢終端機
+  </title>
+  <link href="https://lib.stillnessbyslowly.com/ui/responsive.css" rel="stylesheet"/>
+  <link href="https://lib.stillnessbyslowly.com/ui/toast.css" rel="stylesheet"/>
+  <link href="sbs_termux.css" rel="stylesheet"/>
+  <link href="sbs_termux_style.css" rel="stylesheet"/>
+  <link href="css/group.css" rel="stylesheet"/>
+  <link href="css/command_output.css" rel="stylesheet"/>
+ </head>
+ <body data-page="group">
+  <div class="shell">
+   <header>
+    <h1>
+     慢慢終端機
+    </h1>
+   </header>
+   <nav aria-label="階層導覽" class="breadcrumb">
+    <a href="./index.html">
+     慢慢終端機
+    </a>
+    <span>
+     ›
+    </span>
+    <a href="./index.html#categories">
+     指令分類
+    </a>
+    <span>
+     ›
+    </span>
+    <span id="group-crumb">
+     分類
+    </span>
+   </nav>
+   <main>
+    <div class="back-row">
+     <a data-back="" href="./index.html#categories">
+      ← 返回上一頁
+     </a>
+    </div>
+    <section class="section">
+     <div class="project-bar">
+      <div>
+       <span class="muted">
+        目前專案
+       </span>
+       <strong data-current-project="">
+        尚未選取專案
+       </strong>
+       <code data-current-path="">
+        請先建立或選取專案
+       </code>
+      </div>
+      <a href="./index.html#categories">
+       管理／切換專案
+      </a>
+     </div>
+    </section>
+    <section class="section">
+     <div class="subpage-head">
+      <h2 id="group-title">
+       指令分類
+      </h2>
+      <p class="muted" id="group-desc">
+      </p>
+      <p class="muted" id="group-count">
+      </p>
+     </div>
+     <div id="group-list">
+     </div>
+    </section>
+    <section class="section">
+     <div class="section-heading">
+      <h2>
+       已選指令
+      </h2>
+      <span class="muted" id="selection-count">
+       0 / 5
+      </span>
+     </div>
+     <div id="selected-items">
+     </div>
+     <div class="project-actions">
+      <button id="clear-selection" type="button">
+       清空選取
+      </button>
+      <button class="primary" id="generate-commands" type="button">
+       產生指令
+      </button>
+     </div>
+    </section>
+    <section class="output-shell">
+     <div class="section-heading">
+      <h2>
+       指令產生框
+      </h2>
+      <span class="muted" id="output-count">
+       0 / 5
+      </span>
+     </div>
+     <p class="muted">
+      每條可單獨複製，也可一次複製全部。網站不會執行指令。
+     </p>
+     <div id="output-items">
+     </div>
+     <div class="output-actions">
+      <button id="clear-output" type="button">
+       清除產生結果
+      </button>
+      <button class="primary" disabled="" id="copy-all" type="button">
+       複製全部
+      </button>
+     </div>
+    </section>
+    <div aria-live="polite" class="slowly-toast" id="toast" role="status">
+    </div>
+   </main>
+   <footer>
+    慢 慢 | Stillness by Slowly
+   </footer>
+  </div>
+  <script defer="" src="https://lib.stillnessbyslowly.com/ui/clipboard/clipboard_copy.js">
+  </script>
+  <script defer="" src="https://lib.stillnessbyslowly.com/ui/toast.js">
+  </script>
+  <script defer="" src="js/toast.js">
+  </script>
+  <script defer="" src="commands/commands_termux.js">
+  </script>
+  <script defer="" src="commands/commands_files.js">
+  </script>
+  <script defer="" src="commands/commands_git.js">
+  </script>
+  <script defer="" src="commands/commands_index.js">
+  </script>
+  <script defer="" src="js/storage.js">
+  </script>
+  <script defer="" src="js/projects.js">
+  </script>
+  <script defer="" src="js/command_catalog.js">
+  </script>
+  <script defer="" src="js/command_builder.js">
+  </script>
+  <script defer="" src="js/command_selection.js">
+  </script>
+  <script defer="" src="js/clipboard.js">
+  </script>
+  <script defer="" src="js/navigation.js">
+  </script>
+  <script defer="" src="js/project_ui.js">
+  </script>
+  <script defer="" src="js/command_ui.js">
+  </script>
+  <script defer="" src="js/command_output.js">
+  </script>
+  <script defer="" src="js/group_page.js">
+  </script>
+  <script defer="" src="sbs_termux_style.js">
+  </script>
+  <script defer="" src="sbs_termux.js">
+  </script>
+ </body>
+</html>
+
