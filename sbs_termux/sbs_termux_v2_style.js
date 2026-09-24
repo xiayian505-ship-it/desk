@@ -24,8 +24,8 @@
     });
 
     $('download-location-label').textContent = mode === 'clone'
-      ? '要存放 repo 的父目錄'
-      : '既有本機 repo 的根目錄';
+      ? '要把專案下載到手機的哪個資料夾？'
+      : '手機裡已有的專案資料夾在哪裡？';
   }
 
   global.SBSTermuxV2Style = Object.freeze({ showTask, showDownloadMode });

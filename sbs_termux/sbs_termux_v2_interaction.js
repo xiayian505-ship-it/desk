@@ -108,6 +108,28 @@
     return $(id).value;
   }
 
+  function parseRepoField(id, folderId) {
+    const output = $(id + '-parsed');
+    try {
+      const repo = window.SBSTermuxV2.repository(value(id));
+      const [owner, name] = repo.split('/');
+      output.textContent = `解析完成：帳號 ${owner}，專案 ${name}（尚未檢查專案是否存在）`;
+      if (folderId && !$(folderId).dataset.userEdited) $(folderId).value = name;
+      $('error').textContent = '';
+      return repo;
+    } catch (error) {
+      output.textContent = '';
+      $('error').textContent = error.message;
+      return null;
+    }
+  }
+
+  [['setup-repo', 'setup-folder'], ['download-repo', 'download-folder']].forEach(([id, folderId]) => {
+    $(id + '-parse').addEventListener('click', () => parseRepoField(id, folderId));
+    $(id).addEventListener('input', () => { $(id + '-parsed').textContent = ''; });
+    $(folderId).addEventListener('input', () => { $(folderId).dataset.userEdited = 'true'; });
+  });
+
   function collect() {
     if (task === 'setup') {
       return {
@@ -147,6 +169,8 @@
   document.querySelectorAll('[data-form]').forEach((form) => {
     form.addEventListener('submit', (event) => {
       event.preventDefault();
+      if (task === 'setup' && !parseRepoField('setup-repo', 'setup-folder')) return;
+      if (task === 'download' && value('download-mode') === 'clone' && !parseRepoField('download-repo', 'download-folder')) return;
       $('error').textContent = '';
       try {
         render(window.SBSTermuxV2.generate(task, collect()));

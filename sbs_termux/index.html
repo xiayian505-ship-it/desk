@@ -54,22 +54,32 @@
      </nav>
      <form data-form="setup" id="setup-form">
       <p class="helper">
-       準備 Git、儲存空間權限、工作位置、GitHub SSH，並 Clone 一份 repo。已完成的步驟可以略過。
+       貼上 GitHub 專案網址，解析後只需選擇手機裡的存放位置。已經下載過的專案，不用重新下載。
       </p>
       <div class="form-grid">
        <label class="field">
-        GitHub 專案（owner/repo）
-        <input autocomplete="off" id="setup-repo" placeholder="例如 owner/repo" required=""/>
+        GitHub 專案網址
+        <input autocomplete="off" id="setup-repo" inputmode="url" placeholder="https://github.com/帳號/專案名稱" required="" type="url"/>
+        <button class="parse-btn" id="setup-repo-parse" type="button">
+         解析網址
+        </button>
+        <small aria-live="polite" id="setup-repo-parsed">
+        </small>
        </label>
        <label class="field">
-        Clone 後的資料夾名稱（可留空）
-        <input autocomplete="off" id="setup-folder" placeholder="留空則使用 repo 名稱"/>
+        下載後的資料夾名稱（通常不用改）
+        <input autocomplete="off" id="setup-folder" placeholder="解析網址後自動填入"/>
        </label>
        <label class="field full">
-        實際工作位置／父目錄
-        <input autocomplete="off" id="setup-location" placeholder="例如 ~/storage/shared/Projects" required=""/>
+        要把專案放在手機的哪個資料夾？
+        <div class="path-input">
+         <span class="path-prefix">
+          ~/storage/shared/
+         </span>
+         <input autocomplete="off" data-shared-path="" id="setup-location" placeholder="github_projects" required=""/>
+        </div>
         <small>
-         請填你手機上實際存在的位置，不預設 Projects 或 Download。
+         只填 shared/ 後面的部分；例如 github_projects。下載後會自動建立專案資料夾。
         </small>
        </label>
       </div>
@@ -81,23 +91,30 @@
      </form>
      <form data-form="upload" hidden="" id="upload-form">
       <p class="helper">
-       適用於已經是 Git repo 的本機工作副本；支援指定多個、任意層級的子目錄，或上傳整個 repo。
+       已經在手機裡的專案，要把修改上傳到 GitHub。只需告訴工具專案放在哪裡，以及這次要上傳哪些資料夾。
       </p>
       <div class="form-grid">
        <label class="field full">
-        本機 repo 根目錄
-        <input autocomplete="off" id="upload-location" placeholder="例如 ~/storage/shared/Projects/我的專案" required=""/>
-       </label>
-       <label class="field full">
-        要更新的子目錄（每行一筆，可留空）
-        <textarea id="upload-subpaths" placeholder="例如 work/roster
-index/assets/icons" spellcheck="false"></textarea>
+        手機裡的專案資料夾在哪裡？
+        <div class="path-input">
+         <span class="path-prefix">
+          ~/storage/shared/
+         </span>
+         <input autocomplete="off" data-shared-path="" id="upload-location" placeholder="github_projects/desk" required=""/>
+        </div>
         <small>
-         留空＝整個 repo。填寫相對於 repo 根目錄的路徑，不限層數；新增、修改、刪除都會納入。
+         只填 shared/ 後面的部分。例如 github_projects/desk；不知道位置時，在 Termux 進入專案後輸入 pwd。
         </small>
        </label>
        <label class="field full">
-        這次的 commit 訊息
+        這次只上傳哪個資料夾？（可留空）
+        <textarea id="upload-subpaths" placeholder="sbs_termux" spellcheck="false"></textarea>
+        <small>
+         留空會上傳整個專案；只上傳其中的資料夾，就填資料夾名稱，例如 sbs_termux。不要填 GitHub 帳號或專案名稱。
+        </small>
+       </label>
+       <label class="field full">
+        這次修改要留下什麼紀錄？
         <input autocomplete="off" id="upload-message" maxlength="180" required="" value="Update project"/>
        </label>
       </div>
@@ -109,40 +126,54 @@ index/assets/icons" spellcheck="false"></textarea>
      </form>
      <form data-form="download" hidden="" id="download-form">
       <p class="helper">
-       第一次下載使用 Clone；已經有本機副本則使用更新流程。
+       還沒下載到手機，選「第一次下載」；手機裡已經有這個專案，選「更新已有的專案」。
       </p>
       <div class="form-grid">
        <label class="field">
         我要做的事
         <select aria-label="下載方式" data-slowly-select="" id="download-mode">
          <option value="clone">
-          第一次 Clone repo
+          第一次下載到手機
          </option>
          <option value="pull">
-          更新既有本機副本
+          更新手機裡已有的專案
          </option>
         </select>
        </label>
        <label class="field full">
+        要把專案下載到手機的哪個資料夾？
         <span id="download-location-label">
          要存放 repo 的父目錄
         </span>
-        <input autocomplete="off" id="download-location" placeholder="請填實際的 ~/ 或 / 絕對路徑" required=""/>
+        <div class="path-input">
+         <span class="path-prefix">
+          ~/storage/shared/
+         </span>
+         <input autocomplete="off" data-shared-path="" id="download-location" placeholder="github_projects" required=""/>
+        </div>
+        <small>
+         只填 shared/ 後面的部分。第一次下載填上層資料夾；更新已有專案填專案資料夾。
+        </small>
        </label>
        <label class="field" data-download-mode="clone">
-        GitHub 專案（owner/repo）
-        <input autocomplete="off" id="download-repo" placeholder="例如 owner/repo"/>
+        GitHub 專案網址
+        <input autocomplete="off" id="download-repo" inputmode="url" placeholder="https://github.com/帳號/專案名稱" type="url"/>
+        <button class="parse-btn" id="download-repo-parse" type="button">
+         解析網址
+        </button>
+        <small aria-live="polite" id="download-repo-parsed">
+        </small>
        </label>
        <label class="field" data-download-mode="clone">
-        Clone 後資料夾名稱（可留空）
-        <input autocomplete="off" id="download-folder" placeholder="留空則使用 repo 名稱"/>
+        下載後的資料夾名稱（通常不用改）
+        <input autocomplete="off" id="download-folder" placeholder="解析網址後自動填入"/>
        </label>
        <label class="field" data-download-mode="pull" hidden="">
-        目前要更新的分支
+        要更新哪個版本？（通常不用改）
         <input autocomplete="off" id="download-branch" value="main"/>
        </label>
        <label class="field full" data-download-mode="pull" hidden="">
-        更新後想查看的子目錄（每行一筆，可留空）
+        更新後想查看哪個資料夾？（可留空）
         <textarea id="download-subpaths" placeholder="例如 work/roster
 docs/notes" spellcheck="false"></textarea>
         <small>
@@ -190,4 +221,3 @@ docs/notes" spellcheck="false"></textarea>
   </div>
  </body>
 </html>
-
