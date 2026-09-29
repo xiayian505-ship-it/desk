@@ -3,6 +3,7 @@
   "use strict";
 
   const REPO_ROOT = "~/storage/shared/github_projects";
+  const SAFE_REPO_ROOT = "/storage/emulated/0/github_projects";
   const DEFAULT_COMMIT_MESSAGE = "Update files";
 
   function normalizeRepo(value) {
@@ -41,6 +42,12 @@
 
   function makeCommands({ repo, mode = "upload", scope = "whole", folder = "", message = DEFAULT_COMMIT_MESSAGE }) {
     const name = normalizeRepo(repo);
+    if (mode === "trust") {
+      return [{
+        label: "設定信任目錄",
+        command: `git config --global --add safe.directory ${SAFE_REPO_ROOT}/${name}`
+      }];
+    }
     const commands = [
       { label: "切換 Repo", command: `cd ${REPO_ROOT}/${name}` }
     ];

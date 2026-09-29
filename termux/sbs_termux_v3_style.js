@@ -46,6 +46,7 @@
     const commandOutput = $("commandOutput");
     const singleCopies = $("singleCopies");
     const resultNote = $("resultNote");
+    const resultHint = document.querySelector(".result-hint");
 
     let activeRepo = null;
     let scope = "whole";
@@ -179,6 +180,9 @@
       latestCommands = commands;
       commandOutput.value = core.copyAllText(commands);
       commandOutput.rows = Math.min(11, Math.max(4, commands.length * 2));
+      resultHint.textContent = commands.length === 1
+        ? "先確認上方指令，再按複製。"
+        : "複製內容就是上方顯示的整段指令；使用 && 串接，前一步失敗就不繼續。";
       singleCopies.replaceChildren();
       for (const [index, item] of commands.entries()) {
         const card = document.createElement("div");
@@ -230,6 +234,16 @@
       try {
         if (!activeRepo) throw new Error("請先選擇 Repo。");
         renderCommands(core.makeCommands({ repo: activeRepo, mode: "status" }));
+      } catch (error) {
+        clearResult();
+        showFeedback(error.message, true);
+      }
+    });
+
+    $("generateTrust").addEventListener("click", () => {
+      try {
+        if (!activeRepo) throw new Error("請先選擇 Repo。");
+        renderCommands(core.makeCommands({ repo: activeRepo, mode: "trust" }));
       } catch (error) {
         clearResult();
         showFeedback(error.message, true);
