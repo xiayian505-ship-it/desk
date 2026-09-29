@@ -1,0 +1,38 @@
+/* 功能本體：僅處理隱藏、輸入區與指令複製區的必要結構。 */
+[hidden] { display: none !important; }
+
+.repo-input-wrap { position: relative; flex: 1 1 230px; min-width: 0; }
+.repo-input-wrap input { width: 100%; }
+.repo-suggestions {
+  position: absolute;
+  inset-inline: 0;
+  top: calc(100% + 2px);
+  z-index: 10;
+  max-height: 220px;
+  overflow-y: auto;
+}
+.repo-suggestion { display: block; width: 100%; text-align: left; }
+.command-output {
+  display: block;
+  width: 100%;
+  min-height: 190px;
+  box-sizing: border-box;
+  resize: vertical;
+  white-space: pre;
+  overflow: auto;
+}
+.command-list { display: grid; gap: 12px; }
+.command-step { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; }
+.command-line { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+.result-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  white-space: nowrap;
+  border: 0;
+}

@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>Termux｜Stillness by Slowly</title>
+
+  <!-- 慢慢軍火庫：只透過 HTTPS 引用，不複製零件進專案。 -->
+  <link rel="stylesheet" href="https://lib.stillnessbyslowly.com/ui/responsive.css">
+  <link rel="stylesheet" href="https://lib.stillnessbyslowly.com/ui/tabs/tabs.css">
+  <link rel="stylesheet" href="https://lib.stillnessbyslowly.com/ui/toast.css">
+
+  <link rel="stylesheet" href="./sbs_termux_v3.css">
+  <link rel="stylesheet" href="./sbs_termux_v3_style.css">
+</head>
+<body>
+  <main class="termux-page">
+    <header class="page-heading">
+      <h1>Termux</h1>
+      <p>我要做什麼 → 複製指令 → 貼到 Termux</p>
+    </header>
+
+    <section class="repo-entry" aria-labelledby="repoTitle">
+      <h2 id="repoTitle">先選擇 Repo</h2>
+      <form id="repoForm" autocomplete="off">
+        <label for="repoName">Repo 名稱</label>
+        <div class="repo-entry-row">
+          <div class="repo-input-wrap">
+            <input id="repoName" name="repo" type="text" inputmode="text" spellcheck="false"
+                   autocapitalize="off" autocomplete="off" placeholder="輸入 Repo 名稱" required
+                   aria-describedby="repoHelp">
+            <div id="repoSuggestions" class="repo-suggestions" aria-label="已記住的 Repo" hidden></div>
+          </div>
+          <button id="repoConfirm" type="submit">選擇</button>
+          <button id="repoClear" type="button">清除</button>
+        </div>
+        <p id="repoHelp" class="form-help">輸入自己的 Repo 名稱；使用過的名稱會保存在這個瀏覽器。</p>
+      </form>
+    </section>
+
+    <div id="toolArea" class="tool-area" hidden>
+      <p class="selected-repo">目前 Repo：<strong id="activeRepo"></strong></p>
+
+      <div id="termuxTabs" data-slowly-tabs>
+        <nav class="view-tabs" role="tablist" aria-label="Termux 功能分頁">
+          <button type="button" role="tab" data-view-target="before" aria-selected="false">開始之前</button>
+          <button type="button" role="tab" data-view-target="upload" aria-selected="true">手機上傳到 GitHub</button>
+          <button type="button" role="tab" data-view-target="download" aria-selected="false">GitHub 上傳到手機</button>
+          <button type="button" role="tab" data-view-target="reserve" aria-selected="false">備用</button>
+        </nav>
+
+        <section class="view-panel" data-view-panel="before" hidden aria-label="開始之前"></section>
+
+        <section class="view-panel" data-view-panel="upload" aria-label="手機上傳到 GitHub">
+          <div class="upload-form">
+            <h2>上傳範圍</h2>
+            <div class="scope-switch" role="group" aria-label="上傳範圍">
+              <button type="button" data-scope="whole" aria-pressed="true">整個 Repo</button>
+              <button type="button" data-scope="folder" aria-pressed="false">指定資料夾</button>
+            </div>
+
+            <div id="folderWrap" class="field-row" hidden>
+              <label for="folderName">資料夾路徑（相對於 Repo）</label>
+              <input id="folderName" type="text" spellcheck="false" autocapitalize="off"
+                     autocomplete="off" placeholder="資料夾/子資料夾/">
+              <p class="form-help">可以輸入多層子資料夾；不需要填手機的完整路徑。</p>
+            </div>
+
+            <div class="field-row">
+              <label for="commitMessage">這次更新的訊息</label>
+              <input id="commitMessage" type="text" spellcheck="false" autocomplete="off"
+                     value="Update files" placeholder="Update files">
+            </div>
+
+            <div class="action-row">
+              <button id="generateUpload" type="button" class="action-primary">產生上傳指令</button>
+              <button id="generateStatus" type="button">只切換／檢查 Repo</button>
+            </div>
+          </div>
+
+          <section id="resultArea" class="result-area" aria-labelledby="resultTitle" hidden>
+            <h2 id="resultTitle">產生的指令</h2>
+            <p id="resultNote" class="result-note" hidden></p>
+            <div id="singleCopies" class="command-list" aria-label="逐條指令預覽"></div>
+            <h3 class="combined-title">整段指令</h3>
+            <label class="sr-only" for="commandOutput">指令全文</label>
+            <textarea id="commandOutput" class="command-output" readonly spellcheck="false" rows="9"></textarea>
+            <div class="result-actions">
+              <button id="copyAll" type="button" class="action-primary">複製全部</button>
+              <span class="result-hint">複製內容就是上方顯示的整段指令；使用 && 串接，前一步失敗就不繼續。</span>
+            </div>
+          </section>
+        </section>
+
+        <section class="view-panel" data-view-panel="download" hidden aria-label="GitHub 上傳到手機"></section>
+        <section class="view-panel" data-view-panel="reserve" hidden aria-label="備用"></section>
+      </div>
+    </div>
+
+    <p id="feedback" class="feedback" role="status" aria-live="polite" hidden></p>
+    <footer class="sbs-signature" aria-label="Stillness by Slowly">
+      <span class="sbs-signature-mark">慢 慢</span>
+      <span class="sbs-signature-separator" aria-hidden="true">|</span>
+      <span>Stillness by Slowly</span>
+    </footer>
+  </main>
+
+  <div id="toast" class="slowly-toast termux-toast" role="status" aria-live="polite"></div>
+
+  <script src="https://lib.stillnessbyslowly.com/ui/tabs/tabs.js"></script>
+  <script src="https://lib.stillnessbyslowly.com/fiction/Fiction_storage.js"></script>
+  <script src="https://lib.stillnessbyslowly.com/fiction/Fiction_SelectOrCreate.js"></script>
+  <script src="https://lib.stillnessbyslowly.com/ui/clipboard/clipboard_copy.js"></script>
+  <script src="https://lib.stillnessbyslowly.com/ui/toast.js"></script>
+  <script src="./sbs_termux_v3.js"></script>
+  <script src="./sbs_termux_v3_style.js"></script>
+</body>
+</html>
