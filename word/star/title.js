@@ -54,6 +54,7 @@
       .replaceAll("@@TOP@@", String(layout.top))
       .replaceAll("@@HEIGHT@@", String(layout.height));
   }
+  const KADOKADO_COVER = Object.freeze({ width: 700, height: 1000, ratio: "7:10" });
   function outputSize(raw, multiplier = 1) {
     const n = splitCharacters(normalize(raw)).length;
     if (!n) throw new Error("請先輸入文字。");
@@ -117,7 +118,41 @@
     canvas.width = canvas.height = 0; // 釋放行動裝置畫布記憶體
     return { filename, ...dimensions, bytes: blob.size };
   }
+  async function downloadKadokadoCover(raw) {
+    const text = normalize(raw);
+    const svg = generateSVG(text);
+    const source = outputSize(text, 1);
+    const image = await imageFromSVG(svg);
+    const canvas = document.createElement("canvas");
+    canvas.width = KADOKADO_COVER.width;
+    canvas.height = KADOKADO_COVER.height;
+    const ctx = canvas.getContext("2d", { alpha: true });
+    if (!ctx) throw new Error("目前瀏覽器不支援 Canvas 繪圖。");
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    const paddingX = 76;
+    const paddingY = 52;
+    const boxW = canvas.width - paddingX * 2;
+    const boxH = canvas.height - paddingY * 2;
+    const scale = Math.min(boxW / source.width, boxH / source.height);
+    const drawW = Math.round(source.width * scale);
+    const drawH = Math.round(source.height * scale);
+    const dx = Math.round((canvas.width - drawW) / 2);
+    const dy = Math.round((canvas.height - drawH) / 2);
+
+    ctx.drawImage(image, dx, dy, drawW, drawH);
+    const blob = await toPNGBlob(canvas);
+    if (!blob || blob.size === 0) throw new Error("產生的角角者書封 PNG 是空檔案。");
+    const filename = `${fileSafe(text)}_角角者書封_700x1000.png`;
+    if (global.SlowlyPNGDownload && typeof global.SlowlyPNGDownload.fromBlob === "function") {
+      global.SlowlyPNGDownload.fromBlob(blob, filename);
+    } else {
+      downloadBlob(blob, filename);
+    }
+    canvas.width = canvas.height = 0;
+    return { filename, width: KADOKADO_COVER.width, height: KADOKADO_COVER.height, bytes: blob.size };
+  }
   global.SlowlyStarArt = Object.freeze({
-    MAX_COUNT, normalize, splitCharacters, generateSVG, outputSize, downloadSVG, downloadPNG, makeUrl
+    MAX_COUNT, KADOKADO_COVER, normalize, splitCharacters, generateSVG, outputSize, downloadSVG, downloadPNG, downloadKadokadoCover, makeUrl
   });
 })(window);

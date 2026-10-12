@@ -9,15 +9,16 @@ document.addEventListener("DOMContentLoaded", () => {
   const pngSpec = document.getElementById("png-spec");
   const svgButton = document.getElementById("download-svg");
   const pngButton = document.getElementById("download-png");
+  const kadokadoButton = document.getElementById("download-kadokado");
   const form = document.getElementById("art-form");
-  if (!core || !field || !counter || !image || !status || !pngSpec || !svgButton || !pngButton) return;
+  if (!core || !field || !counter || !image || !status || !pngSpec || !svgButton || !pngButton || !kadokadoButton) return;
 
   let currentText = "";
   const previewURLs = new Set();
   let composing = false;
   let busy = false;
 
-  function setButtons(enabled) { svgButton.disabled = pngButton.disabled = !enabled || busy; }
+  function setButtons(enabled) { svgButton.disabled = pngButton.disabled = kadokadoButton.disabled = !enabled || busy; }
   function render(input) {
     const chars = core.splitCharacters(input);
     const text = core.normalize(input);
@@ -80,6 +81,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   svgButton.addEventListener("click", () => startDownload(svgButton, core.downloadSVG, "正在準備透明 SVG……"));
   pngButton.addEventListener("click", () => startDownload(pngButton, text => core.downloadPNG(text, 2), "正在製作透明 PNG……"));
+  kadokadoButton.addEventListener("click", () => startDownload(kadokadoButton, core.downloadKadokadoCover, "正在製作角角者書封 PNG……"));
   render(field.value);
   window.addEventListener("pagehide", () => {
     for (const url of previewURLs) URL.revokeObjectURL(url);
