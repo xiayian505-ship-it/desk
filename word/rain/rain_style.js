@@ -1,0 +1,58 @@
+"use strict";
+/* 雨系藝術字：頁面 UI 與軍火庫雨幕設定。所有功能輸出交由 rain.js。 */
+document.addEventListener('DOMContentLoaded',()=>{
+  const art=window.SlowlyRainArt;
+  const field=document.getElementById('art-text');
+  const count=document.getElementById('char-count');
+  const preview=document.getElementById('art-image');
+  const status=document.getElementById('download-status');
+  const form=document.getElementById('art-form');
+  const svgBtn=document.getElementById('download-svg');
+  const pngBtn=document.getElementById('download-png');
+  const coverBtn=document.getElementById('download-cover');
+  if(!art||!field||!count||!preview||!status||!form||!svgBtn||!pngBtn||!coverBtn){
+    console.error('雨系藝術字：頁面元素或生成功能遺失。');return;
+  }
+  let current='',busy=false,composing=false,previewURL=null;
+  function enableButtons(){const disabled=!current||busy;[svgBtn,pngBtn,coverBtn].forEach(button=>button.disabled=disabled);}
+  function update(input){
+    const rawCount=art.characters(input).length;
+    current=art.normalize(input);
+    if(field.value!==current)field.value=current;
+    count.textContent=`${art.characters(current).length} / ${art.MAX}`;
+    enableButtons();
+    if(!current){preview.removeAttribute('src');preview.alt='輸入文字以預覽雨系藝術字';status.textContent='請先輸入文字。';if(previewURL){URL.revokeObjectURL(previewURL);previewURL=null;}return;}
+    try{
+      const svg=art.generateSVG(current),url=art.makeURL(svg),oldURL=previewURL;
+      preview.onload=()=>{if(oldURL)URL.revokeObjectURL(oldURL);};
+      preview.onerror=()=>{status.textContent='預覽失敗，請檢查瀏覽器是否支援 SVG。';if(oldURL)URL.revokeObjectURL(oldURL);};
+      previewURL=url;preview.src=url;preview.alt=`${current}的雨系書法藝術字（透明背景）`;
+      status.textContent=rawCount>art.MAX?`最多四個字，已保留前四個字。`:'';
+    }catch(e){console.error(e);status.textContent=`生成失敗：${e.message}`;current='';enableButtons();}
+  }
+  field.addEventListener('compositionstart',()=>composing=true);
+  field.addEventListener('compositionend',()=>{composing=false;update(field.value);});
+  field.addEventListener('input',()=>{if(!composing)update(field.value);});
+  form.addEventListener('submit',event=>{event.preventDefault();if(!composing)update(field.value);});
+  document.querySelectorAll('[data-example]').forEach(button=>button.addEventListener('click',()=>{field.value=button.dataset.example;update(field.value);field.focus();}));
+  async function download(action,message){
+    if(busy||!current)return;
+    busy=true;enableButtons();status.textContent=message;
+    try{const result=await action(current);status.textContent=`已送出下載：${result.filename}`;}
+    catch(e){console.error(e);status.textContent=`下載失敗：${e.message}`;}
+    finally{busy=false;enableButtons();}
+  }
+  svgBtn.addEventListener('click',()=>download(art.downloadSVG,'正在準備 SVG……'));
+  pngBtn.addEventListener('click',()=>download(art.downloadPNG,'正在繪製高清透明 PNG……'));
+  coverBtn.addEventListener('click',()=>download(art.downloadCover,'正在繪製 700 × 1000 書封……'));
+  update(field.value);
+  // 網站雨幕是裝飾，下載圖則用 rain_template.js 內獨立的靜態雨絲。
+  let rainy=null;
+  try{
+    if(window.SlowlyCanvasRain?.create){
+      rainy=window.SlowlyCanvasRain.create({canvas:'#page-rain',count:95,color:'#3b7487',opacity:.36,speed:.48,wind:.07,length:.6});
+      rainy.start();
+    }
+  }catch(e){console.warn('軍火庫雨幕不可用，保持靜態背景：',e);}
+  window.addEventListener('pagehide',()=>{if(previewURL)URL.revokeObjectURL(previewURL);rainy?.destroy();});
+});

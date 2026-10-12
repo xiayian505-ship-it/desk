@@ -1,0 +1,10 @@
+/* 雨系藝術字 / 功能性預覽樣式，預覽棋盤格不會寫入下載圖檔 */
+.preview-section{position:relative;min-width:0;padding:24px;background:linear-gradient(145deg,rgba(249,252,252,.92),rgba(221,233,234,.9));border:1px solid rgba(77,109,119,.24);border-radius:8px;box-shadow:0 16px 55px rgba(54,75,85,.10)}
+.preview-heading{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.preview-heading h2{font-size:15px;font-weight:600;letter-spacing:.16em;margin:0}.live-indicator{font-size:10px;letter-spacing:.12em;color:#708e92;display:flex;align-items:center;gap:9px}
+.live-indicator i{width:7px;height:7px;background:#698b88;border-radius:50%}
+.preview-frame{position:relative;isolation:isolate;display:grid;place-items:center;overflow:hidden;min-height:480px;background:#e9f0f1;border:1px solid rgba(71,106,119,.14);border-radius:4px}
+.transparency-grid{position:absolute;inset:0;opacity:.58;background-color:#e4eced;background-image:linear-gradient(45deg,#d5e0e3 25%,transparent 25%,transparent 75%,#d5e0e3 75%),linear-gradient(45deg,#d5e0e3 25%,transparent 25%,transparent 75%,#d5e0e3 75%);background-size:24px 24px;background-position:0 0,12px 12px;pointer-events:none}
+.art-image{position:relative;display:block;width:min(100%,560px);height:auto;max-height:min(73vh,780px);object-fit:contain;filter:drop-shadow(0 3px 2px rgba(31,61,78,.13));padding:4px;user-select:none;-webkit-user-drag:none}
+.preview-footnote{color:#627c83;text-align:center;font-size:11px;line-height:1.8;margin:13px 4px 0}
+@media(max-width:650px){.preview-section{padding:14px}.preview-frame{min-height:410px}.art-image{max-height:620px}}
