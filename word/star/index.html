@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#111326">
+  <meta name="description" content="輸入一至四個字，即時製作直式星辰藝術字，可下載透明 SVG 和 PNG。夏熠安・慢慢 Stillness by Slowly。">
+  <title>星辰藝術字產生器｜慢慢 Stillness by Slowly</title>
+  <!-- 軍火庫以正式 HTTPS 絕對 URL 引用，不複製零件，也不接管宿主外觀 -->
+  <link rel="stylesheet" href="https://lib.stillnessbyslowly.com/effects/light/glow.css">
+  <link rel="stylesheet" href="title.css">
+  <link rel="stylesheet" href="title_style.css">
+  <script defer src="https://lib.stillnessbyslowly.com/Image/png/canvas_png.js"></script>
+  <script defer src="https://lib.stillnessbyslowly.com/Image/png/png_download.js"></script>
+  <script defer src="title_template.js"></script>
+  <script defer src="title.js"></script>
+  <script defer src="title_style.js"></script>
+</head>
+<body>
+  <div class="site-wrap">
+    <header class="site-header">
+      <div class="brand"><span class="brand-star" aria-hidden="true">✦</span><span>STILLNESS <span class="brand-light">BY SLOWLY</span></span></div>
+      <span class="header-note">STAR LETTERING <span class="header-slash">/</span> STUDIO</span>
+    </header>
+    <main class="hero">
+      <section class="intro" aria-labelledby="page-title">
+        <p class="eyebrow"><span class="eyebrow-line"></span> WRITE YOUR OWN STARS</p>
+        <h1 id="page-title">星辰藝術字<span class="title-dot">.</span></h1>
+        <div class="byline"><span class="byline-rule"></span> 夏熠安 <span class="byline-light">｜ 筆下星辰衍生工具</span></div>
+        <p class="lead">讓文字成為一段小小銀河。</p>
+        <p class="description">輸入想留下的字，把它們寫進藍紫粉的星光裡。每次最多四字，自上而下排列；星軌、月牙與流光會一起輸出，底圖保持透明。</p>
+        <form id="art-form" class="editor" novalidate>
+          <div class="field-top"><label for="art-text">輸入文字 <span class="field-aside">YOUR LETTERING</span></label><span id="char-count" class="char-count" aria-live="polite">4 / 4</span></div>
+          <div class="text-input-shell"><input id="art-text" name="art-text" class="art-text-input" type="text" value="筆下星辰" placeholder="例如：星河入夢" autocomplete="off" spellcheck="false" inputmode="text" aria-describedby="input-hint"><span class="input-star" aria-hidden="true">✧</span></div>
+          <p id="input-hint" class="input-hint">限 1～4 個字・即時生成・直式排列</p>
+          <div class="sample-row" aria-label="範例文字">
+            <span class="sample-label">試試看</span>
+            <button class="sample-chip" type="button" data-example="星河入夢">星河入夢</button>
+            <button class="sample-chip" type="button" data-example="相思">相思</button>
+            <button class="sample-chip" type="button" data-example="月">月</button>
+          </div>
+        </form>
+        <section class="export-area" aria-labelledby="download-heading">
+          <p id="download-heading" class="group-label">DOWNLOAD YOUR ARTWORK <span aria-hidden="true">✧</span></p>
+          <div class="download-buttons">
+            <button type="button" id="download-svg" class="action-link action-primary slowly-glow" style="--slowly-glow-color:#d2b9fc;--slowly-glow-size:18px;--slowly-glow-opacity:.55">
+              <span><strong>下載 SVG</strong><small>向量格式・透明</small></span><span class="action-icon" aria-hidden="true">↘</span>
+            </button>
+            <button type="button" id="download-png" class="action-link action-secondary slowly-glow" style="--slowly-glow-color:#d2b9fc;--slowly-glow-size:15px;--slowly-glow-opacity:.30">
+              <span><strong>下載 PNG</strong><small id="png-spec">1640 × 2900・透明</small></span><span class="action-icon" aria-hidden="true">↘</span>
+            </button>
+          </div>
+          <p class="download-status" id="download-status" role="status" aria-live="polite"></p>
+        </section>
+        <div class="facts" aria-label="藝術字規格">
+          <div><span class="fact-key">LIMIT</span><span class="fact-value">1–4 characters</span></div>
+          <div><span class="fact-key">BACKGROUND</span><span class="fact-value">Transparent · 透明</span></div>
+          <div><span class="fact-key">ORIENTATION</span><span class="fact-value">Vertical · 直式</span></div>
+        </div>
+      </section>
+      <section class="preview-panel" aria-label="藝術字即時預覽">
+        <div class="panel-head"><span class="panel-gem" aria-hidden="true">◇</span> LIVE PREVIEW <span class="panel-index">01 — 01</span></div>
+        <figure class="preview-sheet">
+          <div class="checker" aria-hidden="true"></div>
+          <img id="art-image" class="art-image" alt="筆下星辰直式星光藝術字透明背景預覽" width="820" height="1450">
+        </figure>
+        <div class="panel-footer"><span><span class="status-light"></span> TRANSPARENT BACKGROUND</span><span>SVG GENERATED</span></div>
+        <p class="preview-note">棋盤格僅用於確認透明度，不會出現在下載圖片裡。</p>
+      </section>
+    </main>
+    <footer class="site-footer"><span>星辰藝術字 © 夏熠安</span><span>Made with starlight <span aria-hidden="true">✧</span> Stillness by Slowly</span></footer>
+  </div>
+</body>
+</html>
