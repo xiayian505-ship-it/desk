@@ -134,8 +134,8 @@ window.SlowlyWordIndex = [
     ],
     "href": "https://desk.stillnessbyslowly.com/word/snow/index.html",
     "visual": "snow"
-  }
-  ,{
+  },
+  {
     "code": "stone",
     "title": "石破天驚",
     "subtitle": "Stone Lettering",
@@ -154,5 +154,25 @@ window.SlowlyWordIndex = [
     ],
     "href": "https://desk.stillnessbyslowly.com/word/stone/index.html",
     "visual": "stone"
+  },
+  {
+    "code": "book",
+    "title": "開卷有益",
+    "subtitle": "Book Lettering",
+    "phrase": "開卷有益",
+    "desc": "泛黃書頁、舊墨與捲頁折角。讓文字像從古書裡翻出來。",
+    "keywords": [
+      "古書",
+      "泛黃",
+      "紙張",
+      "書香",
+      "做舊",
+      "翻頁",
+      "書頁",
+      "直式",
+      "橫式"
+    ],
+    "href": "https://desk.stillnessbyslowly.com/word/book/index.html",
+    "visual": "book"
   }
 ];

@@ -25,17 +25,16 @@
       cover: text => `${core.fileSafe(text)}_石破天驚_橫式_角角者書封_700x1000.png`
     }
   });
-  function frag(cx, cy, size, rotate = 0, tone = '#8b8177') {
-    const shape = [[-0.42,-0.5],[0.32,-0.38],[0.46,0.1],[0.04,0.54],[-0.5,0.22]];
-    const pts = shape.map(([px, py]) => {
-      const x = px * size;
-      const y = py * size;
-      const rad = rotate * Math.PI / 180;
+  function chipPath(cx, cy, scale, rotate = 0) {
+    const shape = [[-0.48, -0.38], [0.26, -0.46], [0.52, -0.04], [0.08, 0.46], [-0.44, 0.12]];
+    const rad = rotate * Math.PI / 180;
+    return shape.map(([px, py]) => {
+      const x = px * scale;
+      const y = py * scale;
       const rx = x * Math.cos(rad) - y * Math.sin(rad);
       const ry = x * Math.sin(rad) + y * Math.cos(rad);
       return `${round(cx + rx)},${round(cy + ry)}`;
     }).join(' ');
-    return `<polygon points="${pts}" fill="${tone}" stroke="#ede4d4" stroke-width="1.1" opacity=".86"/>`;
   }
   function renderSVG(text, helpers, layout) {
     const chars = core.splitCharacters(text);
@@ -43,43 +42,46 @@
     const fontSize = slots.length === 1 ? 332 : slots.length === 2 ? 292 : slots.length === 3 ? 250 : 222;
     const glyphs = slots.map(({ char, x, y, index }) => `<text id="stoneH${index}" x="${x}" y="${y}" text-anchor="middle" dominant-baseline="central" font-family='${helpers.escapeXML(FONT)}' font-size="${fontSize}" font-weight="800" transform="rotate(${[-2,1,-1,2][index]} ${x} ${y})">${helpers.escapeXML(char)}</text>`).join('\n');
     const uses = slots.map((_, index) => `<use href="#stoneH${index}"/>`).join('\n');
-    const auras = slots.map(({ x, y }, index) => `<g transform="translate(${x} ${round(y + (index % 2 ? 10 : -2))})"><ellipse rx="136" ry="60" fill="url(#dustGlowH)" opacity=".42"/><ellipse rx="84" ry="30" fill="url(#dustGlowH)" opacity=".22"/></g>`).join('');
+    const auras = slots.map(({ x, y }, index) => `<g transform="translate(${x} ${round(y + (index % 2 ? 10 : -2))})"><ellipse rx="130" ry="56" fill="url(#dustGlowH)" opacity=".3"/><ellipse rx="78" ry="26" fill="url(#dustGlowH)" opacity=".14"/></g>`).join('');
     const crackGlow = slots.map(({ x, y }, index) => {
-      const main = `M${round(x - 96)} ${round(y - 96)} L${round(x - 46)} ${round(y - 28)} L${round(x - 12)} ${round(y - 40)} L${round(x + 22)} ${round(y + 20)} L${round(x + 56)} ${round(y - 8)} L${round(x + 96)} ${round(y + 90)}`;
-      const side = `M${round(x - 6)} ${round(y - 78)} L${round(x + 28)} ${round(y - 24)} L${round(x + 8)} ${round(y + 18)} L${round(x + 36)} ${round(y + 72)}`;
-      return `<path d="${main}" fill="none" stroke="url(#magmaH)" stroke-width="18" stroke-linecap="round" stroke-linejoin="round" opacity=".34"/><path d="${side}" fill="none" stroke="url(#magmaH)" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" opacity=".24"/>`;
+      const main = `M${round(x - 94)} ${round(y - 92)} L${round(x - 44)} ${round(y - 26)} L${round(x - 10)} ${round(y - 36)} L${round(x + 22)} ${round(y + 16)} L${round(x + 56)} ${round(y - 6)} L${round(x + 94)} ${round(y + 86)}`;
+      return `<path d="${main}" fill="none" stroke="url(#emberVeinH)" stroke-width="9.2" stroke-linecap="round" stroke-linejoin="round" opacity=".18"/><path d="${main}" fill="none" stroke="#d1a15a" stroke-width="3.8" stroke-linecap="round" stroke-linejoin="round" opacity=".14"/>`;
     }).join('');
     const cracks = slots.map(({ x, y }, index) => {
-      const main = `M${round(x - 96)} ${round(y - 96)} L${round(x - 46)} ${round(y - 28)} L${round(x - 12)} ${round(y - 40)} L${round(x + 22)} ${round(y + 20)} L${round(x + 56)} ${round(y - 8)} L${round(x + 96)} ${round(y + 90)}`;
-      const left = `M${round(x - 52)} ${round(y - 60)} L${round(x - 18)} ${round(y - 20)} L${round(x - 38)} ${round(y + 12)} L${round(x - 8)} ${round(y + 58)}`;
-      const right = `M${round(x + 8)} ${round(y - 86)} L${round(x + 42)} ${round(y - 22)} L${round(x + 18)} ${round(y + 10)} L${round(x + 50)} ${round(y + 66)}`;
-      return `<path d="${main}" fill="none" stroke="#2a1a15" stroke-width="9.6" stroke-linecap="round" stroke-linejoin="round" opacity=".94"/><path d="${main}" fill="none" stroke="url(#magmaH)" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round" opacity=".92"/><path d="${left}" fill="none" stroke="#261712" stroke-width="4.8" stroke-linecap="round" stroke-linejoin="round" opacity=".8"/><path d="${left}" fill="none" stroke="url(#magmaH)" stroke-width="2.9" stroke-linecap="round" stroke-linejoin="round" opacity=".84"/><path d="${right}" fill="none" stroke="#261712" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round" opacity=".76"/><path d="${right}" fill="none" stroke="url(#magmaH)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" opacity=".8"/>`;
+      const main = `M${round(x - 94)} ${round(y - 92)} L${round(x - 44)} ${round(y - 26)} L${round(x - 10)} ${round(y - 36)} L${round(x + 22)} ${round(y + 16)} L${round(x + 56)} ${round(y - 6)} L${round(x + 94)} ${round(y + 86)}`;
+      const upper = `M${round(x + (index % 2 ? -1 : 1) * 16)} ${round(y - 74)} L${round(x + (index % 2 ? -1 : 1) * 48)} ${round(y - 28)} L${round(x + (index % 2 ? -1 : 1) * 76)} ${round(y - 48)}`;
+      const lower = `M${round(x - (index % 2 ? -1 : 1) * 6)} ${round(y + 8)} L${round(x - (index % 2 ? -1 : 1) * 34)} ${round(y + 42)} L${round(x - (index % 2 ? -1 : 1) * 18)} ${round(y + 82)}`;
+      return `<path d="${main}" fill="none" stroke="#211a17" stroke-width="8.4" stroke-linecap="round" stroke-linejoin="round" opacity=".94"/><path d="${main}" fill="none" stroke="#c18a45" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity=".48"/><path d="${upper}" fill="none" stroke="#281f1b" stroke-width="3.9" stroke-linecap="round" stroke-linejoin="round" opacity=".78"/><path d="${lower}" fill="none" stroke="#281f1b" stroke-width="3.8" stroke-linecap="round" stroke-linejoin="round" opacity=".72"/><path d="${upper}" fill="none" stroke="#b2793a" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" opacity=".28"/><path d="${lower}" fill="none" stroke="#a96f32" stroke-width="1.05" stroke-linecap="round" stroke-linejoin="round" opacity=".24"/>`;
     }).join('');
     const chips = slots.map(({ x, y }, index) => {
       const polys = [
-        [[x - 72, y - 16], [x - 28, y - 42], [x - 14, y + 8], [x - 60, y + 22]],
-        [[x + 14, y + 18], [x + 56, y - 4], [x + 44, y + 40], [x + 4, y + 54]],
-        [[x - 8, y - 68], [x + 30, y - 92], [x + 44, y - 48], [x + 2, y - 38]]
+        [x - 70, y - 14, 32, -18],
+        [x + 28, y + 22, 28, 12],
+        [x + 8, y - 64, 24, -8]
       ];
-      return polys.map((poly, i) => {
-        const pts = poly.map(([px, py]) => `${round(px)},${round(py)}`).join(' ');
-        return `<polygon points="${pts}" fill="${i === 1 ? '#4d4540' : '#6b635b'}" opacity="${index % 2 ? '.52' : '.46'}"/><polyline points="${pts}" fill="none" stroke="#f2ebdf" stroke-width="1" opacity=".34"/>`;
+      return polys.map(([cx, cy, scale, rotate], i) => {
+        const pts = chipPath(cx, cy, scale, rotate);
+        return `<polygon points="${pts}" fill="${i === 1 ? '#574f49' : '#766c62'}" opacity="${index % 2 ? '.48' : '.42'}"/><polyline points="${pts}" fill="none" stroke="#ede4d4" stroke-width=".9" opacity=".24"/>`;
       }).join('');
     }).join('');
-    const fragments = slots.map(({ x, y }, index) => frag(x - 154, y - 102, 36, -18, '#8b8177') + frag(x + 162, y + 76, 28, 14, '#6c645d') + frag(x - 108, y + 112, 22, -24, '#94887d') + `<path d="M${round(x - 112)} ${round(y - 54)} Q${round(x - 172)} ${round(y - 38)} ${round(x - 202)} ${round(y - 72)}" fill="none" stroke="#c7b495" stroke-width="1.5" opacity=".54"/><path d="M${round(x + 72)} ${round(y + 72)} Q${round(x + 148)} ${round(y + 126)} ${round(x + 196)} ${round(y + 102)}" fill="none" stroke="#df8b36" stroke-width="1.4" opacity=".42"/>`).join('');
-    const shocks = slots.flatMap(({ x, y }, index) => [
-      `<path d="M${round(x - 164)} ${round(y + 106)} Q${x} ${round(y + 44)} ${round(x + 166)} ${round(y + 92)}" fill="none" stroke="#e0c8a2" stroke-width="2" opacity=".54"/>`,
-      `<path d="M${round(x - 134)} ${round(y - 92)} Q${round(x - 8)} ${round(y - 152)} ${round(x + 142)} ${round(y - 84)}" fill="none" stroke="#f2ddbc" stroke-width="1.5" opacity=".44"/>`,
-      `<g transform="translate(${round(x - 160)} ${round(y - 10)})" opacity=".74"><path d="M0 -8 L0 8 M-8 0 L8 0" stroke="#f9e6c3" stroke-width="1.2" stroke-linecap="round"/><path d="M-5.4 -5.4 L5.4 5.4 M-5.4 5.4 L5.4 -5.4" stroke="#cf7f28" stroke-width=".95" stroke-linecap="round"/></g>`,
-      `<g transform="translate(${round(x + 164)} ${round(y - 76)})" opacity=".74"><path d="M0 -9 L0 9 M-9 0 L9 0" stroke="#f9e6c3" stroke-width="1.2" stroke-linecap="round"/><path d="M-6 -6 L6 6 M-6 6 L6 -6" stroke="#cf7f28" stroke-width="1" stroke-linecap="round"/></g>`
-    ]).join('');
+    const fragments = slots.map(({ x, y }, index) => {
+      const dir = index % 2 === 0 ? 1 : -1;
+      return [
+        `<polygon points="${chipPath(x - dir * 150, y - 96, 34, -14 * dir)}" fill="#91867a" stroke="#ece2d2" stroke-width="1.1" opacity=".84"/>`,
+        `<polygon points="${chipPath(x + dir * 156, y + 72, 27, 11 * dir)}" fill="#6d655d" stroke="#ece2d2" stroke-width="1.1" opacity=".84"/>`,
+        `<polygon points="${chipPath(x - dir * 98, y + 106, 21, -22 * dir)}" fill="#a29587" stroke="#ece2d2" stroke-width="1.1" opacity=".82"/>`,
+        `<path d="M${round(x - dir * 108)} ${round(y - 46)} Q${round(x - dir * 168)} ${round(y - 24)} ${round(x - dir * 194)} ${round(y - 62)}" fill="none" stroke="url(#dustLineH)" stroke-width="1.1" opacity=".42"/>`,
+        `<path d="M${round(x + dir * 64)} ${round(y + 64)} Q${round(x + dir * 142)} ${round(y + 102)} ${round(x + dir * 186)} ${round(y + 84)}" fill="none" stroke="#b58e61" stroke-width="1.05" opacity=".34"/>`
+      ].join('');
+    }).join('');
+    const shock = slots.map(({ x, y }) => `<path d="M${round(x - 154)} ${round(y + 92)} Q${x} ${round(y + 48)} ${round(x + 156)} ${round(y + 82)}" fill="none" stroke="url(#dustLineH)" stroke-width="1.5" opacity=".34"/><path d="M${round(x - 124)} ${round(y - 82)} Q${round(x - 8)} ${round(y - 128)} ${round(x + 132)} ${round(y - 74)}" fill="none" stroke="#d9c6aa" stroke-width="1.15" opacity=".24"/>`).join('');
     const dust = slots.flatMap(({ x, y }, index) => [
-      `<circle cx="${round(x - 134)}" cy="${round(y - 76)}" r="2.1" fill="#f7e6c2" opacity=".7"/>`,
-      `<circle cx="${round(x + 152)}" cy="${round(y - 22)}" r="1.8" fill="#f0d0a3" opacity=".68"/>`,
-      `<circle cx="${round(x + 132)}" cy="${round(y + 84)}" r="2.4" fill="#f7d882" opacity=".72"/>`,
-      `<circle cx="${round(x - 90)}" cy="${round(y + 128)}" r="1.9" fill="#d7c4ab" opacity=".62"/>`
+      `<circle cx="${round(x - 128)}" cy="${round(y - 70)}" r="2" fill="#e8d9be" opacity=".68"/>`,
+      `<circle cx="${round(x + 144)}" cy="${round(y - 18)}" r="1.7" fill="#d2b48b" opacity=".66"/>`,
+      `<circle cx="${round(x + 126)}" cy="${round(y + 78)}" r="2.2" fill="#cda36b" opacity=".7"/>`,
+      `<circle cx="${round(x - 84)}" cy="${round(y + 118)}" r="1.8" fill="#c5b29b" opacity=".6"/>`
     ]).join('');
-    return `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" role="img" aria-label="${helpers.escapeXML(text)}橫式石裂藝術字"><title>${helpers.escapeXML(text)}｜石破天驚橫式藝術字</title><desc>透明背景，橫式裂石、碎片與震波沿字體展開。</desc><defs><linearGradient id="rockFaceH" x1=".06" y1=".04" x2=".96" y2=".96"><stop offset="0" stop-color="#f3efe7"/><stop offset=".18" stop-color="#cdc6bb"/><stop offset=".48" stop-color="#8b837a"/><stop offset=".78" stop-color="#534d48"/><stop offset="1" stop-color="#2e2b29"/></linearGradient><linearGradient id="rockEdgeH" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#faf7f0"/><stop offset=".32" stop-color="#b8aa97"/><stop offset=".72" stop-color="#5b5148"/><stop offset="1" stop-color="#1b1817"/></linearGradient><linearGradient id="magmaH" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff4b6"/><stop offset=".2" stop-color="#ffd35d"/><stop offset=".48" stop-color="#ff7b1f"/><stop offset=".74" stop-color="#d94411"/><stop offset="1" stop-color="#6a1007"/></linearGradient><radialGradient id="dustGlowH" cx="50%" cy="50%" r="58%"><stop offset="0" stop-color="#ffe3a1" stop-opacity=".82"/><stop offset="1" stop-color="#ffe3a1" stop-opacity="0"/></radialGradient><filter id="stoneRoughH" x="-20%" y="-20%" width="140%" height="140%"><feTurbulence type="fractalNoise" baseFrequency=".045 .036" numOctaves="2" seed="13" result="grain"/><feDisplacementMap in="SourceGraphic" in2="grain" scale="2.2" xChannelSelector="R" yChannelSelector="G"/></filter><filter id="stoneShadowH" x="-35%" y="-35%" width="170%" height="170%"><feGaussianBlur stdDeviation="4.8"/></filter><filter id="magmaGlowH" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="4"/></filter><g id="glyphBankH">${glyphs}</g><clipPath id="letterMaskH">${uses}</clipPath></defs><g>${auras}</g><g fill="#1a1817" opacity=".26" filter="url(#stoneShadowH)" transform="translate(6 10)">${uses}</g><g fill="none" stroke="#efe6d7" stroke-width="9" stroke-linejoin="round" opacity=".9">${uses}</g><g fill="url(#rockFaceH)" stroke="url(#rockEdgeH)" stroke-width="4" stroke-linejoin="round" filter="url(#stoneRoughH)">${uses}</g><g fill="none" stroke="#f6f0e5" stroke-width="2.2" stroke-linejoin="round" opacity=".54">${uses}</g><g clip-path="url(#letterMaskH)" filter="url(#magmaGlowH)">${crackGlow}</g><g clip-path="url(#letterMaskH)">${cracks}</g><g clip-path="url(#letterMaskH)">${chips}</g><g>${fragments}</g><g>${shocks}</g><g>${dust}</g></svg>`;
+    return `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" role="img" aria-label="${helpers.escapeXML(text)}橫式古碑震裂藝術字"><title>${helpers.escapeXML(text)}｜石破天驚橫式藝術字</title><desc>透明背景，橫式古碑石刻、裂紋、崩口與塵霧沿著字體展開。</desc><defs><linearGradient id="rockFaceH" x1=".08" y1=".02" x2=".94" y2=".96"><stop offset="0" stop-color="#f6f0e6"/><stop offset=".18" stop-color="#d7cdbd"/><stop offset=".48" stop-color="#978c7d"/><stop offset=".78" stop-color="#5f564f"/><stop offset="1" stop-color="#322d2a"/></linearGradient><linearGradient id="rockEdgeH" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fffaf0"/><stop offset=".28" stop-color="#c8ba9f"/><stop offset=".68" stop-color="#594f47"/><stop offset="1" stop-color="#171513"/></linearGradient><linearGradient id="dustLineH" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#d7c6ab"/><stop offset="1" stop-color="#8f7764"/></linearGradient><linearGradient id="emberVeinH" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff6c7"/><stop offset=".22" stop-color="#e9c774"/><stop offset=".56" stop-color="#b56f27"/><stop offset="1" stop-color="#522216"/></linearGradient><radialGradient id="dustGlowH" cx="50%" cy="48%" r="58%"><stop offset="0" stop-color="#e8d8b9" stop-opacity=".72"/><stop offset="1" stop-color="#e8d8b9" stop-opacity="0"/></radialGradient><filter id="stoneRoughH" x="-20%" y="-20%" width="140%" height="140%"><feTurbulence type="fractalNoise" baseFrequency=".042 .034" numOctaves="2" seed="11" result="grain"/><feDisplacementMap in="SourceGraphic" in2="grain" scale="1.8" xChannelSelector="R" yChannelSelector="G"/></filter><filter id="stoneShadowH" x="-35%" y="-35%" width="170%" height="170%"><feGaussianBlur stdDeviation="4.2"/></filter><filter id="veilGlowH" x="-35%" y="-35%" width="170%" height="170%"><feGaussianBlur stdDeviation="3.2"/></filter><g id="glyphBankH">${glyphs}</g><clipPath id="letterMaskH">${uses}</clipPath></defs><g>${auras}</g><g fill="#171412" opacity=".26" filter="url(#stoneShadowH)" transform="translate(6 10)">${uses}</g><g fill="none" stroke="#f5eddc" stroke-width="8.8" stroke-linejoin="round" opacity=".9">${uses}</g><g fill="url(#rockFaceH)" stroke="url(#rockEdgeH)" stroke-width="4.1" stroke-linejoin="round" filter="url(#stoneRoughH)">${uses}</g><g fill="none" stroke="#f3ebdf" stroke-width="2.1" stroke-linejoin="round" opacity=".42">${uses}</g><g clip-path="url(#letterMaskH)" filter="url(#veilGlowH)">${crackGlow}</g><g clip-path="url(#letterMaskH)">${cracks}</g><g clip-path="url(#letterMaskH)">${chips}</g><g>${fragments}</g><g>${shock}</g><g>${dust}</g></svg>`;
   }
   global.SlowlyStoneHorizontalArt = Object.freeze({
     MAX_COUNT: MAX,

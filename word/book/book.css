@@ -1,0 +1,24 @@
+/* 開卷有益｜預覽畫框完全透明，不用網站背景營造古書氣氛。 */
+.word-book .word-preview-frame {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: 450px;
+  overflow: visible;
+  border: 0;
+  background: transparent;
+}
+
+.word-book .art-image {
+  width: min(100%, 525px);
+  height: auto;
+  max-height: min(72vh, 720px);
+  object-fit: contain;
+  filter: drop-shadow(0 9px 11px rgba(87, 63, 39, 0.12));
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.word-book .art-image.is-horizontal {
+  width: min(100%, 745px);
+}

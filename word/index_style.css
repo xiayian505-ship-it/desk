@@ -327,6 +327,16 @@ button {
   text-shadow: 0 1px 0 #ffffff69;
 }
 
+/* 開卷有益：僅首頁目錄卡片配色；作品預覽本身透明。 */
+.card-visual[data-visual="book"] {
+  color: #755239;
+  background: linear-gradient(145deg, #f6ecd6, #e7d4b5);
+}
+
+.card-visual[data-visual="book"] .card-art-text {
+  text-shadow: 0 1px 0 #fff0c8, 0 2px 2px #a27b4a4f;
+}
+
 .card-visual[data-visual="forest"] {
   color: #536a4b;
   background: linear-gradient(145deg, #e9eddf, #f5eddc);
