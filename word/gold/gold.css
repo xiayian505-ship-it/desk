@@ -1,4 +1,4 @@
-/* 金碧輝煌：網站預覽區主題。重點放在藝術字本體，預覽框不另外上背景。 */
+/* 金碧輝煌：預覽框完全透明，不放光暈或背景裝飾。 */
 .word-gold .word-preview-frame {
   position: relative;
   display: grid;
@@ -16,9 +16,12 @@
   height: auto;
   max-height: min(72vh, 720px);
   object-fit: contain;
-  filter: drop-shadow(0 10px 16px rgba(122, 88, 18, .18));
   user-select: none;
   -webkit-user-drag: none;
+  --slowly-glow-color: #ccaa59;
+  --slowly-glow-size: 6px;
+  --slowly-glow-opacity: .18;
+  --slowly-glow-speed: .35s;
 }
 
 .word-gold .art-image.is-horizontal {

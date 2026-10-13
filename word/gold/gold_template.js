@@ -1,49 +1,78 @@
 "use strict";
+/* 金碧輝煌｜3D 燙金浮雕字。透明畫面：金砂只在文字遮罩內，字外僅有微陰影。 */
 (function (global) {
-  global.SlowlyGoldTemplate = `<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="840" height="1200" viewBox="0 0 840 1200" role="img" aria-labelledby="goldTitle goldDesc">
+  global.SlowlyGoldTemplate = String.raw`<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="@@WIDTH@@" height="@@HEIGHT@@" viewBox="0 0 @@WIDTH@@ @@HEIGHT@@"
+  role="img" aria-labelledby="goldTitle goldDesc">
   <title id="goldTitle">@@TITLE@@</title>
   <desc id="goldDesc">@@DESC@@</desc>
   <defs>
-    <linearGradient id="goldFace" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#fff9cf"/>
-      <stop offset=".16" stop-color="#ffe68b"/>
-      <stop offset=".34" stop-color="#d59c22"/>
-      <stop offset=".52" stop-color="#f8d56c"/>
-      <stop offset=".72" stop-color="#9e6e11"/>
-      <stop offset="1" stop-color="#fff3b8"/>
+    <!-- 明暗交錯的燙金字面，白金反光與暗金相間；字外保持全透明。 -->
+    <linearGradient id="foilFace" x1=".08" y1=".03" x2=".91" y2=".96">
+      <stop offset="0" stop-color="#fffbe3"/>
+      <stop offset=".11" stop-color="#ffe9a1"/>
+      <stop offset=".21" stop-color="#ae6b0f"/>
+      <stop offset=".33" stop-color="#ffd85c"/>
+      <stop offset=".43" stop-color="#fff9d2"/>
+      <stop offset=".54" stop-color="#cf9421"/>
+      <stop offset=".68" stop-color="#734209"/>
+      <stop offset=".77" stop-color="#fbd467"/>
+      <stop offset=".9" stop-color="#ffe9a7"/>
+      <stop offset="1" stop-color="#9c671b"/>
     </linearGradient>
-    <linearGradient id="goldStroke" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#7b5200"/>
-      <stop offset="1" stop-color="#f3d376"/>
+    <linearGradient id="edgeGold" x1=".04" y1=".02" x2=".95" y2=".99">
+      <stop offset="0" stop-color="#fff9d5"/>
+      <stop offset=".3" stop-color="#f2c658"/>
+      <stop offset=".62" stop-color="#7d4a0b"/>
+      <stop offset=".87" stop-color="#dca83c"/>
+      <stop offset="1" stop-color="#573006"/>
     </linearGradient>
-    <radialGradient id="goldGlow" cx="50%" cy="45%" r="60%">
-      <stop offset="0" stop-color="#fff4b8" stop-opacity=".8"/>
-      <stop offset="1" stop-color="#fff4b8" stop-opacity="0"/>
-    </radialGradient>
-    <filter id="goldShadow" x="-30%" y="-30%" width="160%" height="160%">
-      <feOffset dx="0" dy="8"/>
-      <feGaussianBlur stdDeviation="7" result="blur"/>
-      <feColorMatrix in="blur" type="matrix" values="0 0 0 0 0.42 0 0 0 0 0.28 0 0 0 0 0.05 0 0 0 .35 0"/>
+    <linearGradient id="sideGold" x1="0" y1="0" x2=".65" y2="1">
+      <stop offset="0" stop-color="#a26d20"/>
+      <stop offset=".48" stop-color="#754208"/>
+      <stop offset="1" stop-color="#412305"/>
+    </linearGradient>
+    <linearGradient id="bevelGlint" x1=".12" y1="0" x2=".8" y2="1">
+      <stop offset="0" stop-color="#fffdf0"/>
+      <stop offset=".24" stop-color="#fff6be"/>
+      <stop offset=".5" stop-color="#f6c04a"/>
+      <stop offset="1" stop-color="#a66e17"/>
+    </linearGradient>
+    <linearGradient id="reliefLine" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fff8d4" stop-opacity=".95"/>
+      <stop offset=".58" stop-color="#f4bd48" stop-opacity=".4"/>
+      <stop offset="1" stop-color="#7b460c" stop-opacity=".12"/>
+    </linearGradient>
+    <filter id="smallShadow" x="-24%" y="-24%" width="148%" height="148%">
+      <feGaussianBlur stdDeviation="5.5"/>
     </filter>
-    <filter id="goldEmboss" x="-20%" y="-20%" width="140%" height="140%">
-      <feGaussianBlur in="SourceAlpha" stdDeviation="2" result="blur"/>
-      <feSpecularLighting in="blur" surfaceScale="3" specularConstant=".72" specularExponent="18" lighting-color="#ffffff" result="spec">
-        <fePointLight x="-220" y="-180" z="220"/>
+    <filter id="innerFoil" x="-12%" y="-12%" width="124%" height="124%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="1.8" result="height"/>
+      <feSpecularLighting in="height" surfaceScale="3" specularConstant=".67"
+        specularExponent="22" lighting-color="#fffbea" result="shine">
+        <fePointLight x="-170" y="-240" z="320"/>
       </feSpecularLighting>
-      <feComposite in="spec" in2="SourceAlpha" operator="in" result="specOut"/>
-      <feBlend in="SourceGraphic" in2="specOut" mode="screen"/>
+      <feComposite in="shine" in2="SourceAlpha" operator="in" result="shineInside"/>
+      <feBlend in="SourceGraphic" in2="shineInside" mode="screen"/>
     </filter>
-    <g id="goldGlyphBank">@@GLYPHS@@</g>
-    <clipPath id="goldLetterMask">@@LETTER_CLIPS@@</clipPath>
+    <g id="allGlyphs">@@GLYPHS@@</g>
+    <clipPath id="goldLetterMask">@@LETTER_USES@@</clipPath>
   </defs>
-  <g opacity=".95">@@AURAS@@</g>
-  <g opacity=".44">@@RAYS@@</g>
-  <g fill="none" stroke="url(#goldStroke)" stroke-width="3.2" stroke-linecap="round">@@FILIGREE@@</g>
-  <g filter="url(#goldShadow)" opacity=".33" fill="#7b560d" transform="translate(4 10)">@@LETTER_USES@@</g>
-  <g fill="url(#goldFace)" stroke="url(#goldStroke)" stroke-width="6" paint-order="stroke fill" filter="url(#goldEmboss)">@@LETTER_USES@@</g>
-  <g clip-path="url(#goldLetterMask)" fill="none">@@ETCHING@@</g>
-  <g opacity=".82">@@JEWELS@@</g>
-  <g opacity=".85">@@SPARKLES@@</g>
+  <!-- 1. 僅為字形投下低透明、短距離的柔和陰影 -->
+  <g transform="translate(6 8)" fill="#4f3215" opacity=".15" filter="url(#smallShadow)">@@LETTER_USES@@</g>
+  <!-- 2. 多層金屬切面賦予筆畫真正的厚度 -->
+  @@EXTRUSION@@
+  <!-- 3. 燙金面與立體浮雕的邊緣 -->
+  <g fill="url(#foilFace)" stroke="url(#edgeGold)" stroke-width="7" stroke-linejoin="round"
+    paint-order="stroke fill" filter="url(#innerFoil)">@@LETTER_USES@@</g>
+  <g fill="none" stroke="url(#bevelGlint)" stroke-width="2.4" stroke-linejoin="round"
+    opacity=".85">@@LETTER_USES@@</g>
+  <g clip-path="url(#goldLetterMask)">
+    <!-- 4. 浮雕金紋只在字面發生，沒有延伸成背景花紋 -->
+    @@RELIEF@@
+    <!-- 5. 唯一內部裝飾是金砂：不再出現金塊、金幣或寶石 -->
+    @@GOLD_DUST@@
+  </g>
 </svg>`;
 })(window);

@@ -398,6 +398,16 @@ button {
   text-shadow: 0 0 12px #fff1d0;
 }
 
+/* 煙波浩渺：作品目錄內的小型色卡，不是工具預覽框底圖。 */
+.card-visual[data-visual="ocean"] {
+  color: #e1f5f7;
+  background: linear-gradient(145deg, #124257, #458c9e);
+}
+
+.card-visual[data-visual="ocean"] .card-art-text {
+  text-shadow: 0 0 10px #dffaff66;
+}
+
 .card-content {
   display: flex;
   flex-direction: column;

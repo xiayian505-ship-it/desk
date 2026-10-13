@@ -174,5 +174,15 @@ window.SlowlyWordIndex = [
     ],
     "href": "https://desk.stillnessbyslowly.com/word/book/index.html",
     "visual": "book"
+  },
+  {
+    "code": "ocean",
+    "title": "煙波浩渺",
+    "subtitle": "Ocean Lettering",
+    "phrase": "煙波浩渺",
+    "desc": "海洋深藍、流動水波與雲霧。讓無邊的海意在每一筆字裡延展。",
+    "keywords": ["海洋", "雲", "霧", "潮汐", "水波", "海面", "雲影", "直式", "橫式"],
+    "href": "https://desk.stillnessbyslowly.com/word/ocean/index.html",
+    "visual": "ocean"
   }
 ];
