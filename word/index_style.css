@@ -601,6 +601,14 @@ button {
   text-shadow: 0 1px 5px #dffaff;
 }
 
+.card-visual[data-visual="deer"] {
+  color: #dfefe9;
+  background: radial-gradient(ellipse at 50% 30%, rgba(190, 226, 215, .18), transparent 60%), linear-gradient(140deg, #071415, #1a3735 55%, #071717);
+}
+.card-visual[data-visual="deer"] .card-art-text {
+  text-shadow: 0 0 12px rgba(135, 207, 185, .4);
+}
+
 .card-visual[data-visual="dragon"] {
   color: #beaa70;
   background: linear-gradient(140deg, #d4dfa4, #236054);
@@ -737,3 +745,16 @@ button {
   text-shadow: 0 1px 5px #f2f7fa;
 }
 
+
+
+.card-visual[data-visual="unyielding"] {
+  background:
+    radial-gradient(circle at 50% 18%, rgba(226, 238, 247, .52), transparent 34%),
+    linear-gradient(145deg, rgba(214, 222, 230, .88) 0%, rgba(88, 100, 113, .92) 20%, rgba(19, 24, 30, .98) 52%, rgba(65, 78, 90, .94) 74%, rgba(214, 220, 228, .88) 100%);
+}
+
+.card-visual[data-visual="unyielding"] .card-art-text {
+  color: #e6eef4;
+  letter-spacing: .18em;
+  text-shadow: 0 3px 0 rgba(10, 14, 18, .82), 0 0 14px rgba(162, 203, 234, .18);
+}

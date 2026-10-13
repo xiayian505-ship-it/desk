@@ -1,0 +1,24 @@
+/* 寧折不彎：預覽框維持透明，重點放在字體本身。 */
+.word-unyielding .word-preview-frame {
+  display: grid;
+  place-items: center;
+  min-height: 450px;
+  overflow: visible;
+  border: 0;
+  background: transparent;
+}
+
+.word-unyielding .art-image {
+  display: block;
+  width: min(100%, 530px);
+  height: auto;
+  max-height: none;
+  object-fit: contain;
+  filter: drop-shadow(0 14px 22px rgba(12, 16, 22, .18));
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.word-unyielding .art-image.is-horizontal {
+  width: min(100%, 760px);
+}

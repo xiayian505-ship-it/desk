@@ -25,7 +25,7 @@ window.SlowlyWordIndex = [
   },
   {
     "code": "rain",
-    "title": "雨系藝術字",
+    "title": "雨你相遇",
     "subtitle": "Rain Lettering",
     "phrase": "雨你相遇",
     "desc": "雨絲、墨痕與水面漣漪。把未說出口的話，寫進一場雨裡。",
@@ -43,7 +43,7 @@ window.SlowlyWordIndex = [
   },
   {
     "code": "star",
-    "title": "星辰藝術字",
+    "title": "筆下星辰",
     "subtitle": "Star Lettering",
     "phrase": "筆下星辰",
     "desc": "星軌、月牙與藍紫粉流光。讓文字成為一段小小銀河。",
@@ -214,6 +214,23 @@ window.SlowlyWordIndex = [
     ],
     "href": "https://desk.stillnessbyslowly.com/word/crystal/index.html",
     "visual": "crystal"
+},
+{
+    "code": "deer",
+    "title": "逐鹿中原",
+    "subtitle": "Deer Lettering",
+    "phrase": "逐鹿中原",
+    "desc": "鹿角自筆勢生長，森林在字與字之間相連。以深淺綠層次寫出逐鹿問鼎的王者氣場。",
+    "keywords": [
+        "逐鹿中原",
+        "鹿角",
+        "森林",
+        "王者",
+        "直式",
+        "橫式"
+    ],
+    "href": "https://desk.stillnessbyslowly.com/word/deer/index.html",
+    "visual": "deer"
 },
 {
     "code": "dragon",
@@ -469,5 +486,26 @@ window.SlowlyWordIndex = [
     ],
     "href": "https://desk.stillnessbyslowly.com/word/zipper/index.html",
     "visual": "zipper"
+}
+,{
+    "code": "unyielding",
+    "title": "寧折不彎",
+    "subtitle": "Unyielding Lettering",
+    "phrase": "寧折不彎",
+    "desc": "黑鐵冷光、應力裂縫與尾壓頭交疊。讓每一筆都像硬撐至裂，也不向下彎身。",
+    "keywords": [
+        "寧折不彎",
+        "Unyielding",
+        "黑鐵",
+        "裂縫",
+        "骨氣",
+        "承壓",
+        "交疊",
+        "動態 SVG",
+        "直式",
+        "橫式"
+    ],
+    "href": "https://desk.stillnessbyslowly.com/word/unyielding/index.html",
+    "visual": "unyielding"
 }
 ];

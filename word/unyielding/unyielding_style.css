@@ -1,0 +1,4 @@
+/* 宿主介面維持共用，只替換本系列點綴色。 */
+.word-unyielding {
+  --word-accent: #4e6475;
+}

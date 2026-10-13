@@ -1,4 +1,4 @@
-# 雨系藝術字產生器｜Rain Lettering
+# 雨你相遇產生器｜Rain Lettering
 
 作者：夏熠安｜Stillness by Slowly（慢慢）
 
