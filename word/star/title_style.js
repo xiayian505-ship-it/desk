@@ -1,7 +1,10 @@
 "use strict";
 /* 星辰藝術字產生器｜頁面 UI（與圖像輸出核心 title.js 分離） */
 document.addEventListener("DOMContentLoaded", () => {
-  const core = window.SlowlyStarArt;
+  const verticalArt = window.SlowlyStarArt;
+  const horizontalArt = window.SlowlyStarHorizontalArt;
+  let core = verticalArt;
+  let orientation = "vertical";
   const field = document.getElementById("art-text");
   const counter = document.getElementById("char-count");
   const image = document.getElementById("art-image");
@@ -53,7 +56,7 @@ document.addEventListener("DOMContentLoaded", () => {
         status.textContent = "預覽無法顯示，請確認瀏覽器支援 SVG。";
       };
       image.src = url;
-      image.alt = `${text}的直式星光藝術字（透明背景）`;
+      image.alt = `${text}的${orientation === "horizontal" ? "橫式" : "直式"}星光藝術字（透明背景）`;
       const size = core.outputSize(text, 2);
       pngSpec.textContent = `${size.width} × ${size.height}・透明`;
       if (chars.length > core.MAX_COUNT) status.textContent = `最多四個字，已保留前 ${core.MAX_COUNT} 個。`;
@@ -64,6 +67,31 @@ document.addEventListener("DOMContentLoaded", () => {
       setButtons(false);
     }
   }
+  const orientationButtons = Array.from(document.querySelectorAll("[data-orientation]"));
+  const orientationFact = document.getElementById("orientation-fact");
+  if (!horizontalArt) {
+    const button = orientationButtons.find(item => item.dataset.orientation === "horizontal");
+    if (button) button.disabled = true;
+    status.textContent = "橫式零件尚未載入，請檢查軍火庫 HTTPS 路徑。";
+  }
+  function chooseOrientation(next) {
+    if (busy || next === orientation || (next === "horizontal" && !horizontalArt)) return;
+    orientation = next;
+    core = next === "horizontal" ? horizontalArt : verticalArt;
+    const horizontal = next === "horizontal";
+    image.classList.toggle("is-horizontal", horizontal);
+    image.setAttribute("width", horizontal ? "1200" : "820");
+    image.setAttribute("height", horizontal ? "760" : "1450");
+    orientationFact.textContent = horizontal ? "Horizontal · 橫式" : "Vertical · 直式";
+    orientationButtons.forEach(button => {
+      button.setAttribute("aria-pressed", String(button.dataset.orientation === next));
+    });
+    render(field.value);
+  }
+  orientationButtons.forEach(button => button.addEventListener("click", () => {
+    chooseOrientation(button.dataset.orientation);
+  }));
+
   field.addEventListener("compositionstart", () => {
     composing = true;
   });

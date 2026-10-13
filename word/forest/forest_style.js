@@ -1,7 +1,10 @@
 "use strict";
 /* 林風系列的互動 UI；不複製軍火庫文字生成／下載功能。 */
 document.addEventListener("DOMContentLoaded", () => {
-  const art = window.SlowlyForestArt;
+  const verticalArt = window.SlowlyForestArt;
+  const horizontalArt = window.SlowlyForestHorizontalArt;
+  let art = verticalArt;
+  let orientation = "vertical";
   const field = document.getElementById("art-text");
   const counter = document.getElementById("char-count");
   const image = document.getElementById("art-image");
@@ -22,7 +25,7 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
-  const preview = art.createPreview(image);
+  let preview = art.createPreview(image);
   let current = "";
   let busy = false;
   let composing = false;
@@ -49,7 +52,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     try {
       preview.set(current);
-      image.alt = `${current}直式林風木刻藝術字，背景透明`;
+      image.alt = `${current}${orientation === "horizontal" ? "橫式" : "直式"}林風木刻藝術字，背景透明`;
       status.textContent = count > art.MAX ? "最多四個字，已保留前四個。" : "";
     } catch (error) {
       console.error("藝術字預覽失敗：", error);
@@ -58,6 +61,35 @@ document.addEventListener("DOMContentLoaded", () => {
       updateButtons();
     }
   }
+
+  const orientationButtons = Array.from(document.querySelectorAll("[data-orientation]"));
+  const svgSpec = document.getElementById("svg-spec");
+  const pngSpec = document.getElementById("png-spec");
+  if (!horizontalArt) {
+    const button = orientationButtons.find(item => item.dataset.orientation === "horizontal");
+    if (button) button.disabled = true;
+    status.textContent = "橫式零件尚未載入，請檢查軍火庫 HTTPS 路徑。";
+  }
+  function chooseOrientation(next) {
+    if (busy || next === orientation || (next === "horizontal" && !horizontalArt)) return;
+    preview.destroy();
+    orientation = next;
+    art = next === "horizontal" ? horizontalArt : verticalArt;
+    preview = art.createPreview(image);
+    const horizontal = next === "horizontal";
+    image.classList.toggle("is-horizontal", horizontal);
+    image.setAttribute("width", horizontal ? "1200" : "840");
+    image.setAttribute("height", horizontal ? "760" : "1200");
+    svgSpec.textContent = horizontal ? "1200 × 760・向量" : "840 × 1200・向量";
+    pngSpec.textContent = horizontal ? "2400 × 1520" : "1680 × 2400";
+    orientationButtons.forEach(button => {
+      button.setAttribute("aria-pressed", String(button.dataset.orientation === next));
+    });
+    render(field.value);
+  }
+  orientationButtons.forEach(button => button.addEventListener("click", () => {
+    chooseOrientation(button.dataset.orientation);
+  }));
 
   field.addEventListener("compositionstart", () => {
     composing = true;

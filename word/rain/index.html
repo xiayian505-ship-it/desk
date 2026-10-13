@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#d8e2e4">
-  <meta name="description" content="雨系藝術字產生器｜輸入最多四個字，製作雨痕水墨直式藝術字，下載透明 SVG、PNG 與 700 × 1000 角角者書封。">
+  <meta name="description" content="雨系藝術字產生器｜輸入最多四個字，製作雨痕水墨藝術字，下載透明 SVG、PNG 與 700 × 1000 角角者書封。">
   <title>雨系藝術字｜慢慢 Stillness by Slowly</title>
   <link rel="stylesheet" href="rain.css">
   <link rel="stylesheet" href="rain_style.css">
@@ -14,8 +14,11 @@
   <script defer src="https://lib.stillnessbyslowly.com/effects/background/rain.js"></script>
   <script defer src="https://lib.stillnessbyslowly.com/data/blob/blob_url.js"></script>
   <script defer src="https://lib.stillnessbyslowly.com/component/text_generator/text_generator_component.js"></script>
+  <script defer src="https://lib.stillnessbyslowly.com/component/text_generator/text_generator_core.js"></script>
+  <script defer src="https://lib.stillnessbyslowly.com/component/text_generator/text_generator_horizontal_component.js"></script>
   <script defer src="rain_template.js"></script>
   <script defer src="rain.js"></script>
+  <script defer src="rain_horizontal.js"></script>
   <script defer src="rain_style.js"></script>
 </head>
 <body>
@@ -31,12 +34,17 @@
         <p class="kicker"><span aria-hidden="true">〰</span> 雨落成字 · RAIN LETTERING</p>
         <h1 id="page-title">雨系藝術字</h1>
         <p class="subtitle">把未說出口的話，寫進一場雨裡。</p>
-        <p class="intro">雨絲、墨痕與水面漣漪，化成直式書法。輸入一至四個字，製作專屬的透明藝術字，放進妳的小說封面或其他作品。</p>
+        <p class="intro">雨絲、墨痕與水面漣漪，化成可直排或橫排的書法。輸入一至四個字，製作專屬的透明藝術字，放進妳的小說封面或其他作品。</p>
 
         <form class="editor" id="art-form" novalidate>
           <div class="field-head"><label for="art-text">想寫什麼？</label><output id="char-count" for="art-text" aria-live="polite">4 / 4</output></div>
           <input id="art-text" type="text" name="art-text" value="雨你相遇" placeholder="最多四個字" autocomplete="off" spellcheck="false" aria-describedby="input-hint">
-          <p class="hint" id="input-hint">直式排列 · 最多 4 個字 · 即時預覽</p>
+          <p class="hint" id="input-hint">最多 4 個字 · 即時預覽 · 可切換直式／橫式</p>
+          <div class="orientation-switch" role="group" aria-label="藝術字排列方式">
+            <span class="orientation-label">排列方式</span>
+            <button type="button" data-orientation="vertical" aria-pressed="true">直式</button>
+            <button type="button" data-orientation="horizontal" aria-pressed="false">橫式</button>
+          </div>
           <div class="examples"><span>試寫</span><button type="button" data-example="雨你相遇">雨你相遇</button><button type="button" data-example="聽雨">聽雨</button><button type="button" data-example="雨">雨</button></div>
         </form>
 
@@ -44,7 +52,7 @@
           <h2 id="download-title">下載作品 <span>EXPORT</span></h2>
           <div class="download-grid">
             <button type="button" class="download-button" id="download-svg"><span class="file-tag">SVG</span><span class="button-copy"><strong>透明 SVG</strong><small>向量格式 · 可放大</small></span><span class="arrow" aria-hidden="true">↗</span></button>
-            <button type="button" class="download-button" id="download-png"><span class="file-tag">PNG</span><span class="button-copy"><strong>透明 PNG</strong><small>1680 × 2400 · 高清</small></span><span class="arrow" aria-hidden="true">↗</span></button>
+            <button type="button" class="download-button" id="download-png"><span class="file-tag">PNG</span><span class="button-copy"><strong>透明 PNG</strong><small id="png-spec">1680 × 2400 · 高清</small></span><span class="arrow" aria-hidden="true">↗</span></button>
             <button type="button" class="download-button download-cover" id="download-cover"><span class="file-tag">7:10</span><span class="button-copy"><strong>角角者書封 PNG</strong><small>700 × 1000 · 透明</small></span><span class="arrow" aria-hidden="true">↗</span></button>
           </div>
           <p id="download-status" class="download-status" role="status" aria-live="polite"></p>

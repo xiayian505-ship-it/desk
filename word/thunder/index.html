@@ -16,8 +16,11 @@
   <script defer src="https://lib.stillnessbyslowly.com/Image/png/png_download.js"></script>
   <script defer src="https://lib.stillnessbyslowly.com/data/blob/blob_url.js"></script>
   <script defer src="https://lib.stillnessbyslowly.com/component/text_generator/text_generator_component.js"></script>
+  <script defer src="https://lib.stillnessbyslowly.com/component/text_generator/text_generator_core.js"></script>
+  <script defer src="https://lib.stillnessbyslowly.com/component/text_generator/text_generator_horizontal_component.js"></script>
   <script defer src="thunder_template.js"></script>
   <script defer src="thunder.js"></script>
+  <script defer src="thunder_horizontal.js"></script>
   <script defer src="thunder_style.js"></script>
 </head>
 <body>
@@ -41,21 +44,26 @@
         <form id="art-form" class="input-card" novalidate>
           <div class="field-heading"><label for="art-text">輸入你的文字 <span>YOUR WORDS</span></label><output id="char-count" for="art-text">4 / 4</output></div>
           <div class="input-wrap"><input id="art-text" type="text" name="art-text" value="電閃雷鳴" placeholder="輸入 1～4 個字" spellcheck="false" autocomplete="off" aria-describedby="input-hint"/><span class="input-bolt" aria-hidden="true">ϟ</span></div>
-          <p class="field-hint" id="input-hint">最多四個字 · 直式生成 · 即時預覽</p>
+          <p class="field-hint" id="input-hint">最多四個字 · 即時預覽 · 可切換直式／橫式</p>
+          <div class="orientation-switch" role="group" aria-label="藝術字排列方式">
+            <span class="orientation-label">排列方式</span>
+            <button type="button" data-orientation="vertical" aria-pressed="true">直式</button>
+            <button type="button" data-orientation="horizontal" aria-pressed="false">橫式</button>
+          </div>
           <div class="examples"><span>試試看</span><button type="button" data-example="電閃雷鳴">電閃雷鳴</button><button type="button" data-example="驚雷">驚雷</button><button type="button" data-example="裂光">裂光</button></div>
         </form>
 
         <section class="download-area" aria-labelledby="downloads-title">
           <div class="download-heading"><h2 id="downloads-title">輸出作品</h2><span>EXPORT / 03 FORMATS</span></div>
           <div class="download-buttons">
-            <button type="button" id="download-svg" class="download-btn primary slowly-glow"><span class="btn-mark">01</span><span class="btn-text"><strong>SVG 向量圖</strong><small>840 × 1200 · 透明</small></span><span class="btn-arrow" aria-hidden="true">↘</span></button>
-            <button type="button" id="download-png" class="download-btn secondary slowly-glow"><span class="btn-mark">02</span><span class="btn-text"><strong>高清透明 PNG</strong><small>1680 × 2400 · 2 倍</small></span><span class="btn-arrow" aria-hidden="true">↘</span></button>
+            <button type="button" id="download-svg" class="download-btn primary slowly-glow"><span class="btn-mark">01</span><span class="btn-text"><strong>SVG 向量圖</strong><small id="svg-spec">840 × 1200 · 透明</small></span><span class="btn-arrow" aria-hidden="true">↘</span></button>
+            <button type="button" id="download-png" class="download-btn secondary slowly-glow"><span class="btn-mark">02</span><span class="btn-text"><strong>高清透明 PNG</strong><small id="png-spec">1680 × 2400 · 2 倍</small></span><span class="btn-arrow" aria-hidden="true">↘</span></button>
             <button type="button" id="download-cover" class="download-btn secondary cover slowly-glow"><span class="btn-mark">03</span><span class="btn-text"><strong>角角者書封 PNG</strong><small>700 × 1000 · 7:10 · 透明</small></span><span class="btn-arrow" aria-hidden="true">↘</span></button>
           </div>
           <p id="download-status" class="status" role="status" aria-live="polite"></p>
         </section>
 
-        <div class="bottom-info"><div><span class="info-key">TEXT LIMIT</span><b>01 — 04</b></div><div><span class="info-key">BACKGROUND</span><b>TRANSPARENT</b></div><div><span class="info-key">LAYOUT</span><b>VERTICAL</b></div></div>
+        <div class="bottom-info"><div><span class="info-key">TEXT LIMIT</span><b>01 — 04</b></div><div><span class="info-key">BACKGROUND</span><b>TRANSPARENT</b></div><div><span class="info-key">LAYOUT</span><b id="orientation-fact">VERTICAL</b></div></div>
       </section>
 
       <section class="preview-panel slowly-electric-border with-glow is-active" aria-label="雷電藝術字即時預覽">

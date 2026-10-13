@@ -244,3 +244,45 @@ h1 {
 @media (prefers-reduced-motion: reduce) {
   .export-button { transition: none; }
 }
+
+
+/* 橫式選擇器：只屬於本頁 UI，軍火庫不接管樣式。 */
+.orientation-switch {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 9px;
+  margin: 14px 0 12px;
+}
+.orientation-label {
+  font-size: 12px;
+  opacity: .78;
+  margin-right: 4px;
+}
+.orientation-switch button {
+  appearance: none;
+  border: 1px solid currentColor;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 13px;
+  border-radius: 7px;
+  padding: 7px 16px;
+  opacity: .72;
+  cursor: pointer;
+}
+.orientation-switch button[aria-pressed="true"] {
+  opacity: 1;
+  border-width: 2px;
+  font-weight: 700;
+}
+.orientation-switch button:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
+}
+.art-image.is-horizontal {
+  width: min(100%, 650px);
+  height: auto;
+  max-height: min(60vh, 510px);
+  object-fit: contain;
+}

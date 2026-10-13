@@ -1,7 +1,10 @@
 "use strict";
 /* 互動與介面管理，繪圖本體由 thunder.js 負責。 */
 document.addEventListener('DOMContentLoaded', () => {
-  const art = window.SlowlyThunderArt;
+  const verticalArt = window.SlowlyThunderArt;
+  const horizontalArt = window.SlowlyThunderHorizontalArt;
+  let art = verticalArt;
+  let orientation = 'vertical';
   const field = document.getElementById('art-text'), form = document.getElementById('art-form'), counter = document.getElementById('char-count');
   const preview = document.getElementById('art-image'), frame = document.getElementById('preview-frame'), status = document.getElementById('download-status');
   const buttons = { svg: document.getElementById('download-svg'), png: document.getElementById('download-png'), cover: document.getElementById('download-cover') };
@@ -48,7 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
           }
         };
         preview.src = newURL;
-        preview.alt = `${value}，直式雷電藝術字（透明背景）`;
+        preview.alt = `${value}，${orientation === 'horizontal' ? '橫式' : '直式'}雷電藝術字（透明背景）`;
         status.textContent = orig > art.MAX ? '最多四個字，已保留前四字。' : '';
       } catch (err) {
         console.error(err);
@@ -58,6 +61,35 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
   }
+  const orientationButtons = Array.from(document.querySelectorAll('[data-orientation]'));
+  const svgSpec = document.getElementById('svg-spec');
+  const pngSpec = document.getElementById('png-spec');
+  const fact = document.getElementById('orientation-fact');
+  if (!horizontalArt) {
+    const button = orientationButtons.find(item => item.dataset.orientation === 'horizontal');
+    if (button) button.disabled = true;
+    status.textContent = '橫式零件尚未載入，請檢查軍火庫 HTTPS 路徑。';
+  }
+  function chooseOrientation(next) {
+    if (busy || next === orientation || (next === 'horizontal' && !horizontalArt)) return;
+    orientation = next;
+    art = next === 'horizontal' ? horizontalArt : verticalArt;
+    const horizontal = next === 'horizontal';
+    preview.classList.toggle('is-horizontal', horizontal);
+    preview.setAttribute('width', horizontal ? '1200' : '840');
+    preview.setAttribute('height', horizontal ? '760' : '1200');
+    svgSpec.textContent = horizontal ? '1200 × 760 · 透明' : '840 × 1200 · 透明';
+    pngSpec.textContent = horizontal ? '2400 × 1520 · 2 倍' : '1680 × 2400 · 2 倍';
+    fact.textContent = horizontal ? 'HORIZONTAL' : 'VERTICAL';
+    orientationButtons.forEach(button => {
+      button.setAttribute('aria-pressed', String(button.dataset.orientation === next));
+    });
+    update(field.value);
+  }
+  orientationButtons.forEach(button => button.addEventListener('click', () => {
+    chooseOrientation(button.dataset.orientation);
+  }));
+
   field.addEventListener('compositionstart', () => {
     composing = true;
   });

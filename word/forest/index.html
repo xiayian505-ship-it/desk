@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#f2eee0">
-  <meta name="description" content="穿林打葉｜林風藝術字產生器。直式一至四字，葉脈雕版風格，下載透明 SVG、PNG 與角角者書封。">
+  <meta name="description" content="穿林打葉｜林風藝術字產生器。一至四字、可切換橫直式，葉脈雕版風格，下載透明 SVG、PNG 與角角者書封。">
   <title>穿林打葉｜林風藝術字產生器｜慢慢</title>
 
   <!-- 軍火庫使用正式 HTTPS 絕對路徑，不複製原始碼到宿主。 -->
@@ -16,8 +16,11 @@
   <script defer src="https://lib.stillnessbyslowly.com/Image/png/canvas_png.js"></script>
   <script defer src="https://lib.stillnessbyslowly.com/Image/png/png_download.js"></script>
   <script defer src="https://lib.stillnessbyslowly.com/component/text_generator/text_generator_component.js"></script>
+  <script defer src="https://lib.stillnessbyslowly.com/component/text_generator/text_generator_core.js"></script>
+  <script defer src="https://lib.stillnessbyslowly.com/component/text_generator/text_generator_horizontal_component.js"></script>
   <script defer src="forest_template.js"></script>
   <script defer src="forest.js"></script>
+  <script defer src="forest_horizontal.js"></script>
   <script defer src="forest_style.js"></script>
 </head>
 <body>
@@ -35,7 +38,7 @@
         <p class="eyebrow">木刻拾光 <span aria-hidden="true">·</span> FOREST LETTERING</p>
         <h1 id="page-title">穿林打葉<span class="title-mark" aria-hidden="true">〳</span></h1>
         <p class="subtitle">風穿過枝葉，文字也有了方向。</p>
-        <p class="intro">從山林的層疊樹影、葉脈與木刻痕跡擷取筆觸。讓一至四個字化作深苔與古銅色的直式題字，帶著風的軌跡，落在妳的作品裡。</p>
+        <p class="intro">從山林的層疊樹影、葉脈與木刻痕跡擷取筆觸。讓一至四個字化作深苔與古銅色的藝術題字，帶著風的軌跡，落在妳的作品裡。</p>
 
         <form id="art-form" class="editor" novalidate>
           <div class="input-head">
@@ -46,7 +49,12 @@
             <input id="art-text" name="art-text" type="text" value="穿林打葉" placeholder="一至四個字" maxlength="16" autocomplete="off" spellcheck="false" aria-describedby="text-help">
             <span class="leaf-punct" aria-hidden="true">❧</span>
           </div>
-          <p id="text-help" class="field-note">一至四字・由上而下・修改即時預覽</p>
+          <p id="text-help" class="field-note">一至四字・可切換直式／橫式・修改即時預覽</p>
+          <div class="orientation-switch" role="group" aria-label="藝術字排列方式">
+            <span class="orientation-label">排列方式</span>
+            <button type="button" data-orientation="vertical" aria-pressed="true">直式</button>
+            <button type="button" data-orientation="horizontal" aria-pressed="false">橫式</button>
+          </div>
           <div class="example-row" aria-label="範例文字">
             <span>隨風試寫</span>
             <button type="button" data-example="穿林打葉">穿林打葉</button>
@@ -63,12 +71,12 @@
           <div class="export-list">
             <button class="export-button" type="button" id="download-svg">
               <span class="export-label">SVG</span>
-              <span class="export-copy"><strong>透明向量藝術字</strong><small>840 × 1200・向量</small></span>
+              <span class="export-copy"><strong>透明向量藝術字</strong><small id="svg-spec">840 × 1200・向量</small></span>
               <span class="export-arrow" aria-hidden="true">↗</span>
             </button>
             <button class="export-button" type="button" id="download-png">
               <span class="export-label">PNG</span>
-              <span class="export-copy"><strong>高清透明 PNG</strong><small>1680 × 2400</small></span>
+              <span class="export-copy"><strong>高清透明 PNG</strong><small id="png-spec">1680 × 2400</small></span>
               <span class="export-arrow" aria-hidden="true">↗</span>
             </button>
             <button class="export-button cover-button" type="button" id="download-cover">

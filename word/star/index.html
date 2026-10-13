@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#111326">
-  <meta name="description" content="輸入一至四個字，即時製作直式星辰藝術字，可下載透明 SVG 和 PNG。夏熠安・慢慢 Stillness by Slowly。">
+  <meta name="description" content="輸入一至四個字，即時製作直式／橫式星辰藝術字，可切換直式與橫式，下載透明 SVG 和 PNG。夏熠安・慢慢 Stillness by Slowly。">
   <title>星辰藝術字產生器｜慢慢 Stillness by Slowly</title>
   <!-- 軍火庫以正式 HTTPS 絕對 URL 引用，不複製零件，也不接管宿主外觀 -->
   <link rel="stylesheet" href="https://lib.stillnessbyslowly.com/effects/light/glow.css">
@@ -14,8 +14,11 @@
   <script defer src="https://lib.stillnessbyslowly.com/Image/png/png_download.js"></script>
   <script defer src="https://lib.stillnessbyslowly.com/data/blob/blob_url.js"></script>
   <script defer src="https://lib.stillnessbyslowly.com/component/text_generator/text_generator_component.js"></script>
+  <script defer src="https://lib.stillnessbyslowly.com/component/text_generator/text_generator_core.js"></script>
+  <script defer src="https://lib.stillnessbyslowly.com/component/text_generator/text_generator_horizontal_component.js"></script>
   <script defer src="title_template.js"></script>
   <script defer src="title.js"></script>
+  <script defer src="title_horizontal.js"></script>
   <script defer src="title_style.js"></script>
 </head>
 <body>
@@ -30,11 +33,16 @@
         <h1 id="page-title">星辰藝術字<span class="title-dot">.</span></h1>
         <div class="byline"><span class="byline-rule"></span> 夏熠安 <span class="byline-light">｜ 筆下星辰衍生工具</span></div>
         <p class="lead">讓文字成為一段小小銀河。</p>
-        <p class="description">輸入想留下的字，把它們寫進藍紫粉的星光裡。每次最多四字，自上而下排列；星軌、月牙與流光會一起輸出，底圖保持透明。</p>
+        <p class="description">輸入想留下的字，把它們寫進藍紫粉的星光裡。每次最多四字，可選擇直式或橫式排列；星軌、月牙與流光會一起輸出，底圖保持透明。</p>
         <form id="art-form" class="editor" novalidate>
           <div class="field-top"><label for="art-text">輸入文字 <span class="field-aside">YOUR LETTERING</span></label><span id="char-count" class="char-count" aria-live="polite">4 / 4</span></div>
           <div class="text-input-shell"><input id="art-text" name="art-text" class="art-text-input" type="text" value="筆下星辰" placeholder="例如：星河入夢" autocomplete="off" spellcheck="false" inputmode="text" aria-describedby="input-hint"><span class="input-star" aria-hidden="true">✧</span></div>
-          <p id="input-hint" class="input-hint">限 1～4 個字・即時生成・直式排列</p>
+          <p id="input-hint" class="input-hint">限 1～4 個字・即時生成・可切換直式／橫式</p>
+          <div class="orientation-switch" role="group" aria-label="藝術字排列方式">
+            <span class="orientation-label">排列方式</span>
+            <button type="button" data-orientation="vertical" aria-pressed="true">直式</button>
+            <button type="button" data-orientation="horizontal" aria-pressed="false">橫式</button>
+          </div>
           <div class="sample-row" aria-label="範例文字">
             <span class="sample-label">試試看</span>
             <button class="sample-chip" type="button" data-example="星河入夢">星河入夢</button>
@@ -60,7 +68,7 @@
         <div class="facts" aria-label="藝術字規格">
           <div><span class="fact-key">LIMIT</span><span class="fact-value">1–4 characters</span></div>
           <div><span class="fact-key">BACKGROUND</span><span class="fact-value">Transparent · 透明</span></div>
-          <div><span class="fact-key">ORIENTATION</span><span class="fact-value">Vertical · 直式</span></div>
+          <div><span class="fact-key">ORIENTATION</span><span class="fact-value" id="orientation-fact">Vertical · 直式</span></div>
           <div><span class="fact-key">BOOK COVER</span><span class="fact-value">Kadokado · 700 × 1000</span></div>
         </div>
       </section>

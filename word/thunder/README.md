@@ -42,3 +42,17 @@
 - 後續可新增選色、字型、雷光強度，但**第一版不擅自擴充 UI**。
 - 雷光 SVG 產生邏輯暫留專案內，往後真的有多系列共用需求，才抽成 `lib` 零件。
 - 請保留專案分檔，不要因為主程式檔案較長而強制切碎。
+
+
+## 橫式功能（本次新增）
+
+同一個網站可透過「直式／橫式」按鈕切換。原本的直式 SVG 模板、v1 生成方式和檔名規則都保留；橫式另外由本系列的 `thunder_horizontal.js` 產生不同的 SVG 構圖，不是旋轉直式圖片。
+
+橫式使用軍火庫 v2 的 HTTPS 絕對網址：
+
+- `https://lib.stillnessbyslowly.com/component/text_generator/text_generator_core.js`
+- `https://lib.stillnessbyslowly.com/component/text_generator/text_generator_horizontal_component.js`
+
+保留原 v1 的 `text_generator_component.js`，讓舊直式流程不受影響。共用 PNG 與書封輸出仍由軍火庫處理，宿主不複製其實作。
+
+橫式 SVG 尺寸為 **1200 × 760**、透明 PNG 為 **2400 × 1520**、角角者書封仍為 **700 × 1000**（等比置中、透明）。字數上限四字，頁面視覺為暫定草案，日後可自行更換。

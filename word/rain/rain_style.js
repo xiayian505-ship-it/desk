@@ -1,7 +1,10 @@
 "use strict";
 /* 雨系藝術字：頁面 UI 與軍火庫雨幕設定。所有功能輸出交由 rain.js。 */
 document.addEventListener('DOMContentLoaded', () => {
-  const art = window.SlowlyRainArt;
+  const verticalArt = window.SlowlyRainArt;
+  const horizontalArt = window.SlowlyRainHorizontalArt;
+  let art = verticalArt;
+  let orientation = 'vertical';
   const field = document.getElementById('art-text');
   const count = document.getElementById('char-count');
   const preview = document.getElementById('art-image');
@@ -46,7 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
       };
       previewURL = url;
       preview.src = url;
-      preview.alt = `${current}的雨系書法藝術字（透明背景）`;
+      preview.alt = `${current}的${orientation === 'horizontal' ? '橫式' : '直式'}雨系書法藝術字（透明背景）`;
       status.textContent = rawCount > art.MAX ? `最多四個字，已保留前四個字。` : '';
     } catch (e) {
       console.error(e);
@@ -55,6 +58,31 @@ document.addEventListener('DOMContentLoaded', () => {
       enableButtons();
     }
   }
+  const orientationButtons = Array.from(document.querySelectorAll('[data-orientation]'));
+  const pngSpec = document.getElementById('png-spec');
+  if (!horizontalArt) {
+    const button = orientationButtons.find(item => item.dataset.orientation === 'horizontal');
+    if (button) button.disabled = true;
+    status.textContent = '橫式零件尚未載入，請檢查軍火庫 HTTPS 路徑。';
+  }
+  function chooseOrientation(next) {
+    if (busy || next === orientation || (next === 'horizontal' && !horizontalArt)) return;
+    orientation = next;
+    art = next === 'horizontal' ? horizontalArt : verticalArt;
+    const horizontal = next === 'horizontal';
+    preview.classList.toggle('is-horizontal', horizontal);
+    preview.setAttribute('width', horizontal ? '1200' : '840');
+    preview.setAttribute('height', horizontal ? '760' : '1200');
+    pngSpec.textContent = horizontal ? '2400 × 1520 · 高清' : '1680 × 2400 · 高清';
+    orientationButtons.forEach(button => {
+      button.setAttribute('aria-pressed', String(button.dataset.orientation === next));
+    });
+    update(field.value);
+  }
+  orientationButtons.forEach(button => button.addEventListener('click', () => {
+    chooseOrientation(button.dataset.orientation);
+  }));
+
   field.addEventListener('compositionstart', () => composing = true);
   field.addEventListener('compositionend', () => {
     composing = false;

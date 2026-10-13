@@ -55,3 +55,17 @@ word/
 ## 開啟方式
 
 本機開啟 `index.html` 或部署到 GitHub Pages 即可。純前端，不需建置工具。外部軍火庫需要網路才能載入；離線時仍可使用核心匯出功能備援。
+
+
+## 橫式功能（本次新增）
+
+同一個網站可透過「直式／橫式」按鈕切換。原本的直式 SVG 模板、v1 生成方式和檔名規則都保留；橫式另外由本系列的 `rain_horizontal.js` 產生不同的 SVG 構圖，不是旋轉直式圖片。
+
+橫式使用軍火庫 v2 的 HTTPS 絕對網址：
+
+- `https://lib.stillnessbyslowly.com/component/text_generator/text_generator_core.js`
+- `https://lib.stillnessbyslowly.com/component/text_generator/text_generator_horizontal_component.js`
+
+保留原 v1 的 `text_generator_component.js`，讓舊直式流程不受影響。共用 PNG 與書封輸出仍由軍火庫處理，宿主不複製其實作。
+
+橫式 SVG 尺寸為 **1200 × 760**、透明 PNG 為 **2400 × 1520**、角角者書封仍為 **700 × 1000**（等比置中、透明）。字數上限四字，頁面視覺為暫定草案，日後可自行更換。

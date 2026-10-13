@@ -44,3 +44,17 @@
 ## 字型與權利
 
 網站只提供生成與排版機制。若使用者自行提供或變更字型／其他素材，應自行確認合法來源與使用授權。SVG 仍使用字型名稱，跨裝置可能有字形差異；PNG 則固定當下瀏覽器繪出的效果。網站沒有上傳字型檔的功能，也不附帶第三方字型檔。
+
+
+## 橫式功能（本次新增）
+
+同一個網站可透過「直式／橫式」按鈕切換。原本的直式 SVG 模板、v1 生成方式和檔名規則都保留；橫式另外由本系列的 `forest_horizontal.js` 產生不同的 SVG 構圖，不是旋轉直式圖片。
+
+橫式使用軍火庫 v2 的 HTTPS 絕對網址：
+
+- `https://lib.stillnessbyslowly.com/component/text_generator/text_generator_core.js`
+- `https://lib.stillnessbyslowly.com/component/text_generator/text_generator_horizontal_component.js`
+
+保留原 v1 的 `text_generator_component.js`，讓舊直式流程不受影響。共用 PNG 與書封輸出仍由軍火庫處理，宿主不複製其實作。
+
+橫式 SVG 尺寸為 **1200 × 760**、透明 PNG 為 **2400 × 1520**、角角者書封仍為 **700 × 1000**（等比置中、透明）。字數上限四字，頁面視覺為暫定草案，日後可自行更換。
