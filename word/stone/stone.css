@@ -1,0 +1,26 @@
+/* 石破天驚：網站預覽區主題。預覽框保持透明，重心放在字體本身。 */
+.word-stone .word-preview-frame {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: 470px;
+  overflow: visible;
+  border: 0;
+  background: transparent;
+}
+
+.word-stone .art-image {
+  position: relative;
+  z-index: 1;
+  width: min(100%, 540px);
+  height: auto;
+  max-height: min(72vh, 720px);
+  object-fit: contain;
+  filter: drop-shadow(0 14px 18px rgba(39, 26, 16, 0.18));
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.word-stone .art-image.is-horizontal {
+  width: min(100%, 760px);
+}

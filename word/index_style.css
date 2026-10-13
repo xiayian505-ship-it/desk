@@ -379,6 +379,15 @@ button {
   text-shadow: 0 0 12px #eef6ff;
 }
 
+.card-visual[data-visual="stone"] {
+  color: #806558;
+  background: linear-gradient(145deg, #eee6dd, #f8f5f1);
+}
+
+.card-visual[data-visual="stone"] .card-art-text {
+  text-shadow: 0 0 12px #fff1d0;
+}
+
 .card-content {
   display: flex;
   flex-direction: column;

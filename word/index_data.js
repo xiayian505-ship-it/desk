@@ -135,4 +135,24 @@ window.SlowlyWordIndex = [
     "href": "https://desk.stillnessbyslowly.com/word/snow/index.html",
     "visual": "snow"
   }
+  ,{
+    "code": "stone",
+    "title": "石破天驚",
+    "subtitle": "Stone Lettering",
+    "phrase": "石破天驚",
+    "desc": "裂石、震波與熔光。讓文字像剛剛轟然破開。",
+    "keywords": [
+      "石頭",
+      "岩石",
+      "裂痕",
+      "碎片",
+      "震波",
+      "爆裂",
+      "熔光",
+      "直式",
+      "橫式"
+    ],
+    "href": "https://desk.stillnessbyslowly.com/word/stone/index.html",
+    "visual": "stone"
+  }
 ];

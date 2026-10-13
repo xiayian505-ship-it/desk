@@ -1,0 +1,5 @@
+/* 石破天驚：宿主頁局部風格。維持與慢慢藝術字主站一致的純文字操作介面。 */
+.word-stone {
+  --word-accent: #8f6d5a;
+  --word-accent-soft: #f1ece7;
+}
