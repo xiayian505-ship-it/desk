@@ -1,0 +1,5 @@
+/* 鏡花水月：介面文字顏色與字體材質分開；維持足夠對比。 */
+.word-mirror {
+  --word-accent: #355c73;
+  --word-accent-soft: #f7ffff;
+}

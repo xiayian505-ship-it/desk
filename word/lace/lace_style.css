@@ -1,0 +1,5 @@
+/* 玲瓏鏤影：介面文字顏色與字體材質分開；維持足夠對比。 */
+.word-lace {
+  --word-accent: #625975;
+  --word-accent-soft: #fffdf2;
+}

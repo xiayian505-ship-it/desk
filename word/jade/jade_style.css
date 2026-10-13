@@ -1,0 +1,5 @@
+/* 玉潤生輝：介面文字顏色與字體材質分開；維持足夠對比。 */
+.word-jade {
+  --word-accent: #32624e;
+  --word-accent-soft: #e9f9cd;
+}

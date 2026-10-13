@@ -1,0 +1,5 @@
+/* 流沙歲月：介面文字顏色與字體材質分開；維持足夠對比。 */
+.word-quicksand {
+  --word-accent: #796047;
+  --word-accent-soft: #fce6b6;
+}

@@ -1,0 +1,5 @@
+/* 星火燎原：介面文字顏色與字體材質分開；維持足夠對比。 */
+.word-ember {
+  --word-accent: #8c3524;
+  --word-accent-soft: #ffdd9e;
+}

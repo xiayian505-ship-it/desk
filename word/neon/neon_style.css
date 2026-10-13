@@ -1,0 +1,5 @@
+/* 霓虹夜語：介面文字顏色與字體材質分開；維持足夠對比。 */
+.word-neon {
+  --word-accent: #6851a4;
+  --word-accent-soft: #c0faff;
+}

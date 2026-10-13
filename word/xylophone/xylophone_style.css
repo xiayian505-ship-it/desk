@@ -1,0 +1,5 @@
+/* 清音流轉：介面文字顏色與字體材質分開；維持足夠對比。 */
+.word-xylophone {
+  --word-accent: #74503a;
+  --word-accent-soft: #f3d5a4;
+}

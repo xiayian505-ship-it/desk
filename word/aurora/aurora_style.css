@@ -1,0 +1,5 @@
+/* 極光漫舞：介面文字顏色與字體材質分開；維持足夠對比。 */
+.word-aurora {
+  --word-accent: #34568b;
+  --word-accent-soft: #befce1;
+}

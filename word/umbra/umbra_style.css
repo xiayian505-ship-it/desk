@@ -1,0 +1,5 @@
+/* 影隨形動：介面文字顏色與字體材質分開；維持足夠對比。 */
+.word-umbra {
+  --word-accent: #3e3448;
+  --word-accent-soft: #f6f2e9;
+}

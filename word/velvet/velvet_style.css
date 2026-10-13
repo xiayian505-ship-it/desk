@@ -1,0 +1,5 @@
+/* 絲絨華彩：介面文字顏色與字體材質分開；維持足夠對比。 */
+.word-velvet {
+  --word-accent: #80334e;
+  --word-accent-soft: #ffb5b9;
+}

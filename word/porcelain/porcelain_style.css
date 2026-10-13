@@ -1,0 +1,5 @@
+/* 青花入夢：介面文字顏色與字體材質分開；維持足夠對比。 */
+.word-porcelain {
+  --word-accent: #315c8b;
+  --word-accent-soft: #fffdf0;
+}

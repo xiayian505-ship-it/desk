@@ -1,0 +1,5 @@
+/* 錦織流年：介面文字顏色與字體材質分開；維持足夠對比。 */
+.word-knit {
+  --word-accent: #8a4659;
+  --word-accent-soft: #ffe4b5;
+}

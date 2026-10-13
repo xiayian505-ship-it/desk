@@ -1,0 +1,5 @@
+/* 羽翼生風：介面文字顏色與字體材質分開；維持足夠對比。 */
+.word-wings {
+  --word-accent: #59617d;
+  --word-accent-soft: #ffffff;
+}

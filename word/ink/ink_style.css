@@ -1,0 +1,5 @@
+/* 墨染風華：介面文字顏色與字體材質分開；維持足夠對比。 */
+.word-ink {
+  --word-accent: #28404c;
+  --word-accent-soft: #b9c1bc;
+}

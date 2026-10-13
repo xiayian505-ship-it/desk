@@ -1,0 +1,32 @@
+/* 玉潤生輝：作品預覽無背景；主角永遠是透明 SVG 裡的字體本體。 */
+.word-jade .word-preview-frame {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: 440px;
+  margin: 0;
+  border: 0;
+  background: transparent;
+  overflow: hidden;
+}
+
+.word-jade .art-image {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: min(100%, 550px);
+  max-height: 690px;
+  height: auto;
+  object-fit: contain;
+  user-select: none;
+  -webkit-user-drag: none;
+  --slowly-glow-color: #79ae8f;
+  --slowly-glow-size: 8px;
+  --slowly-glow-opacity: .14;
+  --slowly-lift-y: -2px;
+  --slowly-lift-speed: .3s;
+}
+
+.word-jade .art-image.is-horizontal {
+  width: min(100%, 740px);
+}
