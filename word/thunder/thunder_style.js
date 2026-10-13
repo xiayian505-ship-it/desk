@@ -7,14 +7,22 @@ document.addEventListener('DOMContentLoaded', () => {
   let orientation = 'vertical';
   const field = document.getElementById('art-text'), form = document.getElementById('art-form'), counter = document.getElementById('char-count');
   const preview = document.getElementById('art-image'), frame = document.getElementById('preview-frame'), status = document.getElementById('download-status');
-  const buttons = { svg: document.getElementById('download-svg'), png: document.getElementById('download-png'), cover: document.getElementById('download-cover') };
+  const buttons = {
+    svg: document.getElementById('download-svg'),
+    png: document.getElementById('download-png'),
+    cover: document.getElementById('download-cover'),
+    animated: document.getElementById('download-animated-svg')
+  };
   if (!art || !field || !form || !counter || !preview || !frame || !status || Object.values(buttons).some(x => !x)) {
     console.error('電閃雷鳴：找不到 UI 元素或生成程式。');
     return;
   }
   let current = '', composing = false, busy = false, previewUrl = null, seq = 0;
   const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)');
-  const enable = () => Object.values(buttons).forEach(b => b.disabled = busy || !current);
+  const enable = () => Object.entries(buttons).forEach(([kind, button]) => {
+    button.disabled = busy || !current ||
+      (kind === 'animated' && !window.SlowlyThunderAnimatedArt);
+  });
   function update(input) {
     const orig = art.chars(input).length;
     textUpdate(art.normalize(input));
@@ -65,6 +73,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const svgSpec = document.getElementById('svg-spec');
   const pngSpec = document.getElementById('png-spec');
   const fact = document.getElementById('orientation-fact');
+  if (!window.SlowlyThunderAnimatedArt) {
+    buttons.animated.disabled = true;
+    buttons.animated.title = '動態 SVG 功能尚未載入';
+  }
   if (!horizontalArt) {
     const button = orientationButtons.find(item => item.dataset.orientation === 'horizontal');
     if (button) button.disabled = true;
@@ -113,8 +125,20 @@ document.addEventListener('DOMContentLoaded', () => {
     if (busy || !current) return;
     busy = true;
     enable();
-    status.textContent = kind === 'svg' ? '正在準備 SVG……' : kind === 'png' ? '正在繪製透明 PNG……' : '正在產生 700 × 1000 書封……';
-    const action = kind === 'svg' ? art.downloadSVG : kind === 'png' ? art.downloadPNG : art.downloadCover;
+    status.textContent = kind === 'animated'
+      ? '正在製作可獨立播放的動態 SVG……'
+      : kind === 'svg'
+        ? '正在準備靜態 SVG……'
+        : kind === 'png'
+          ? '正在繪製透明 PNG……'
+          : '正在產生 700 × 1000 書封……';
+    const action = kind === 'animated'
+      ? (text => window.SlowlyThunderAnimatedArt.downloadSVG(text, orientation))
+      : kind === 'svg'
+        ? art.downloadSVG
+        : kind === 'png'
+          ? art.downloadPNG
+          : art.downloadCover;
     try {
       const info = await action(current);
       status.textContent = `已送出下載：${info.filename}`;
@@ -131,6 +155,7 @@ document.addEventListener('DOMContentLoaded', () => {
   buttons.svg.addEventListener('click', () => download('svg'));
   buttons.png.addEventListener('click', () => download('png'));
   buttons.cover.addEventListener('click', () => download('cover'));
+  buttons.animated.addEventListener('click', () => download('animated'));
   // 軍火庫 flash_shake 是受控類名；宿主只在換字時觸發一個很輕的雷光脈衝。
   function blink() {
     if (reduceMotion?.matches) return;

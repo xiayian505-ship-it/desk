@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#080d19">
-  <meta name="description" content="電閃雷鳴：輸入一至四字，生成直式雷電藝術字並下載透明 SVG、PNG 與 700×1000 書封。慢慢 Stillness by Slowly。">
+  <meta name="description" content="電閃雷鳴：輸入一至四字，生成直式或橫式雷電藝術字，下載靜態／動態 SVG、透明 PNG 與 700×1000 書封。慢慢 Stillness by Slowly。">
   <title>電閃雷鳴｜文字設計工房・慢慢</title>
   <!-- 慢慢軍火庫以正式 HTTPS 絕對連結引用；外觀仍由本站控制。 -->
   <link rel="stylesheet" href="https://lib.stillnessbyslowly.com/effects/light/glow.css">
@@ -21,6 +21,7 @@
   <script defer src="thunder_template.js"></script>
   <script defer src="thunder.js"></script>
   <script defer src="thunder_horizontal.js"></script>
+  <script defer src="thunder_animated.js"></script>
   <script defer src="thunder_style.js"></script>
 </head>
 <body>
@@ -54,13 +55,15 @@
         </form>
 
         <section class="download-area" aria-labelledby="downloads-title">
-          <div class="download-heading"><h2 id="downloads-title">輸出作品</h2><span>EXPORT / 03 FORMATS</span></div>
+          <div class="download-heading"><h2 id="downloads-title">輸出作品</h2><span>EXPORT / 04 OPTIONS</span></div>
           <div class="download-buttons">
             <button type="button" id="download-svg" class="download-btn primary slowly-glow"><span class="btn-mark">01</span><span class="btn-text"><strong>SVG 向量圖</strong><small id="svg-spec">840 × 1200 · 透明</small></span><span class="btn-arrow" aria-hidden="true">↘</span></button>
             <button type="button" id="download-png" class="download-btn secondary slowly-glow"><span class="btn-mark">02</span><span class="btn-text"><strong>高清透明 PNG</strong><small id="png-spec">1680 × 2400 · 2 倍</small></span><span class="btn-arrow" aria-hidden="true">↘</span></button>
             <button type="button" id="download-cover" class="download-btn secondary cover slowly-glow"><span class="btn-mark">03</span><span class="btn-text"><strong>角角者書封 PNG</strong><small>700 × 1000 · 7:10 · 透明</small></span><span class="btn-arrow" aria-hidden="true">↘</span></button>
+            <button type="button" id="download-animated-svg" class="download-btn secondary animated slowly-glow"><span class="btn-mark">04</span><span class="btn-text"><strong>動態 SVG</strong><small>雷光閃爍 · 循環播放 · 透明</small></span><span class="btn-arrow" aria-hidden="true">↘</span></button>
           </div>
           <p id="download-status" class="status" role="status" aria-live="polite"></p>
+          <p class="animated-svg-hint">動態 SVG 下載後請以支援 SVG 動畫的瀏覽器開啟；部分編輯器只會顯示靜態畫面。</p>
         </section>
 
         <div class="bottom-info"><div><span class="info-key">TEXT LIMIT</span><b>01 — 04</b></div><div><span class="info-key">BACKGROUND</span><b>TRANSPARENT</b></div><div><span class="info-key">LAYOUT</span><b id="orientation-fact">VERTICAL</b></div></div>

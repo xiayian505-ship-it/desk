@@ -1,0 +1,40 @@
+/* 慢慢藝術字｜功能必要樣式
+ * 頁面骨架由 SBS Framework outline 提供；
+ * Tabs 的隱藏／焦點邏輯由軍火庫 tabs.css 提供。
+ * 這裡只處理本站動態清單的狀態。
+ */
+
+[hidden] {
+  display: none !important;
+}
+
+.search-results:empty {
+  display: none;
+}
+
+.word-card:focus-within {
+  outline-offset: 3px;
+}
+
+.word-card.search-target {
+  animation: word-search-target 1.8s ease;
+}
+
+@keyframes word-search-target {
+  0%, 100% {
+    outline: 0 solid transparent;
+  }
+
+  20%, 65% {
+    outline: 3px solid var(--accent);
+    outline-offset: 3px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .word-card.search-target {
+    animation: none;
+    outline: 3px solid var(--accent);
+    outline-offset: 3px;
+  }
+}
