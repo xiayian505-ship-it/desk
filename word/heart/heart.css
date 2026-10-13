@@ -1,0 +1,64 @@
+/* 相濡以沫：與系列共用骨架一致，只補本系列預覽配色。 */
+.heart-presentation {
+  min-width: 0;
+  border: 1px solid rgba(160, 97, 120, .24);
+  background: linear-gradient(180deg, #fbf2f5 0%, #f6e8ee 100%);
+  padding: 24px;
+  border-radius: 4px;
+  box-shadow: 10px 14px 0 rgba(135, 81, 100, .08);
+}
+.heart-stage {
+  position: relative;
+  display: grid;
+  place-items: center;
+  isolation: isolate;
+  margin: 0;
+  min-height: 480px;
+  overflow: hidden;
+  border: 1px solid rgba(172, 108, 133, .18);
+  background:
+    radial-gradient(circle at 50% 24%, rgba(255, 231, 239, .92) 0%, rgba(255, 231, 239, 0) 34%),
+    linear-gradient(180deg, #fff9fb 0%, #f8eef2 58%, #f4e8ed 100%);
+}
+.heart-grid {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(45deg, rgba(224, 191, 205, .32) 25%, transparent 25%, transparent 75%, rgba(224, 191, 205, .32) 75%),
+    linear-gradient(45deg, rgba(224, 191, 205, .32) 25%, transparent 25%, transparent 75%, rgba(224, 191, 205, .32) 75%);
+  background-position: 0 0, 11px 11px;
+  background-size: 22px 22px;
+  opacity: .48;
+}
+.art-image {
+  position: relative;
+  z-index: 1;
+  width: min(100%, 520px);
+  height: auto;
+  max-height: min(73vh, 760px);
+  object-fit: contain;
+  padding: 8px;
+  user-select: none;
+  -webkit-user-drag: none;
+  filter: drop-shadow(0 10px 18px rgba(90, 34, 57, .18));
+}
+@media (max-width: 600px) {
+  .heart-presentation { padding: 14px; }
+  .heart-stage { min-height: 410px; }
+  .art-image { max-height: 620px; }
+}
+
+/* 網頁外殼引用軍火庫雙光暈。真正的光暈與 Enso 圓環均在匯出 SVG 內。
+ * 這裡只為預覽外殼提供淡淡背景氣氛，不充當作品內容。 */
+.heart-presentation.slowly-dual-glow {
+  --sl-glow-a: rgba(255, 181, 207, .13);
+  --sl-glow-b: rgba(156, 43, 84, .08);
+  --sl-glow-a-size: 210px;
+  --sl-glow-b-size: 190px;
+  --sl-glow-a-x: 20px;
+  --sl-glow-a-y: 0px;
+  --sl-glow-b-x: 20px;
+  --sl-glow-b-y: 0px;
+}

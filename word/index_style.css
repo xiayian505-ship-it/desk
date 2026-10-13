@@ -601,6 +601,14 @@ button {
   text-shadow: 0 1px 5px #dffaff;
 }
 
+.card-visual[data-visual="heart"] {
+  color: #ffe8ef;
+  background: linear-gradient(140deg, #5f1737, #b33f67 58%, #f2a0bb);
+}
+.card-visual[data-visual="heart"] .card-art-text {
+  text-shadow: 0 2px 8px rgba(255, 210, 225, .35);
+}
+
 .card-visual[data-visual="deer"] {
   color: #dfefe9;
   background: radial-gradient(ellipse at 50% 30%, rgba(190, 226, 215, .18), transparent 60%), linear-gradient(140deg, #071415, #1a3735 55%, #071717);

@@ -216,6 +216,24 @@ window.SlowlyWordIndex = [
     "visual": "crystal"
 },
 {
+    "code": "heart",
+    "title": "相濡以沫",
+    "subtitle": "Heart Lettering",
+    "phrase": "相濡以沫",
+    "desc": "酒紅粉紅漸層、愛心圈與柔線相連。讓文字像把依偎與長伴，慢慢寫在一起。",
+    "keywords": [
+        "相濡以沫",
+        "愛心",
+        "酒紅",
+        "粉紅",
+        "長伴",
+        "直式",
+        "橫式"
+    ],
+    "href": "https://desk.stillnessbyslowly.com/word/heart/index.html",
+    "visual": "heart"
+},
+{
     "code": "deer",
     "title": "逐鹿中原",
     "subtitle": "Deer Lettering",
