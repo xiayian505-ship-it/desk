@@ -1,0 +1,246 @@
+/* 穿林打葉｜宿主網站 UI。軍火庫完成品不控制外觀。 */
+:root {
+  color-scheme: light;
+  --paper: #f2eee0;
+  --paper-white: #faf8ef;
+  --pine: #233e34;
+  --ink: #283e35;
+  --moss: #55705b;
+  --border: #c4c7b1;
+  --copper: #ae8d50;
+  --muted: #777f70;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  color: var(--ink);
+  font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+  background:
+    radial-gradient(ellipse at 11% 15%, #d8e1d080, transparent 38%),
+    radial-gradient(ellipse at 98% 80%, #c5cbb175, transparent 48%),
+    var(--paper);
+}
+button, input { font: inherit; }
+button { cursor: pointer; }
+a { color: inherit; }
+.layout {
+  width: min(1410px, 100%);
+  min-height: 100vh;
+  padding: 0 clamp(18px, 5vw, 72px);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+}
+.site-header {
+  min-height: 95px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  border-bottom: 1px solid #bcc6ae;
+}
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 11px;
+  text-decoration: none;
+  font-weight: 700;
+  letter-spacing: .11em;
+  font-size: 15px;
+  white-space: nowrap;
+}
+.brand-mark {
+  width: 32px;
+  height: 32px;
+  display: inline-grid;
+  place-items: center;
+  color: var(--paper-white);
+  background: var(--pine);
+  border-radius: 50%;
+  font-family: serif;
+  font-size: 17px;
+}
+.brand small {
+  display: block;
+  font-size: 9px;
+  font-weight: 400;
+  letter-spacing: .08em;
+  color: var(--muted);
+  margin-top: 3px;
+}
+.header-edition {
+  color: #6e7868;
+  font-size: 10px;
+  letter-spacing: .15em;
+  white-space: nowrap;
+}
+.header-edition span { color: var(--copper); margin: 0 7px; }
+.workspace {
+  flex: 1;
+  display: grid;
+  grid-template-columns: minmax(0, .93fr) minmax(0, 1.07fr);
+  gap: clamp(30px, 5vw, 78px);
+  align-items: center;
+  padding: clamp(28px, 4.4vw, 66px) 0;
+}
+.controls { min-width: 0; }
+.eyebrow {
+  margin: 0 0 15px;
+  color: #879071;
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: .15em;
+}
+.eyebrow span { color: #b39761; }
+h1 {
+  margin: 0;
+  font-family: "Noto Serif TC", "Noto Serif CJK TC", "Songti TC", serif;
+  font-weight: 700;
+  font-size: clamp(42px, 4.5vw, 75px);
+  line-height: 1.28;
+  letter-spacing: .1em;
+  white-space: nowrap;
+  color: #244638;
+}
+.title-mark {
+  color: #af935f;
+  font-weight: 400;
+  margin-left: 4px;
+}
+.subtitle {
+  margin: 17px 0 12px;
+  font-family: "Noto Serif TC", "Noto Serif CJK TC", serif;
+  font-size: clamp(17px, 2vw, 23px);
+  letter-spacing: .05em;
+  line-height: 1.7;
+}
+.intro {
+  max-width: 520px;
+  margin: 0 0 31px;
+  line-height: 2;
+  color: #657367;
+  font-size: 12px;
+  letter-spacing: .02em;
+}
+.editor {
+  padding: 21px;
+  border: 1px solid #c8c9b7;
+  background: #ffffff70;
+  margin-bottom: 30px;
+}
+.input-head,
+.section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.input-head { margin-bottom: 13px; }
+.input-head label { font-size: 13px; font-weight: 700; }
+.input-head output { font-size: 12px; color: #8b967f; font-variant-numeric: tabular-nums; }
+.input-wrap {
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  border-bottom: 2px solid #66866c;
+  background: #f4f4e8;
+}
+.input-wrap:focus-within { outline: 2px solid #a7b99e; outline-offset: 3px; }
+#art-text {
+  min-width: 0;
+  width: 100%;
+  padding: 13px 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: #1a4436;
+  font-size: 24px;
+  letter-spacing: .12em;
+}
+#art-text::placeholder { color: #98a18f; }
+.leaf-punct { color: #a38853; font-size: 25px; }
+.field-note { font-size: 11px; color: #8c9484; margin: 10px 0 19px; }
+.example-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.example-row > span { margin-right: 6px; color: #8c9385; font-size: 10px; }
+.example-row button {
+  padding: 6px 12px;
+  border: 1px solid #c1c7b3;
+  background: transparent;
+  border-radius: 2px;
+  color: #526c56;
+  font-size: 11px;
+}
+.example-row button:hover { background: #dce5d7; }
+.section-heading { margin-bottom: 13px; }
+.section-heading h2 { margin: 0; font-size: 16px; letter-spacing: .08em; }
+.section-heading > span { font-size: 10px; color: #8d997e; letter-spacing: .2em; }
+.export-list { display: grid; grid-template-columns: 1fr; gap: 9px; }
+.export-button {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 13px 17px;
+  text-align: left;
+  background: #fcfbf4;
+  border: 1px solid #c5c9b7;
+  border-left: 4px solid #8ba489;
+  color: #244337;
+  transition: background-color .2s, border-color .2s;
+}
+.export-button:hover { background: #edf1e6; border-color: #8ba489; }
+.export-button:disabled { opacity: .45; cursor: wait; }
+.export-button:focus-visible,
+.example-row button:focus-visible { outline: 2px solid #466b4e; outline-offset: 3px; }
+.export-label {
+  display: grid;
+  place-items: center;
+  flex: 0 0 51px;
+  height: 39px;
+  border: 1px solid #cbd0b9;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .1em;
+  color: #748771;
+}
+.export-copy { flex: 1; min-width: 0; }
+.export-copy strong { display: block; font-size: 14px; letter-spacing: .025em; }
+.export-copy small { display: block; margin-top: 5px; font-size: 10px; color: #83907e; }
+.export-arrow { font-size: 23px; font-weight: 300; color: #668b71; }
+.cover-button { border-left-color: #c2a468; background: #f6f2e7; }
+.cover-button .export-label { color: #a0804c; border-color: #d1c29e; }
+.download-status { min-height: 19px; margin: 11px 0 0; color: #4f7152; font-size: 11px; overflow-wrap: anywhere; }
+.license-note { margin: 11px 0 0; color: #8b9183; font-size: 10px; line-height: 1.8; }
+.site-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 22px 0 27px;
+  border-top: 1px solid #c5cbb9;
+  font-size: 10px;
+  letter-spacing: .07em;
+  color: #7b8876;
+}
+@media (max-width: 990px) {
+  .workspace { grid-template-columns: 1fr; align-items: stretch; gap: 36px; }
+  .controls { max-width: 750px; }
+  .presentation { width: 100%; max-width: 750px; margin: 0 auto; }
+}
+@media (max-width: 550px) {
+  .site-header { min-height: 73px; }
+  .brand { font-size: 13px; }
+  .header-edition { font-size: 9px; letter-spacing: 0; }
+  .workspace { padding: 29px 0 37px; }
+  h1 { font-size: clamp(32px, 9vw, 51px); letter-spacing: .06em; }
+  .intro { margin-bottom: 23px; }
+  .editor { padding: 15px; }
+  .export-button { padding: 12px; gap: 10px; }
+  .export-copy strong { font-size: 13px; }
+  .export-label { flex-basis: 43px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .export-button { transition: none; }
+}
