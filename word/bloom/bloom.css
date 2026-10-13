@@ -1,78 +1,26 @@
-/* 鳥語花香：網站預覽區主題。 */
+/* 鳥語花香：網站預覽區主題。重點放在藝術字本體，預覽框不另外上背景。 */
 .word-bloom .word-preview-frame {
   position: relative;
   display: grid;
   place-items: center;
-  isolation: isolate;
   min-height: 470px;
-  overflow: hidden;
-  border: 1px solid #d8d4cb;
-  background:
-    radial-gradient(circle at 18% 18%, rgba(245, 222, 226, .62), transparent 32%),
-    radial-gradient(circle at 82% 24%, rgba(223, 236, 210, .54), transparent 34%),
-    linear-gradient(180deg, #fffefd, #f5f3ef);
-}
-
-.word-bloom .checker {
-  position: absolute;
-  inset: 0;
-  background-image:
-    linear-gradient(45deg, rgba(209, 219, 196, .2) 25%, transparent 25%, transparent 75%, rgba(209, 219, 196, .2) 75%),
-    linear-gradient(45deg, rgba(209, 219, 196, .2) 25%, transparent 25%, transparent 75%, rgba(209, 219, 196, .2) 75%);
-  background-position: 0 0, 10px 10px;
-  background-size: 20px 20px;
-  opacity: .34;
+  overflow: visible;
+  border: 0;
+  background: transparent;
 }
 
 .word-bloom .art-image {
   position: relative;
-  z-index: 2;
-  width: min(100%, 495px);
+  z-index: 1;
+  width: min(100%, 540px);
   height: auto;
   max-height: min(72vh, 720px);
   object-fit: contain;
-  filter: drop-shadow(0 7px 11px rgba(129, 96, 108, .16));
+  filter: drop-shadow(0 8px 14px rgba(129, 96, 108, .14));
   user-select: none;
   -webkit-user-drag: none;
 }
 
-.word-bloom .bird-shadow,
-.word-bloom .branch-shadow {
-  position: absolute;
-  z-index: 1;
-  pointer-events: none;
-  opacity: .55;
+.word-bloom .art-image.is-horizontal {
+  width: min(100%, 760px);
 }
-
-.word-bloom .branch-shadow {
-  inset: auto auto 58px -24px;
-  width: 230px;
-  height: 180px;
-  border-left: 2px solid rgba(120, 148, 110, .48);
-  border-bottom: 2px solid rgba(120, 148, 110, .48);
-  border-radius: 0 0 0 180px;
-  transform: rotate(-12deg);
-}
-
-.word-bloom .bird-shadow {
-  top: 52px;
-  right: 74px;
-  width: 78px;
-  height: 50px;
-  background: radial-gradient(circle at 35% 65%, rgba(156, 129, 136, .5), transparent 44%);
-  clip-path: polygon(0 75%, 20% 22%, 51% 0, 82% 31%, 100% 76%, 70% 62%, 44% 100%, 24% 90%);
-}
-
-.word-bloom .petal-mark {
-  position: absolute;
-  z-index: 1;
-  width: 18px;
-  height: 18px;
-  background: rgba(248, 210, 217, .8);
-  border-radius: 75% 0 75% 0;
-  transform: rotate(18deg);
-}
-
-.word-bloom .petal-one { left: 90px; top: 80px; }
-.word-bloom .petal-two { right: 104px; bottom: 92px; transform: rotate(68deg); }
-.word-bloom .petal-three { left: 16%; bottom: 110px; transform: rotate(-18deg); }

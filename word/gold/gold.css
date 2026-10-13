@@ -1,87 +1,26 @@
-/* 金碧輝煌：網站預覽區主題。 */
+/* 金碧輝煌：網站預覽區主題。重點放在藝術字本體，預覽框不另外上背景。 */
 .word-gold .word-preview-frame {
   position: relative;
   display: grid;
   place-items: center;
-  isolation: isolate;
   min-height: 470px;
-  overflow: hidden;
-  border: 1px solid #d5c18e;
-  background:
-    radial-gradient(circle at 20% 20%, rgba(255, 239, 176, .5), transparent 32%),
-    radial-gradient(circle at 80% 24%, rgba(248, 222, 141, .35), transparent 34%),
-    linear-gradient(180deg, #fffcf2, #f7f1df);
-}
-
-.word-gold .checker {
-  position: absolute;
-  inset: 0;
-  background-image:
-    linear-gradient(45deg, rgba(205, 188, 131, .17) 25%, transparent 25%, transparent 75%, rgba(205, 188, 131, .17) 75%),
-    linear-gradient(45deg, rgba(205, 188, 131, .17) 25%, transparent 25%, transparent 75%, rgba(205, 188, 131, .17) 75%);
-  background-position: 0 0, 10px 10px;
-  background-size: 20px 20px;
-  opacity: .45;
+  overflow: visible;
+  border: 0;
+  background: transparent;
 }
 
 .word-gold .art-image {
   position: relative;
-  z-index: 2;
-  width: min(100%, 500px);
+  z-index: 1;
+  width: min(100%, 540px);
   height: auto;
   max-height: min(72vh, 720px);
   object-fit: contain;
-  filter: drop-shadow(0 8px 12px rgba(122, 88, 18, .22));
+  filter: drop-shadow(0 10px 16px rgba(122, 88, 18, .18));
   user-select: none;
   -webkit-user-drag: none;
 }
 
 .word-gold .art-image.is-horizontal {
-  width: min(100%, 720px);
+  width: min(100%, 760px);
 }
-
-.word-gold .gold-glow {
-  position: absolute;
-  inset: 12% 10%;
-  z-index: 1;
-  background: radial-gradient(circle at center, rgba(255, 236, 166, .58), transparent 60%);
-}
-
-.word-gold .gold-arch,
-.word-gold .gold-arch::after {
-  position: absolute;
-  content: '';
-  border: 1px solid rgba(175, 134, 34, .42);
-  pointer-events: none;
-}
-
-.word-gold .gold-arch {
-  inset: 24px;
-}
-
-.word-gold .gold-arch::after {
-  inset: 16px;
-}
-
-.word-gold .gold-spark {
-  position: absolute;
-  width: 10px;
-  height: 10px;
-  z-index: 1;
-}
-
-.word-gold .gold-spark::before,
-.word-gold .gold-spark::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(90deg, transparent, rgba(255, 232, 164, .85), transparent);
-}
-
-.word-gold .gold-spark::after {
-  transform: rotate(90deg);
-}
-
-.word-gold .spark-one { top: 64px; right: 88px; }
-.word-gold .spark-two { bottom: 96px; left: 86px; }
-.word-gold .spark-three { top: 48%; right: 13%; }
