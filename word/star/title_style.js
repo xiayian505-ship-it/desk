@@ -18,7 +18,9 @@ document.addEventListener("DOMContentLoaded", () => {
   let composing = false;
   let busy = false;
 
-  function setButtons(enabled) { svgButton.disabled = pngButton.disabled = kadokadoButton.disabled = !enabled || busy; }
+  function setButtons(enabled) {
+    svgButton.disabled = pngButton.disabled = kadokadoButton.disabled = !enabled || busy;
+  }
   function render(input) {
     const chars = core.splitCharacters(input);
     const text = core.normalize(input);
@@ -28,7 +30,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const valid = !!text;
     setButtons(valid);
     if (!valid) {
-      image.removeAttribute("src"); image.alt = "請輸入一至四個字預覽藝術字";
+      image.removeAttribute("src");
+      image.alt = "請輸入一至四個字預覽藝術字";
       pngSpec.textContent = "透明背景 PNG";
       for (const url of previewURLs) URL.revokeObjectURL(url);
       previewURLs.clear();
@@ -46,7 +49,9 @@ document.addEventListener("DOMContentLoaded", () => {
         previewURLs.clear();
         previewURLs.add(url);
       };
-      image.onerror = () => { status.textContent = "預覽無法顯示，請確認瀏覽器支援 SVG。"; };
+      image.onerror = () => {
+        status.textContent = "預覽無法顯示，請確認瀏覽器支援 SVG。";
+      };
       image.src = url;
       image.alt = `${text}的直式星光藝術字（透明背景）`;
       const size = core.outputSize(text, 2);
@@ -59,17 +64,32 @@ document.addEventListener("DOMContentLoaded", () => {
       setButtons(false);
     }
   }
-  field.addEventListener("compositionstart", () => { composing = true; });
-  field.addEventListener("compositionend", () => { composing = false; render(field.value); });
-  field.addEventListener("input", () => { if (!composing) render(field.value); });
+  field.addEventListener("compositionstart", () => {
+    composing = true;
+  });
+  field.addEventListener("compositionend", () => {
+    composing = false;
+    render(field.value);
+  });
+  field.addEventListener("input", () => {
+    if (!composing) render(field.value);
+  });
   // 由表單 Enter 確認文字，不讓瀏覽器提交並重整。
-  form.addEventListener("submit", event => { event.preventDefault(); if (!composing) render(field.value); });
+  form.addEventListener("submit", event => {
+    event.preventDefault();
+    if (!composing) render(field.value);
+  });
   document.querySelectorAll("[data-example]").forEach(button => {
-    button.addEventListener("click", () => { field.value = button.dataset.example; render(field.value); field.focus(); });
+    button.addEventListener("click", () => {
+      field.value = button.dataset.example;
+      render(field.value);
+      field.focus();
+    });
   });
   async function startDownload(button, action, pendingText) {
     if (busy || !currentText) return;
-    busy = true; setButtons(true);
+    busy = true;
+    setButtons(true);
     status.textContent = pendingText;
     try {
       const result = await action(currentText);
@@ -77,7 +97,10 @@ document.addEventListener("DOMContentLoaded", () => {
     } catch (error) {
       console.error("下載失敗：", error);
       status.textContent = `下載失敗：${error.message}`;
-    } finally { busy = false; setButtons(!!currentText); }
+    } finally {
+      busy = false;
+      setButtons(!!currentText);
+    }
   }
   svgButton.addEventListener("click", () => startDownload(svgButton, core.downloadSVG, "正在準備透明 SVG……"));
   pngButton.addEventListener("click", () => startDownload(pngButton, text => core.downloadPNG(text, 2), "正在製作透明 PNG……"));

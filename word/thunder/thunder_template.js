@@ -1,6 +1,6 @@
 "use strict";
 /* SVG 視覺模板，只負責圖像樣貌：字形與電弧由 thunder.js 注入。 */
-(function(global){
+(function (global) {
   global.SlowlyThunderTemplate = `<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="840" height="1200" viewBox="0 0 840 1200" role="img" aria-labelledby="thunderTitle thunderDesc">
 <title id="thunderTitle">@@TITLE@@</title>

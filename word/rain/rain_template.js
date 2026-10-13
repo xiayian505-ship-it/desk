@@ -1,6 +1,6 @@
 "use strict";
 /* SVG 靜態筆觸、雨痕與墨色定義。實際文字與漣漪由 rain.js 注入。 */
-(function(global){
+(function (global) {
   const SOURCE = String.raw`<svg xmlns="http://www.w3.org/2000/svg" width="840" height="1200" viewBox="0 0 840 1200" role="img" aria-label="@@TITLE@@">
 <title>@@TITLE@@｜雨系藝術字</title><desc>@@DESC@@</desc>
 <defs>
