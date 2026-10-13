@@ -190,7 +190,7 @@ window.SlowlyWordIndex = [
     "title": "極光漫舞",
     "subtitle": "Aurora Lettering",
     "phrase": "極光漫舞",
-    "desc": "七彩極光流光沿筆畫舒展，微光描邊與虹彩緞帶。",
+    "desc": "虹彩漸層、流動光帶與柔亮光暈。讓每一筆都像極光，在無聲的夜色裡緩緩起舞。",
     "keywords": [
         "極光漫舞",
         "Aurora",
@@ -205,7 +205,7 @@ window.SlowlyWordIndex = [
     "title": "琉璃幻彩",
     "subtitle": "Crystal Lettering",
     "phrase": "琉璃幻彩",
-    "desc": "琉璃切面、透明晶體與折射光斑。",
+    "desc": "透亮琉璃、晶體切面與折射光斑。將一束光折成千種顏色，藏進文字的轉角。",
     "keywords": [
         "琉璃幻彩",
         "Crystal",
@@ -220,7 +220,7 @@ window.SlowlyWordIndex = [
     "title": "龍騰九霄",
     "subtitle": "Dragon Lettering",
     "phrase": "龍騰九霄",
-    "desc": "龍鱗紋理、古銅金邊與貼字盤旋的龍鬚。",
+    "desc": "古銅金邊、龍鱗暗紋與盤繞的龍鬚。筆鋒一揚，便有騰躍九霄的氣勢。",
     "keywords": [
         "龍騰九霄",
         "Dragon",
@@ -235,7 +235,7 @@ window.SlowlyWordIndex = [
     "title": "星火燎原",
     "subtitle": "Ember Lettering",
     "phrase": "星火燎原",
-    "desc": "焦炭石墨筆畫、赤焰與沿字燃燒的火星。",
+    "desc": "焦黑炭紋、赤橙餘燼與沿字跳動的火星。讓微小火光從筆畫開始，燒出燎原的聲勢。",
     "keywords": [
         "星火燎原",
         "Ember",
@@ -250,7 +250,7 @@ window.SlowlyWordIndex = [
     "title": "虛實交映",
     "subtitle": "Hologram Lettering",
     "phrase": "虛實交映",
-    "desc": "全息掃描線、青紫彩光與輕微錯位。",
+    "desc": "半透明光層、青紫掃描線與錯位殘影。讓文字游移在真實與幻影之間，忽明忽暗。",
     "keywords": [
         "虛實交映",
         "Hologram",
@@ -265,7 +265,7 @@ window.SlowlyWordIndex = [
     "title": "墨染風華",
     "subtitle": "Ink Lettering",
     "phrase": "墨染風華",
-    "desc": "濃淡墨韻、乾筆飛白、墨色斑點。",
+    "desc": "濃淡墨色、乾筆飛白與散落的墨點。讓每一道筆鋒，都留下紙上未乾的餘韻。",
     "keywords": [
         "墨染風華",
         "Ink",
@@ -280,7 +280,7 @@ window.SlowlyWordIndex = [
     "title": "玉潤生輝",
     "subtitle": "Jade Lettering",
     "phrase": "玉潤生輝",
-    "desc": "溫潤玉石、細密礦脈與金線。",
+    "desc": "溫潤玉色、細密石脈與柔和透光。將一抹含蓄的光澤琢進字裡，不張揚也生輝。",
     "keywords": [
         "玉潤生輝",
         "Jade",
@@ -295,7 +295,7 @@ window.SlowlyWordIndex = [
     "title": "錦織流年",
     "subtitle": "Knit Lettering",
     "phrase": "錦織流年",
-    "desc": "編織針腳、經緯絲線與溫暖布紋。",
+    "desc": "經緯交錯、繡線針腳與溫厚織紋。一針一線，把流年的細節慢慢縫進文字。",
     "keywords": [
         "錦織流年",
         "Knit",
@@ -310,7 +310,7 @@ window.SlowlyWordIndex = [
     "title": "玲瓏鏤影",
     "subtitle": "Lace Lettering",
     "phrase": "玲瓏鏤影",
-    "desc": "蕾絲線結、精密孔洞、白銀刺繡。",
+    "desc": "細密蕾絲、鏤空花紋與銀白絲線。讓光從筆畫的孔隙穿過，留下玲瓏輕巧的影。",
     "keywords": [
         "玲瓏鏤影",
         "Lace",
@@ -325,7 +325,7 @@ window.SlowlyWordIndex = [
     "title": "鏡花水月",
     "subtitle": "Mirror Lettering",
     "phrase": "鏡花水月",
-    "desc": "鏡面切片、冰銀反光與碎鏡折射。",
+    "desc": "鏡面銀光、層疊映像與碎鏡折射。真與幻在字裡互相映照，像一輪撈不起的水中月。",
     "keywords": [
         "鏡花水月",
         "Mirror",
@@ -340,7 +340,7 @@ window.SlowlyWordIndex = [
     "title": "霓虹夜語",
     "subtitle": "Neon Lettering",
     "phrase": "霓虹夜語",
-    "desc": "霓虹燈管、雙色光線與燈光閃爍。",
+    "desc": "霓虹燈管、雙色光暈與細微閃爍。讓沉默的字，在夜色裡亮起自己的語氣。",
     "keywords": [
         "霓虹夜語",
         "Neon",
@@ -355,7 +355,7 @@ window.SlowlyWordIndex = [
     "title": "青花入夢",
     "subtitle": "Porcelain Lettering",
     "phrase": "青花入夢",
-    "desc": "白釉瓷面、青花紋樣、釉色細裂。",
+    "desc": "溫白瓷釉、青藍花紋與纖細冰裂。將一抹古典瓷色燒進筆畫，像夢裡未醒的花。",
     "keywords": [
         "青花入夢",
         "Porcelain",
@@ -370,7 +370,7 @@ window.SlowlyWordIndex = [
     "title": "流沙歲月",
     "subtitle": "Quicksand Lettering",
     "phrase": "流沙歲月",
-    "desc": "沙粒聚字、金色沙紋與沿筆畫滑落的流沙。",
+    "desc": "細金沙粒、風蝕紋理與緩緩滑落的字緣。時間不聲不響，從每一筆的縫隙流過。",
     "keywords": [
         "流沙歲月",
         "Quicksand",
@@ -385,7 +385,7 @@ window.SlowlyWordIndex = [
     "title": "影隨形動",
     "subtitle": "Umbra Lettering",
     "phrase": "影隨形動",
-    "desc": "黑白雙生投影、互相錯位的剪影。",
+    "desc": "黑白剪影、錯位重影與層層投射。光一轉身，文字的另一面便跟著浮現。",
     "keywords": [
         "影隨形動",
         "Umbra",
@@ -400,7 +400,7 @@ window.SlowlyWordIndex = [
     "title": "絲絨華彩",
     "subtitle": "Velvet Lettering",
     "phrase": "絲絨華彩",
-    "desc": "酒紅絲絨、細絨絲理與柔亮緞光。",
+    "desc": "酒紅絨面、細密絨絲與柔亮緞光。讓文字有了可以觸摸的柔軟，華麗卻不喧嘩。",
     "keywords": [
         "絲絨華彩",
         "Velvet",
@@ -415,7 +415,7 @@ window.SlowlyWordIndex = [
     "title": "羽翼生風",
     "subtitle": "Wings Lettering",
     "phrase": "羽翼生風",
-    "desc": "羽毛羽軸、柔白羽絨與輕盈飛舞。",
+    "desc": "羽軸紋理、柔白羽絲與輕揚的碎羽。每一筆都像長出羽翼，隨風悄悄舒展。",
     "keywords": [
         "羽翼生風",
         "Wings",
@@ -430,7 +430,7 @@ window.SlowlyWordIndex = [
     "title": "清音流轉",
     "subtitle": "Xylophone Lettering",
     "phrase": "清音流轉",
-    "desc": "木質音條、木刻紋理與沿筆畫律動的音波。",
+    "desc": "木琴音條、溫潤木紋與沿字擴散的聲波。看不見的旋律，在筆畫間一聲聲漾開。",
     "keywords": [
         "清音流轉",
         "Xylophone",
@@ -445,7 +445,7 @@ window.SlowlyWordIndex = [
     "title": "陰陽相生",
     "subtitle": "Yin-Yang Lettering",
     "phrase": "陰陽相生",
-    "desc": "陰陽黑白漩流、太極互生的光暗筆畫。",
+    "desc": "黑白相映、太極曲線與交融光影。讓相反的兩端，在同一個字裡彼此成全。",
     "keywords": [
         "陰陽相生",
         "Yin-Yang",
@@ -460,7 +460,7 @@ window.SlowlyWordIndex = [
     "title": "開闔之間",
     "subtitle": "Zipper Lettering",
     "phrase": "開闔之間",
-    "desc": "金屬拉鍊齒、開合細節與鋼銀反光。",
+    "desc": "金屬鏈齒、銀灰反光與逐節錯開的筆畫。一拉一合，讓文字露出另一種輪廓。",
     "keywords": [
         "開闔之間",
         "Zipper",
