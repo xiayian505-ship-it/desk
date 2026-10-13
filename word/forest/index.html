@@ -2,16 +2,15 @@
 <html lang="zh-Hant">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#f2eee0">
-  <meta name="description" content="穿林打葉｜林風藝術字產生器。一至四字、可切換橫直式，葉脈雕版風格，下載透明 SVG、PNG 與角角者書封。">
-  <title>穿林打葉｜林風藝術字產生器｜慢慢</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f8f7f5">
+  <meta name="description" content="穿林打葉｜慢慢藝術字。1～4 字、直式與橫式、SVG、透明 PNG 及書封 PNG。">
+  <title>穿林打葉｜慢慢藝術字</title>
 
-  <!-- 軍火庫使用正式 HTTPS 絕對路徑，不複製原始碼到宿主。 -->
+  <!-- 作品特效繼續留在各系列；文字生成核心使用軍火庫 HTTPS 絕對路徑。 -->
   <link rel="stylesheet" href="https://lib.stillnessbyslowly.com/effects/particle/float.css">
   <link rel="stylesheet" href="forest.css">
-  <link rel="stylesheet" href="forest_style.css">
-
+  <link rel="stylesheet" href="../word_style.css">
   <script defer src="https://lib.stillnessbyslowly.com/data/blob/blob_url.js"></script>
   <script defer src="https://lib.stillnessbyslowly.com/Image/png/canvas_png.js"></script>
   <script defer src="https://lib.stillnessbyslowly.com/Image/png/png_download.js"></script>
@@ -23,98 +22,68 @@
   <script defer src="forest_horizontal.js"></script>
   <script defer src="forest_style.js"></script>
 </head>
-<body>
-  <div class="layout">
-    <header class="site-header">
-      <a class="brand" href="https://stillnessbyslowly.com/" target="_blank" rel="noopener noreferrer">
-        <span class="brand-mark" aria-hidden="true">慢</span>
-        <span>慢慢 <small>Stillness by Slowly</small></span>
-      </a>
-      <span class="header-edition">文字工具 <span aria-hidden="true">/</span> FOREST</span>
+<body class="word-forest">
+  <div class="word-workbench">
+    <header class="word-heading">
+      <h1><a href="https://desk.stillnessbyslowly.com/word/index.html" aria-label="穿林打葉，返回慢慢藝術字主頁">穿林打葉<span class="title-period" aria-hidden="true">.</span></a></h1>
     </header>
 
-    <main class="workspace">
-      <section class="controls" aria-labelledby="page-title">
-        <p class="eyebrow">木刻拾光 <span aria-hidden="true">·</span> FOREST LETTERING</p>
-        <h1 id="page-title">穿林打葉<span class="title-mark" aria-hidden="true">〳</span></h1>
-        <p class="subtitle">風穿過枝葉，文字也有了方向。</p>
-        <p class="intro">從山林的層疊樹影、葉脈與木刻痕跡擷取筆觸。讓一至四個字化作深苔與古銅色的藝術題字，帶著風的軌跡，落在妳的作品裡。</p>
+    <main class="word-workspace">
+      <form class="word-editor" id="art-form" novalidate>
+        <div class="word-orientation orientation-switch" role="group" aria-label="文字排列方式">
+          <button type="button" class="word-text-button" data-orientation="vertical" aria-pressed="true">直式</button>
+          <button type="button" class="word-text-button" data-orientation="horizontal" aria-pressed="false">橫式</button>
+        </div>
 
-        <form id="art-form" class="editor" novalidate>
-          <div class="input-head">
-            <label for="art-text">寫下想留下的字</label>
-            <output id="char-count" for="art-text" aria-live="polite">4 / 4</output>
-          </div>
-          <div class="input-wrap">
-            <input id="art-text" name="art-text" type="text" value="穿林打葉" placeholder="一至四個字" maxlength="16" autocomplete="off" spellcheck="false" aria-describedby="text-help">
-            <span class="leaf-punct" aria-hidden="true">❧</span>
-          </div>
-          <p id="text-help" class="field-note">一至四字・可切換直式／橫式・修改即時預覽</p>
-          <div class="orientation-switch" role="group" aria-label="藝術字排列方式">
-            <span class="orientation-label">排列方式</span>
-            <button type="button" data-orientation="vertical" aria-pressed="true">直式</button>
-            <button type="button" data-orientation="horizontal" aria-pressed="false">橫式</button>
-          </div>
-          <div class="example-row" aria-label="範例文字">
-            <span>隨風試寫</span>
-            <button type="button" data-example="穿林打葉">穿林打葉</button>
-            <button type="button" data-example="山嵐">山嵐</button>
-            <button type="button" data-example="風">風</button>
-          </div>
-        </form>
+        <div class="word-field-heading">
+          <label for="art-text">輸入文字</label>
+          <output id="char-count" for="art-text" aria-live="polite">4 / 4</output>
+        </div>
+        <input class="word-input" id="art-text" name="art-text" type="text"
+          value="穿林打葉" placeholder="例如：山嵐"
+          autocomplete="off" spellcheck="false">
+        <div class="word-samples" aria-label="範例文字">
+            <button type="button" class="word-text-button" data-example="穿林打葉">穿林打葉</button>
+            <button type="button" class="word-text-button" data-example="山嵐">山嵐</button>
+            <button type="button" class="word-text-button" data-example="風">風</button>
+        </div>
+      </form>
 
-        <section class="exports" aria-labelledby="exports-title">
-          <div class="section-heading">
-            <h2 id="exports-title">下載作品</h2>
-            <span>EXPORT</span>
-          </div>
-          <div class="export-list">
-            <button class="export-button" type="button" id="download-svg">
-              <span class="export-label">SVG</span>
-              <span class="export-copy"><strong>透明向量藝術字</strong><small id="svg-spec">840 × 1200・向量</small></span>
-              <span class="export-arrow" aria-hidden="true">↗</span>
-            </button>
-            <button class="export-button" type="button" id="download-png">
-              <span class="export-label">PNG</span>
-              <span class="export-copy"><strong>高清透明 PNG</strong><small id="png-spec">1680 × 2400</small></span>
-              <span class="export-arrow" aria-hidden="true">↗</span>
-            </button>
-            <button class="export-button cover-button" type="button" id="download-cover">
-              <span class="export-label">7:10</span>
-              <span class="export-copy"><strong>角角者書封 PNG</strong><small>700 × 1000・等比置中</small></span>
-              <span class="export-arrow" aria-hidden="true">↗</span>
-            </button>
-          </div>
-          <p class="download-status" id="download-status" role="status" aria-live="polite"></p>
-          <p class="license-note">輸出圖片保持透明。自備字型或其他素材時，請自行確認使用授權；本工具不提供第三方字型檔。</p>
-        </section>
+      <section class="word-preview-section" aria-labelledby="word-preview-title">
+        <h2 id="word-preview-title" class="word-section-title">作品預覽</h2>
+        <div class="word-preview presentation">
+          <figure class="word-preview-frame art-stage" id="art-stage">
+            <div class="checker" aria-hidden="true"></div>
+            <span class="floating-leaf leaf-one slowly-particle-float" aria-hidden="true"></span>
+            <span class="floating-leaf leaf-two slowly-particle-float" aria-hidden="true"></span>
+            <span class="floating-leaf leaf-three slowly-particle-float" aria-hidden="true"></span>
+            <img id="art-image" class="art-image" alt="林風藝術字預覽" width="840" height="1200">
+            <span class="stage-corner corner-one" aria-hidden="true"></span>
+            <span class="stage-corner corner-two" aria-hidden="true"></span>
+          </figure>
+        </div>
       </section>
 
-      <section class="presentation" aria-labelledby="preview-title">
-        <div class="preview-top">
-          <h2 id="preview-title">林間試印</h2>
-          <span class="small-note"><span class="live-dot" aria-hidden="true"></span> LIVE PREVIEW</span>
+      <section class="word-exports" aria-labelledby="word-exports-title">
+        <h2 id="word-exports-title" class="word-section-title">下載作品</h2>
+        <div class="word-downloads">
+          <button type="button" id="download-svg" class="word-text-button">SVG</button>
+          <button type="button" id="download-png" class="word-text-button">透明 PNG</button>
+          <button type="button" id="download-cover" class="word-text-button">角角者書封 PNG</button>
         </div>
-        <figure class="art-stage" id="art-stage">
-          <div class="checker" aria-hidden="true"></div>
-          <span class="floating-leaf leaf-one slowly-particle-float" aria-hidden="true"></span>
-          <span class="floating-leaf leaf-two slowly-particle-float" aria-hidden="true"></span>
-          <span class="floating-leaf leaf-three slowly-particle-float" aria-hidden="true"></span>
-          <img id="art-image" class="art-image" width="840" height="1200" alt="穿林打葉直式林風藝術字，背景透明">
-          <span class="stage-corner corner-one" aria-hidden="true"></span>
-          <span class="stage-corner corner-two" aria-hidden="true"></span>
-        </figure>
-        <div class="preview-bottom">
-          <span>TRANSPARENT ARTWORK</span>
-          <span>FOREST · 04</span>
+        <p id="download-status" class="word-download-status" role="status" aria-live="polite"></p>
+        <!-- 現有 UI 會更新這些規格值；不佔用作品頁面的說明空間。 -->
+        <div class="word-visually-hidden" aria-hidden="true">
+          <span id="png-spec">1680 × 2400</span>
+          <span id="svg-spec" class="word-visually-hidden">840 × 1200</span>
         </div>
-        <p class="preview-footnote">格紋與飄葉僅為網頁預覽裝飾，不會出現在輸出的圖片背景中。</p>
       </section>
     </main>
 
-    <footer class="site-footer">
-      <span>穿林打葉 · 夏熠安</span>
-      <span>慢慢文字工具系列 / 04</span>
+    <footer class="sbs-signature" aria-label="Stillness by Slowly">
+      <span class="sbs-signature-mark">慢 慢</span>
+      <span class="sbs-signature-separator" aria-hidden="true">|</span>
+      <span class="sbs-signature-name">Stillness by Slowly</span>
     </footer>
   </div>
 </body>

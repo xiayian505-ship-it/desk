@@ -1,0 +1,339 @@
+/* 慢慢藝術字｜四系列共用操作介面 v2
+ * 宿主保有所有外觀控制；藝術字內容及下載交給各系列現有 JS。
+ * 不將此 CSS 放入軍火庫，也不設定 SVG 模板的字型、顏色或裝飾。
+ */
+:root {
+  --word-bg: #f8f7f5;
+  --word-paper: #ffffff;
+  --word-text: #302f37;
+  --word-muted: #77747e;
+  --word-line: #dedbe0;
+  --word-accent: #7b6682;
+  --word-soft: #f0ecef;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-width: 0;
+  background: var(--word-bg);
+  color: var(--word-text);
+  font-family: -apple-system, BlinkMacSystemFont, "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+  line-height: 1.65;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+.word-workbench {
+  width: min(calc(100% - 32px), 850px);
+  margin: 0 auto;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding: 52px 0 24px;
+}
+
+.word-heading {
+  border-bottom: 1px solid var(--word-line);
+  padding-bottom: 26px;
+}
+
+.word-heading h1 {
+  margin: 0;
+  font-size: clamp(1.9rem, 5vw, 2.55rem);
+  font-weight: 650;
+  letter-spacing: 0.08em;
+  line-height: 1.3;
+}
+
+.word-heading a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.word-heading a:hover,
+.word-heading a:focus-visible {
+  color: var(--word-accent);
+}
+
+.word-heading .title-period {
+  color: #aa91ae;
+}
+
+.word-workspace {
+  flex: 1 0 auto;
+  padding: 32px 0 52px;
+}
+
+.word-orientation {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 28px;
+  margin-bottom: 26px;
+}
+
+.word-text-button {
+  appearance: none;
+  border: 0;
+  border-radius: 0;
+  padding: 0 0 5px;
+  background: transparent;
+  color: var(--word-muted);
+  font-size: 0.99rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.word-text-button:hover,
+.word-text-button:focus-visible {
+  color: var(--word-accent);
+}
+
+.word-text-button:focus-visible,
+.word-heading a:focus-visible {
+  outline: 2px solid var(--word-accent);
+  outline-offset: 5px;
+}
+
+.word-text-button[aria-pressed="true"] {
+  color: var(--word-accent);
+  border-bottom: 2px solid var(--word-accent);
+  font-weight: 700;
+  padding-bottom: 3px;
+}
+
+.word-text-button:disabled {
+  opacity: 0.38;
+  cursor: not-allowed;
+}
+
+.word-editor {
+  margin: 0;
+}
+
+.word-field-heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.word-field-heading label,
+.word-section-title {
+  font-size: 0.95rem;
+  font-weight: 650;
+}
+
+.word-field-heading output {
+  color: var(--word-muted);
+  font-size: 0.82rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.word-input {
+  display: block;
+  width: 100%;
+  min-height: 52px;
+  padding: 11px 14px;
+  border: 1px solid var(--word-line);
+  border-radius: 0;
+  outline: none;
+  background: var(--word-paper);
+  color: var(--word-text);
+  font-size: 1.06rem;
+}
+
+.word-input:focus {
+  border-color: var(--word-accent);
+}
+
+.word-samples {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 9px 20px;
+  margin-top: 15px;
+}
+
+.word-samples .word-text-button {
+  padding-bottom: 2px;
+  font-size: 0.84rem;
+}
+
+.word-preview-section {
+  margin-top: 35px;
+}
+
+.word-section-title {
+  margin: 0 0 14px;
+  line-height: 1.5;
+}
+
+/* 統一的是外圍布局；內部畫布仍交由各款原本的 *_template.js 與功能 CSS。 */
+.word-workbench .word-preview {
+  min-width: 0;
+  margin: 0;
+  padding: 14px;
+  background: var(--word-paper);
+  border: 1px solid var(--word-line);
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.word-workbench .word-preview-frame {
+  width: 100%;
+  min-height: 450px;
+  max-height: 700px;
+  margin: 0;
+  overflow: hidden;
+  border-radius: 0;
+}
+
+.word-workbench .word-preview-frame .art-image {
+  display: block;
+  position: relative;
+  z-index: 1;
+  width: min(100%, 540px);
+  height: auto;
+  max-height: 630px;
+  min-height: 0;
+  object-fit: contain;
+}
+
+.word-workbench .word-preview-frame .art-image.is-horizontal {
+  width: min(100%, 720px);
+  max-height: 420px;
+}
+
+/* rain.js 會依 #page-rain 建立動態雨幕，將它留在作品預覽區。 */
+.word-rain .word-preview-frame .page-rain {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  opacity: 0.4;
+}
+
+.word-rain .word-preview-frame .art-image {
+  z-index: 2;
+}
+
+/* 原本的 Thunder 預覽動態只影響作品畫布，不將深色背景帶入操作介面。 */
+.word-thunder .word-preview-frame {
+  aspect-ratio: auto;
+}
+
+.word-exports {
+  margin-top: 34px;
+}
+
+.word-downloads {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px 27px;
+  padding: 0;
+}
+
+.word-downloads .word-text-button {
+  font-size: 0.94rem;
+}
+
+.word-download-status {
+  margin: 10px 0 0;
+  min-height: 1.5em;
+  font-size: 0.84rem;
+  color: var(--word-accent);
+}
+
+.word-download-status:empty {
+  min-height: 0;
+  margin: 0;
+}
+
+/* 給原有 UI 邏輯更新尺寸的資料節點；不在畫面增加說明。 */
+.word-visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.sbs-signature {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  margin-top: auto;
+  padding: 20px 0 8px;
+  border-top: 1px solid var(--word-line);
+  color: var(--word-muted);
+  font-size: 0.86rem;
+}
+
+.sbs-signature-mark {
+  color: var(--word-text);
+  font-weight: 700;
+  letter-spacing: 0.22em;
+}
+
+.sbs-signature-separator {
+  color: #b9b5bf;
+}
+
+@media (max-width: 600px) {
+  .word-workbench {
+    width: min(calc(100% - 24px), 850px);
+    padding-top: 38px;
+  }
+
+  .word-workspace {
+    padding-top: 24px;
+    padding-bottom: 38px;
+  }
+
+  .word-workbench .word-preview {
+    padding: 9px;
+  }
+
+  .word-workbench .word-preview-frame {
+    min-height: 365px;
+    max-height: 550px;
+  }
+
+  .word-workbench .word-preview-frame .art-image {
+    max-height: 520px;
+  }
+
+  .word-workbench .word-preview-frame .art-image.is-horizontal {
+    max-height: 280px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}

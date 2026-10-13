@@ -2,16 +2,17 @@
 <html lang="zh-Hant">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#080d19">
-  <meta name="description" content="電閃雷鳴：輸入一至四字，生成直式或橫式雷電藝術字，下載靜態／動態 SVG、透明 PNG 與 700×1000 書封。慢慢 Stillness by Slowly。">
-  <title>電閃雷鳴｜文字設計工房・慢慢</title>
-  <!-- 慢慢軍火庫以正式 HTTPS 絕對連結引用；外觀仍由本站控制。 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f8f7f5">
+  <meta name="description" content="電閃雷鳴｜慢慢藝術字。1～4 字、直式與橫式、SVG、透明 PNG 及書封 PNG。">
+  <title>電閃雷鳴｜慢慢藝術字</title>
+
+  <!-- 作品特效繼續留在各系列；文字生成核心使用軍火庫 HTTPS 絕對路徑。 -->
   <link rel="stylesheet" href="https://lib.stillnessbyslowly.com/effects/light/glow.css">
   <link rel="stylesheet" href="https://lib.stillnessbyslowly.com/effects/light/electric_border.css">
   <link rel="stylesheet" href="https://lib.stillnessbyslowly.com/effects/celebration/flash_shake.css">
   <link rel="stylesheet" href="thunder.css">
-  <link rel="stylesheet" href="thunder_style.css">
+  <link rel="stylesheet" href="../word_style.css">
   <script defer src="https://lib.stillnessbyslowly.com/Image/png/canvas_png.js"></script>
   <script defer src="https://lib.stillnessbyslowly.com/Image/png/png_download.js"></script>
   <script defer src="https://lib.stillnessbyslowly.com/data/blob/blob_url.js"></script>
@@ -24,66 +25,70 @@
   <script defer src="thunder_animated.js"></script>
   <script defer src="thunder_style.js"></script>
 </head>
-<body>
-  <div class="storm-haze" aria-hidden="true"></div>
-  <div class="site-shell">
-    <header class="site-header">
-      <a class="brand" href="https://desk.stillnessbyslowly.com/" aria-label="慢慢工具區首頁">
-        <span class="brand-symbol" aria-hidden="true">ϟ</span>
-        <span>STILLNESS <span class="brand-secondary">BY SLOWLY</span></span>
-      </a>
-      <span class="page-code">WORD / <b>THUNDER</b> <span class="code-divider">—</span> 03</span>
+<body class="word-thunder">
+  <div class="word-workbench">
+    <header class="word-heading">
+      <h1><a href="https://desk.stillnessbyslowly.com/word/index.html" aria-label="電閃雷鳴，返回慢慢藝術字主頁">電閃雷鳴<span class="title-period" aria-hidden="true">.</span></a></h1>
     </header>
 
-    <main class="layout">
-      <section class="control-area" aria-labelledby="title">
-        <div class="section-eyebrow"><span class="eyebrow-mark">//</span> VOLTAGE LETTERING LAB <span class="mini-line"></span></div>
-        <h1 id="title">電閃<span>雷鳴</span><span class="h1-spark">⚡</span></h1>
-        <p class="subtitle">讓每一筆，都像劃破長夜的雷。</p>
-        <p class="intro">給文字一點失控的力量。焦黑筆鋒、藍白裂光與細碎電弧，為一至四個字留下風暴瞬間。</p>
+    <main class="word-workspace">
+      <form class="word-editor" id="art-form" novalidate>
+        <div class="word-orientation orientation-switch" role="group" aria-label="文字排列方式">
+          <button type="button" class="word-text-button" data-orientation="vertical" aria-pressed="true">直式</button>
+          <button type="button" class="word-text-button" data-orientation="horizontal" aria-pressed="false">橫式</button>
+        </div>
 
-        <form id="art-form" class="input-card" novalidate>
-          <div class="field-heading"><label for="art-text">輸入你的文字 <span>YOUR WORDS</span></label><output id="char-count" for="art-text">4 / 4</output></div>
-          <div class="input-wrap"><input id="art-text" type="text" name="art-text" value="電閃雷鳴" placeholder="輸入 1～4 個字" spellcheck="false" autocomplete="off" aria-describedby="input-hint"/><span class="input-bolt" aria-hidden="true">ϟ</span></div>
-          <p class="field-hint" id="input-hint">最多四個字 · 即時預覽 · 可切換直式／橫式</p>
-          <div class="orientation-switch" role="group" aria-label="藝術字排列方式">
-            <span class="orientation-label">排列方式</span>
-            <button type="button" data-orientation="vertical" aria-pressed="true">直式</button>
-            <button type="button" data-orientation="horizontal" aria-pressed="false">橫式</button>
+        <div class="word-field-heading">
+          <label for="art-text">輸入文字</label>
+          <output id="char-count" for="art-text" aria-live="polite">4 / 4</output>
+        </div>
+        <input class="word-input" id="art-text" name="art-text" type="text"
+          value="電閃雷鳴" placeholder="例如：驚雷"
+          autocomplete="off" spellcheck="false">
+        <div class="word-samples" aria-label="範例文字">
+            <button type="button" class="word-text-button" data-example="電閃雷鳴">電閃雷鳴</button>
+            <button type="button" class="word-text-button" data-example="驚雷">驚雷</button>
+            <button type="button" class="word-text-button" data-example="裂光">裂光</button>
+        </div>
+      </form>
+
+      <section class="word-preview-section" aria-labelledby="word-preview-title">
+        <h2 id="word-preview-title" class="word-section-title">作品預覽</h2>
+        <div class="word-preview preview-panel">
+          <div class="word-preview-frame preview-frame" id="preview-frame">
+            <div class="checker" aria-hidden="true"></div>
+            <div class="preview-haze" aria-hidden="true"></div>
+            <div class="glow-axis" aria-hidden="true"></div>
+            <img id="art-image" class="art-image" alt="雷電藝術字預覽" width="840" height="1200">
+            <div class="frame-corner top-left" aria-hidden="true"></div>
+            <div class="frame-corner bottom-right" aria-hidden="true"></div>
           </div>
-          <div class="examples"><span>試試看</span><button type="button" data-example="電閃雷鳴">電閃雷鳴</button><button type="button" data-example="驚雷">驚雷</button><button type="button" data-example="裂光">裂光</button></div>
-        </form>
-
-        <section class="download-area" aria-labelledby="downloads-title">
-          <div class="download-heading"><h2 id="downloads-title">輸出作品</h2><span>EXPORT / 04 OPTIONS</span></div>
-          <div class="download-buttons">
-            <button type="button" id="download-svg" class="download-btn primary slowly-glow"><span class="btn-mark">01</span><span class="btn-text"><strong>SVG 向量圖</strong><small id="svg-spec">840 × 1200 · 透明</small></span><span class="btn-arrow" aria-hidden="true">↘</span></button>
-            <button type="button" id="download-png" class="download-btn secondary slowly-glow"><span class="btn-mark">02</span><span class="btn-text"><strong>高清透明 PNG</strong><small id="png-spec">1680 × 2400 · 2 倍</small></span><span class="btn-arrow" aria-hidden="true">↘</span></button>
-            <button type="button" id="download-cover" class="download-btn secondary cover slowly-glow"><span class="btn-mark">03</span><span class="btn-text"><strong>角角者書封 PNG</strong><small>700 × 1000 · 7:10 · 透明</small></span><span class="btn-arrow" aria-hidden="true">↘</span></button>
-            <button type="button" id="download-animated-svg" class="download-btn secondary animated slowly-glow"><span class="btn-mark">04</span><span class="btn-text"><strong>動態 SVG</strong><small>雷光閃爍 · 循環播放 · 透明</small></span><span class="btn-arrow" aria-hidden="true">↘</span></button>
-          </div>
-          <p id="download-status" class="status" role="status" aria-live="polite"></p>
-          <p class="animated-svg-hint">動態 SVG 下載後請以支援 SVG 動畫的瀏覽器開啟；部分編輯器只會顯示靜態畫面。</p>
-        </section>
-
-        <div class="bottom-info"><div><span class="info-key">TEXT LIMIT</span><b>01 — 04</b></div><div><span class="info-key">BACKGROUND</span><b>TRANSPARENT</b></div><div><span class="info-key">LAYOUT</span><b id="orientation-fact">VERTICAL</b></div></div>
+        </div>
       </section>
 
-      <section class="preview-panel slowly-electric-border with-glow is-active" aria-label="雷電藝術字即時預覽">
-        <div class="preview-header"><span><span class="live-indicator" aria-hidden="true"></span> LIVE ARTWORK</span><span>STORM // 001</span></div>
-        <div class="preview-frame" id="preview-frame">
-          <div class="checker" aria-hidden="true"></div>
-          <div class="preview-haze" aria-hidden="true"></div>
-          <div class="glow-axis" aria-hidden="true"></div>
-          <img class="art-image" id="art-image" alt="電閃雷鳴藝術字，透明背景" width="840" height="1200">
-          <div class="frame-corner top-left" aria-hidden="true"></div><div class="frame-corner bottom-right" aria-hidden="true"></div>
+      <section class="word-exports" aria-labelledby="word-exports-title">
+        <h2 id="word-exports-title" class="word-section-title">下載作品</h2>
+        <div class="word-downloads">
+          <button type="button" id="download-svg" class="word-text-button">SVG</button>
+          <button type="button" id="download-png" class="word-text-button">透明 PNG</button>
+          <button type="button" id="download-cover" class="word-text-button">角角者書封 PNG</button>
+          <button type="button" id="download-animated-svg" class="word-text-button">動態 SVG</button>
         </div>
-        <div class="preview-foot"><span>ϟ &nbsp; VOLTAGE ACTIVE</span><span>TRANSPARENT CANVAS</span></div>
-        <p class="preview-tip">棋盤格及網頁背景僅供預覽，不會輸出到圖片。</p>
+        <p id="download-status" class="word-download-status" role="status" aria-live="polite"></p>
+        <!-- 現有 UI 會更新這些規格值；不佔用作品頁面的說明空間。 -->
+        <div class="word-visually-hidden" aria-hidden="true">
+          <span id="png-spec">1680 × 2400</span>
+          <span id="orientation-fact" class="word-visually-hidden" aria-live="polite">Vertical</span>
+          <span id="svg-spec" class="word-visually-hidden">840 × 1200</span>
+        </div>
       </section>
     </main>
-    <footer class="site-footer"><span>電閃雷鳴・慢慢文字工具區</span><span>夏熠安 <i>×</i> STILLNESS BY SLOWLY</span></footer>
-    <aside class="license-note" aria-label="字型使用提醒">本工具不提供第三方字型檔。若使用其他字型製作作品，請自行確認字型與商業使用授權。SVG 文字顯示會因裝置字型不同而略有差異；若需固定外觀，請使用 PNG。</aside>
+
+    <footer class="sbs-signature" aria-label="Stillness by Slowly">
+      <span class="sbs-signature-mark">慢 慢</span>
+      <span class="sbs-signature-separator" aria-hidden="true">|</span>
+      <span class="sbs-signature-name">Stillness by Slowly</span>
+    </footer>
   </div>
 </body>
 </html>
