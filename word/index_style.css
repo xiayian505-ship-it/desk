@@ -355,6 +355,30 @@ button {
   text-shadow: 0 0 12px #98d5ff86;
 }
 
+
+.card-visual[data-visual="gold"] {
+  color: #8b6d1a;
+  background: linear-gradient(145deg, #f9f0cb, #fffaf0);
+}
+
+.card-visual[data-visual="gold"] .card-art-text {
+  text-shadow: 0 0 12px #fff3b0;
+}
+
+.card-visual[data-visual="bloom"] {
+  color: #7f6c74;
+  background: linear-gradient(145deg, #f5e9ea, #eef4e6);
+}
+
+.card-visual[data-visual="snow"] {
+  color: #6a7990;
+  background: linear-gradient(145deg, #edf4fb, #f7f9fc);
+}
+
+.card-visual[data-visual="snow"] .card-art-text {
+  text-shadow: 0 0 12px #eef6ff;
+}
+
 .card-content {
   display: flex;
   flex-direction: column;

@@ -1,0 +1,81 @@
+/* 大雪紛飛：網站預覽區主題。 */
+.word-snow .word-preview-frame {
+  position: relative;
+  display: grid;
+  place-items: center;
+  isolation: isolate;
+  min-height: 470px;
+  overflow: hidden;
+  border: 1px solid #d4deea;
+  background:
+    radial-gradient(circle at 18% 18%, rgba(225, 239, 252, .65), transparent 30%),
+    radial-gradient(circle at 78% 16%, rgba(242, 249, 255, .85), transparent 35%),
+    linear-gradient(180deg, #f8fbfd, #eef3f8);
+}
+
+.word-snow .checker {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(45deg, rgba(205, 217, 231, .18) 25%, transparent 25%, transparent 75%, rgba(205, 217, 231, .18) 75%),
+    linear-gradient(45deg, rgba(205, 217, 231, .18) 25%, transparent 25%, transparent 75%, rgba(205, 217, 231, .18) 75%);
+  background-position: 0 0, 10px 10px;
+  background-size: 20px 20px;
+  opacity: .4;
+}
+
+.word-snow .art-image {
+  position: relative;
+  z-index: 2;
+  width: min(100%, 500px);
+  height: auto;
+  max-height: min(72vh, 720px);
+  object-fit: contain;
+  filter: drop-shadow(0 8px 12px rgba(102, 127, 153, .16));
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.word-snow .mist-haze {
+  position: absolute;
+  inset: 14% 12%;
+  z-index: 1;
+  background: radial-gradient(circle at center, rgba(240, 247, 255, .88), transparent 58%);
+}
+
+.word-snow .snow-mark {
+  position: absolute;
+  z-index: 1;
+  width: 10px;
+  height: 10px;
+}
+
+.word-snow .snow-mark::before,
+.word-snow .snow-mark::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.95), transparent);
+}
+
+.word-snow .snow-mark::after {
+  transform: rotate(90deg);
+}
+
+.word-snow .snow-mark span,
+.word-snow .snow-mark span::before {
+  position: absolute;
+  content: '';
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(223, 241, 255, .88), transparent);
+  transform: rotate(45deg);
+}
+
+.word-snow .snow-mark span::before {
+  transform: rotate(90deg);
+}
+
+.word-snow .flake-one { top: 78px; left: 94px; }
+.word-snow .flake-two { top: 146px; right: 100px; }
+.word-snow .flake-three { bottom: 104px; left: 18%; }
+.word-snow .flake-four { bottom: 82px; right: 19%; }

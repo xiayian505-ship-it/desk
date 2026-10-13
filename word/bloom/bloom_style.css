@@ -1,0 +1,13 @@
+/* 鳥語花香：頁面主題細節。 */
+.word-bloom .word-heading .title-period,
+.word-bloom .word-text-button[aria-pressed="true"],
+.word-bloom .word-text-button:hover,
+.word-bloom .word-text-button:focus-visible,
+.word-bloom .word-heading a:hover,
+.word-bloom .word-heading a:focus-visible {
+  color: #9a7583;
+}
+
+.word-bloom .word-text-button[aria-pressed="true"] {
+  border-bottom-color: #9a7583;
+}

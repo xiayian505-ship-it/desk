@@ -1,0 +1,13 @@
+/* 金碧輝煌：頁面主題細節。 */
+.word-gold .word-heading .title-period,
+.word-gold .word-text-button[aria-pressed="true"],
+.word-gold .word-text-button:hover,
+.word-gold .word-text-button:focus-visible,
+.word-gold .word-heading a:hover,
+.word-gold .word-heading a:focus-visible {
+  color: #9a7718;
+}
+
+.word-gold .word-text-button[aria-pressed="true"] {
+  border-bottom-color: #9a7718;
+}

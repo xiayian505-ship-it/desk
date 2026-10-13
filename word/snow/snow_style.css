@@ -1,0 +1,13 @@
+/* 大雪紛飛：頁面主題細節。 */
+.word-snow .word-heading .title-period,
+.word-snow .word-text-button[aria-pressed="true"],
+.word-snow .word-text-button:hover,
+.word-snow .word-text-button:focus-visible,
+.word-snow .word-heading a:hover,
+.word-snow .word-heading a:focus-visible {
+  color: #6d88a6;
+}
+
+.word-snow .word-text-button[aria-pressed="true"] {
+  border-bottom-color: #6d88a6;
+}
