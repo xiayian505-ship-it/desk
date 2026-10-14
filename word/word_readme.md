@@ -149,6 +149,7 @@ word/
 ```
 
 - 說明資料分成 **兩個 JSON**：`index_notes.json` 是主體說明；`viewer_content.json` 是檢視模式入口與檢視室介紹。JSON 只改文字／入口設定，互動邏輯仍留在 JS。檢視模式增加時先新增對應頁面與功能，再將入口加入 `modes`；新增 JSON 不能自行生成新工具。
+- 「使用前，看一下」的說明列表由 `index_content.js` 依 `index_notes.json` 建立，預設全部收合；以軍火庫 `https://lib.stillnessbyslowly.com/state/tree_selection.js` 的 `TreeSelection.create({ expansion: "single" })` 管理互斥展開。授權條文維持正式書面用語，文字調整只修改 JSON，不將 Tree 零件原始碼複製到宿主。
 - **正式路徑是 `word/shared/`，不是 `word/_shared/`**。GitHub Pages 預設 Jekyll 可能忽略 `_` 開頭的資料夾；不要重新引入 `_shared/` 作為瀏覽器載入目錄。
 - 每款的 `_style.js` **不再重複實作共用 UI**，僅提供 `window.SlowlyWordPageConfig` 與必要的專屬特效接線；格式以 `word/shared/README.md` 為準。
 - 一般作品 HTML 維持共用頁所需引用，作品獨有預覽結構留在 `word-preview-template`；不要把完整的標題／輸入／下載／頁尾 HTML 複製回每款。

@@ -17,6 +17,7 @@
   <script defer src="https://lib.stillnessbyslowly.com/fiction/Fiction_search.js"></script>
   <script defer src="https://lib.stillnessbyslowly.com/fiction/Fiction_paginate.js"></script>
   <script defer src="https://lib.stillnessbyslowly.com/ui/tabs/tabs.js"></script>
+  <script defer src="https://lib.stillnessbyslowly.com/state/tree_selection.js"></script>
   <script defer src="./index_data.js"></script>
   <script defer src="./index.js"></script>
   <script defer src="./index_style.js"></script>
@@ -38,17 +39,14 @@
       </nav>
 
       <section class="view-panel" data-view-panel="directory" aria-label="慢慢看">
-        <div class="section-heading">
-          <div>
-            <h2>慢慢看</h2>
-          </div>
+        <div class="directory-count">
           <p class="section-side-note" id="collectionCount"></p>
         </div>
 
         <div class="search-area">
-          <label for="wordSearch">搜尋藝術字</label>
           <input
             id="wordSearch"
+            aria-label="搜尋藝術字"
             type="search"
             placeholder="名稱、英文代號或關鍵字，例如：雷電、star…"
             autocomplete="off"

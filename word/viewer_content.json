@@ -2,7 +2,6 @@
   "modes": [
     {
       "id": "svg",
-      "eyebrow": "SVG / VIEWER",
       "title": "SVG 檢視室",
       "description": "下載的 SVG 無法在手機預覽？帶回這裡看動畫與向量細節。不上傳、不存檔，重新整理就清空。",
       "linkText": "開啟檢視室",
