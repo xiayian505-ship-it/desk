@@ -1,75 +1,37 @@
 <!doctype html>
 <html lang="zh-Hant">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#f8f7f5">
-  <meta name="description" content="錦織流年｜慢慢藝術字。1～4 字、直橫式、SVG、透明 PNG 與書封 PNG。">
-  <title>錦織流年｜慢慢藝術字</title>
-  <!-- 軍火庫：可獨立組合且不複製源碼，宿主控制色彩和強度。 -->
-  <link rel="stylesheet" href="https://lib.stillnessbyslowly.com/effects/light/glow.css">
-  <link rel="stylesheet" href="https://lib.stillnessbyslowly.com/effects/hover/lift.css">
-  <link rel="stylesheet" href="knit.css">
-  <link rel="stylesheet" href="../word_style.css">
-  <link rel="stylesheet" href="knit_style.css">
-  <script defer src="https://lib.stillnessbyslowly.com/data/blob/blob_url.js"></script>
-  <script defer src="https://lib.stillnessbyslowly.com/Image/png/canvas_png.js"></script>
-  <script defer src="https://lib.stillnessbyslowly.com/Image/png/png_download.js"></script>
-  <script defer src="https://lib.stillnessbyslowly.com/component/text_generator/text_generator_component.js"></script>
-  <script defer src="https://lib.stillnessbyslowly.com/component/text_generator/text_generator_core.js"></script>
-  <script defer src="https://lib.stillnessbyslowly.com/component/text_generator/text_generator_horizontal_component.js"></script>
-  <script defer src="../word_material_core.js"></script>
-  <script defer src="knit_template.js"></script>
-  <script defer src="knit.js"></script>
-  <script defer src="knit_horizontal.js"></script>
-  <script defer src="knit_style.js"></script>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1, viewport-fit=cover" name="viewport"/>
+<meta content="#f8f7f5" name="theme-color"/>
+<meta content="錦織流年｜慢慢藝術字。1～4 字、直橫式、SVG、透明 PNG 與書封 PNG。" name="description"/>
+<title>錦織流年｜慢慢藝術字</title>
+<!-- 軍火庫：可獨立組合且不複製源碼，宿主控制色彩和強度。 -->
+<link href="https://lib.stillnessbyslowly.com/effects/light/glow.css" rel="stylesheet"/>
+<link href="https://lib.stillnessbyslowly.com/effects/hover/lift.css" rel="stylesheet"/>
+<link href="knit.css" rel="stylesheet"/>
+<link href="../word_style.css" rel="stylesheet"/>
+<link href="knit_style.css" rel="stylesheet"/>
+<script defer="" src="https://lib.stillnessbyslowly.com/data/blob/blob_url.js"></script>
+<script defer="" src="https://lib.stillnessbyslowly.com/Image/png/canvas_png.js"></script>
+<script defer="" src="https://lib.stillnessbyslowly.com/Image/png/png_download.js"></script>
+<script defer="" src="https://lib.stillnessbyslowly.com/component/text_generator/text_generator_component.js"></script>
+<script defer="" src="https://lib.stillnessbyslowly.com/component/text_generator/text_generator_core.js"></script>
+<script defer="" src="https://lib.stillnessbyslowly.com/component/text_generator/text_generator_horizontal_component.js"></script>
+<script defer="" src="../word_material_core.js"></script>
+<script defer="" src="knit_template.js"></script>
+<script defer="" src="knit.js"></script>
+<script defer="" src="knit_horizontal.js"></script>
+<script defer="" src="knit_style.js"></script>
+  <script defer src="../_shared/word_page.js"></script>
 </head>
 <body class="word-knit">
-  <div class="word-workbench">
-    <header class="word-heading">
-      <h1><a href="https://desk.stillnessbyslowly.com/word/index.html" aria-label="返回慢慢藝術字主頁">錦織流年</a></h1>
-    </header>
-    <main class="word-workspace">
-      <form class="word-editor" id="art-form" novalidate>
-        <div class="word-orientation orientation-switch" role="group" aria-label="文字排列方式">
-          <button type="button" class="word-text-button" data-orientation="vertical" aria-pressed="true">直式</button>
-          <button type="button" class="word-text-button" data-orientation="horizontal" aria-pressed="false">橫式</button>
-        </div>
-        <div class="word-field-heading">
-          <label for="art-text">輸入文字</label>
-          <output id="char-count" for="art-text" aria-live="polite">4 / 4</output>
-        </div>
-        <input class="word-input" id="art-text" name="art-text" type="text" value="錦織流年" placeholder="例如：編織" autocomplete="off" spellcheck="false">
-        <div class="word-samples" aria-label="範例文字">
-          <button type="button" class="word-text-button" data-example="錦織流年">錦織流年</button>
-          <button type="button" class="word-text-button" data-example="編織">編織</button>
-          <button type="button" class="word-text-button" data-example="歲月">歲月</button>
-        </div>
-      </form>
-      <section class="word-preview-section" aria-labelledby="word-preview-title">
-        <h2 id="word-preview-title" class="word-section-title">作品預覽</h2>
-        <div class="word-preview presentation">
-          <figure class="word-preview-frame" id="preview-frame">
-            <img id="art-image" class="art-image slowly-glow slowly-lift" alt="錦織流年藝術字預覽" width="840" height="1200">
-          </figure>
-        </div>
-      </section>
-      <section class="word-exports" aria-labelledby="word-exports-title">
-        <h2 id="word-exports-title" class="word-section-title">下載作品</h2>
-        <div class="word-downloads">
-          <button type="button" id="download-svg" class="word-text-button">SVG</button>
-          <button type="button" id="download-png" class="word-text-button">透明 PNG</button>
-          <button type="button" id="download-cover" class="word-text-button">角角者書封 PNG</button>
-        </div>
-        <p id="download-status" class="word-download-status" role="status" aria-live="polite"></p>
-        <div class="word-visually-hidden" aria-hidden="true"><span id="png-spec">1680 × 2400</span></div>
-      </section>
-    </main>
-    <footer class="sbs-signature" aria-label="Stillness by Slowly">
-      <span class="sbs-signature-mark">慢 慢</span>
-      <span class="sbs-signature-separator" aria-hidden="true">|</span>
-      <span class="sbs-signature-name">Stillness by Slowly</span>
-    </footer>
-  </div>
+  <template id="word-preview-template">
+<div class="word-preview presentation">
+<figure class="word-preview-frame" id="preview-frame">
+<img alt="錦織流年藝術字預覽" class="art-image slowly-glow slowly-lift" height="1200" id="art-image" width="840"/>
+</figure>
+</div>
+  </template>
 </body>
 </html>
