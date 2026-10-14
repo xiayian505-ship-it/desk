@@ -85,7 +85,7 @@
 - 沿用 `desk/word/` 現有作品頁的**統一 UI**：共用控制器是 `word/shared/word_page.js`，統一樣式是 `word/word_style.css`。不得在新款重寫一套介面。
 - 作品的 `index.html` 保留必要的 script / stylesheet 引用與 `<template id="word-preview-template">` 專屬預覽舞台；由共用控制器建立操作頁。`<代號>_style.js` 只宣告作品設定與必要特效回呼。
 - 保留即時預覽、直／橫切換、範例文字、下載區、透明棋盤格及手機版操作。
-- 網站標題遵守全系列一致的樣式；**不加裝飾點、不擅自替頁面標題加底線或特效**。
+- 各款作品頁的標題遵守全系列一致的樣式；**不加裝飾點、不擅自替作品頁標題加底線或特效**。主頁「慢慢藝術字」則經使用者另行定案：以軍火庫 `effects/typography/shine_text.css` 套流動漸層，宿主設定陰影與色票；主頁副標由 `index_notes.json` 取文案，以軍火庫 `effects/typography/marquee.css` 循環橫移。兩項原件一律 HTTPS 引用，不複製入專案；副標只循環原本的文字，不加入星號或裝飾符號。首頁標題不放 Enso 圓環。
 - 全站頁尾左右統一：左側「慢 慢 | Stillness by Slowly」連結 `https://stillnessbyslowly.com/`，右側「夏熠安」以純文字連結 `https://www.threads.com/@xiayian505`；不放箭頭、社群圖示或引導文字。共用樣式由 `word/shared/footer.css` 管理。
 - 主頁新增作品時，只需加入目錄資料、對應入口與必要視覺色票；作品簡介維持**短文案**，不額外增加長篇敘述。
 - 「慢慢看」六項說明文字從 `word/index_notes.json` 讀取；01～03 是授權條款，04「展現心動模樣」、05「寄放心動模樣」、06「製作心動模樣」是作品說明。外層六項使用軍火庫 TreeSelection 互斥收合；05 由 JSON 的 `formats` 陣列建立 SVG／PNG 內層互斥收合，內部的 `variants` 只作為一般小標題。新增 GIF、MPEG 等格式，先加資料，再確認下載功能是否真的提供，不能因說明新增而宣稱已支援。
@@ -150,7 +150,7 @@ word/
 ```
 
 - 說明資料分成 **兩個 JSON**：`index_notes.json` 是主體說明；`viewer_content.json` 是檢視模式入口與檢視室介紹。JSON 只改文字／入口設定，互動邏輯仍留在 JS。檢視模式增加時先新增對應頁面與功能，再將入口加入 `modes`；新增 JSON 不能自行生成新工具。
-- 「使用前，看一下」的說明列表由 `index_content.js` 依 `index_notes.json` 建立，預設全部收合；以軍火庫 `https://lib.stillnessbyslowly.com/state/tree_selection.js` 的 `TreeSelection.create({ expansion: "single" })` 管理互斥展開。授權條文維持正式書面用語，文字調整只修改 JSON，不將 Tree 零件原始碼複製到宿主。
+- 主頁 01～06 說明列表由 `index_content.js` 依 `index_notes.json` 建立，預設全部收合；標題文字留空，但 `.notes-heading` 須保留原本的標題高度及間距，不得讓清單往上移。以軍火庫 `https://lib.stillnessbyslowly.com/state/tree_selection.js` 的 `TreeSelection.create({ expansion: "single" })` 管理互斥展開。授權條文維持正式書面用語，文字調整只修改 JSON，不將 Tree 零件原始碼複製到宿主。
 - **正式路徑是 `word/shared/`，不是 `word/_shared/`**。GitHub Pages 預設 Jekyll 可能忽略 `_` 開頭的資料夾；不要重新引入 `_shared/` 作為瀏覽器載入目錄。
 - 每款的 `_style.js` **不再重複實作共用 UI**，僅提供 `window.SlowlyWordPageConfig` 與必要的專屬特效接線；格式以 `word/shared/README.md` 為準。
 - 一般作品 HTML 維持共用頁所需引用，作品獨有預覽結構留在 `word-preview-template`；不要把完整的標題／輸入／下載／頁尾 HTML 複製回每款。

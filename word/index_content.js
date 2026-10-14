@@ -18,6 +18,25 @@
     return response.json();
   }
 
+  // 主頁副標文字仍由 JSON 管理；重複的兩段軌道供軍火庫 Marquee 無縫循環。
+  // 複本只是視覺效果，輔助工具僅讀取原句一次。
+  function showTagline(value) {
+    const root = byId("wordTagline");
+    const text = String(value || "").trim();
+    const readable = el("span", "word-tagline-reading", text);
+    root.replaceChildren(readable);
+    if (!text) return;
+
+    const track = el("span", "slowly-marquee__track");
+    track.setAttribute("aria-hidden", "true");
+    // 一輪文字寬度大於桌機可見範圍，避免跑馬燈在寬螢幕露出空白。
+    // 只重複原始副標文案，不加入星號、分隔圖示或其他裝飾字元。
+    const cycleText = Array(5).fill(text).join("　　") + "　　";
+    const cycle = el("span", "word-tagline-cycle", cycleText);
+    track.append(cycle, cycle.cloneNode(true));
+    root.append(track);
+  }
+
   // 05 格式說明：資料只負責內容，互斥展開由軍火庫 Tree Selection 控制。
   // 此層只需要 SVG、PNG 等格式；其下的小標題單純閱讀，不再套收合。
   function appendTextBlocks(target, value) {
@@ -70,9 +89,16 @@
     try {
       const data = await readJSON("./index_notes.json");
       if (!data.notes || !Array.isArray(data.notes.items)) throw new Error("說明資料格式不正確");
-      byId("wordTagline").textContent = data.tagline || "";
+      showTagline(data.tagline);
       byId("searchHint").textContent = data.searchHint || "";
-      heading.textContent = data.notes.title || "";
+      const notesTitle = String(data.notes.title || "").trim();
+      heading.textContent = notesTitle;
+      heading.hidden = !notesTitle;
+      if (!notesTitle) {
+        const section = list.closest(".notes");
+        section?.removeAttribute("aria-labelledby");
+        section?.setAttribute("aria-label", "藝術字授權與說明");
+      }
 
       // 只借用軍火庫 Tree Selection 的展開狀態；宿主負責 HTML、CSS 與文字。
       // 若外部零件暫時讀不到，仍保留原生 details 的基本收合功能。
@@ -115,7 +141,8 @@
       }
     } catch (error) {
       console.error("[慢慢看] 說明 JSON 讀取失敗：", error);
-      heading.textContent = "使用前，看一下";
+      heading.textContent = "";
+      heading.hidden = true;
       list.replaceChildren(el("p", "search-status", "說明文字載入失敗，請稍後重新整理。"));
     }
   }
