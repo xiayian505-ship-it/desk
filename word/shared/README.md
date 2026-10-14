@@ -60,7 +60,7 @@ window.SlowlyWordPageConfig = Object.freeze({
 
 1. SVG
 2. 透明 PNG
-3. 角角者書封 PNG（700 × 1000）
+3. 書封 PNG（700 × 1000）
 4. 動態 SVG
 
 **尚未製作動態 SVG 的舊款，第 4 個按鈕仍顯示但停用。** 不要因為統一 UI 就宣稱全部既有作品已經有動畫，也不做假下載。

@@ -18,6 +18,52 @@
     return response.json();
   }
 
+  // 05 格式說明：資料只負責內容，互斥展開由軍火庫 Tree Selection 控制。
+  // 此層只需要 SVG、PNG 等格式；其下的小標題單純閱讀，不再套收合。
+  function appendTextBlocks(target, value) {
+    String(value || '').split(/\n\s*\n/).filter(Boolean).forEach(paragraph => {
+      target.append(el("p", "", paragraph.trim()));
+    });
+  }
+
+  function buildFormats(formats) {
+    const root = el("div", "notice-format-list");
+    const formatTree = window.TreeSelection?.create({ expansion: "single" }) || null;
+    const panels = [];
+
+    formats.forEach((format, index) => {
+      const key = String(format.id || `format-${index + 1}`);
+      const article = el("details", "notice-format");
+      article.name = "slowly-download-formats";
+      const header = el("summary", "notice-format-toggle", format.title || "");
+      const body = el("div", "notice-format-body");
+      appendTextBlocks(body, format.intro);
+
+      (Array.isArray(format.variants) ? format.variants : []).forEach(variant => {
+        const section = el("section", "notice-format-variant");
+        section.append(el("h4", "notice-format-variant-title", variant.title || ""));
+        appendTextBlocks(section, variant.text);
+        body.append(section);
+      });
+      article.append(header, body);
+      root.append(article);
+      panels.push({ key, article, header });
+    });
+
+    if (formatTree) {
+      panels.forEach(({ key, header }) => {
+        header.addEventListener("click", event => {
+          event.preventDefault();
+          formatTree.toggleExpanded(key);
+          panels.forEach(panel => {
+            panel.article.open = formatTree.isExpanded(panel.key);
+          });
+        });
+      });
+    } // 軍火庫暫時無法載入時，原生 details + name 仍可互斥收合。
+    return root;
+  }
+
   async function showNotes() {
     const heading = byId("notesTitle");
     const list = byId("noticeList");
@@ -41,15 +87,13 @@
         const num = el("span", "notice-index", String(index + 1).padStart(2, "0"));
         num.setAttribute("aria-hidden", "true");
         const title = el("span", "notice-title", item.title || "");
-        const arrow = el("span", "notice-arrow");
-        arrow.setAttribute("aria-hidden", "true");
-        header.append(num, title, arrow);
+        header.append(num, title);
 
         const body = el("div", "notice-body");
         body.id = id;
-        // 以空白行區分段落，方便直接在 JSON 裡修改正式授權文字。
-        const paragraphs = String(item.text || "").split(/\n\s*\n/).filter(Boolean);
-        paragraphs.forEach(paragraph => body.append(el("p", "", paragraph.trim())));
+        // 正式授權與一般文案仍使用純文字欄位，不解讀 HTML。
+        appendTextBlocks(body, item.text);
+        if (Array.isArray(item.formats)) body.append(buildFormats(item.formats));
         article.append(header, body);
         panels.push({ key, article, header });
         return article;

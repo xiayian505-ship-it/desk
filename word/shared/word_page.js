@@ -37,7 +37,7 @@
           <div class="word-downloads">
             <button type="button" id="download-svg" class="word-text-button">SVG</button>
             <button type="button" id="download-png" class="word-text-button">透明 PNG</button>
-            <button type="button" id="download-cover" class="word-text-button">角角者書封 PNG</button>
+            <button type="button" id="download-cover" class="word-text-button">書封 PNG</button>
             <button type="button" id="download-animated-svg" class="word-text-button" disabled title="本款動態 SVG 尚未製作">動態 SVG</button>
           </div>
           <p id="download-status" class="word-download-status" role="status" aria-live="polite"></p>
