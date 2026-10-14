@@ -4,7 +4,7 @@ window.SlowlyWordPageConfig = Object.freeze({
   title: "開闔之間",
   initial: "開闔之間",
   placeholder: "例如：開闔",
-  examples: ["開闔之間", "開闔", "合頁"],
+  examples: ["開闔之間", "開闔", "扣上"],
   vertical: "SlowlyZipperArt",
-  horizontal: "SlowlyZipperHorizontalArt",
+  horizontal: "SlowlyZipperHorizontalArt"
 });
