@@ -767,49 +767,11 @@ button {
   text-shadow: 0 3px 0 rgba(10, 14, 18, .82), 0 0 14px rgba(162, 203, 234, .18);
 }
 
-/* 慢慢看｜SVG 檢視室入口（固定工具，不納入 A～Z 作品清單）。 */
-.svg-viewer-entry {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 16px 24px;
-  margin-top: 27px;
-  padding: 22px 23px;
-  border: 1px solid var(--line);
-  background: var(--paper);
+/* 黑羽舞動｜首頁辨識卡 */
+.card-visual[data-visual="feather"] {
+  color: #ecedf3;
+  background: linear-gradient(135deg, #111219, #555966 48%, #0b0c10);
 }
-
-.svg-viewer-entry-copy {
-  flex: 1 1 260px;
-}
-
-.svg-viewer-entry h2 {
-  margin: 0 0 6px;
-  font-size: 1.06rem;
-  font-weight: 700;
-  letter-spacing: .04em;
-}
-
-.svg-viewer-entry p:not(.section-number) {
-  margin: 0;
-  color: var(--muted);
-  font-size: .81rem;
-  line-height: 1.8;
-}
-
-.svg-viewer-entry-link {
-  flex: 0 0 auto;
-  color: var(--accent);
-  font-size: .85rem;
-  font-weight: 700;
-  text-decoration: none;
-  border-bottom: 1px solid var(--accent);
-  padding: 0 0 4px;
-}
-
-.svg-viewer-entry-link:hover,
-.svg-viewer-entry-link:focus-visible {
-  color: var(--text);
-  border-bottom-color: var(--text);
+.card-visual[data-visual="feather"] .card-art-text {
+  text-shadow: 0 0 10px rgba(243, 244, 252, .24), 2px 3px 1px #08080d;
 }

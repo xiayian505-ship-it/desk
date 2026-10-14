@@ -5,6 +5,16 @@
  */
 window.SlowlyWordIndex = [
   {
+    "code": "feather",
+    "title": "黑羽舞動",
+    "subtitle": "Feather Lettering",
+    "phrase": "黑羽舞動",
+    "desc": "玄黑羽影與斜向雙箭交錯。銀灰炫彩沿斷裂的雙重字框掠過，像羽翼穿行於無聲的風。",
+    "keywords": ["黑羽舞動", "Feather", "黑羽", "羽毛", "斷裂外框", "炫彩", "雙箭頭", "直式", "橫式", "動態 SVG"],
+    "href": "https://desk.stillnessbyslowly.com/word/feather/index.html",
+    "visual": "feather"
+  },
+  {
     "code": "forest",
     "title": "穿林打葉",
     "subtitle": "Forest Lettering",
