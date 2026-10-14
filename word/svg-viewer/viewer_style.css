@@ -248,3 +248,49 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* 與統一作品頁共享版心：防止長檔名及手機控制列把整頁撐寬。 */
+.svg-viewer-page .word-workspace,
+.svg-viewer-page .viewer-heading,
+.svg-viewer-page .viewer-upload,
+.svg-viewer-page .viewer-section,
+.svg-viewer-page .viewer-controls,
+.svg-viewer-page .viewer-information {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.viewer-file-button {
+  text-align: center;
+}
+
+.viewer-viewport {
+  max-width: 100%;
+}
+
+.viewer-info-grid,
+.viewer-info-grid dd {
+  min-width: 0;
+}
+
+@media (max-width: 600px) {
+  .viewer-controls {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 13px;
+  }
+
+  .viewer-control-group {
+    min-width: 0;
+  }
+
+  .viewer-zoom-label {
+    justify-content: space-between;
+    min-width: 0;
+  }
+
+  .viewer-zoom-label select {
+    max-width: 100%;
+    min-width: 0;
+  }
+}

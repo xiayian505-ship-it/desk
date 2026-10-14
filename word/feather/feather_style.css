@@ -1,7 +1,3 @@
-/* 黑羽舞動：網頁互動細節，不改其他系列的共享 UI。 */
-.word-feather .word-heading h1 a {
-  /* Minimal Underline 預覽借用原件；正式 SVG 裡使用自足雙層錯位斷線。 */
-  --slowly-line-size: 70%;
-  --slowly-line-color: #555966;
-  --slowly-line-opacity: .66;
-}
+/* 黑羽舞動：標題維持與其他專案一致，不在頁面標題套用 Minimal Underline。
+ * 斷裂線特效保留在作品 SVG 本體的雙層錯位外框，不額外影響網站 UI。
+ */
