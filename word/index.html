@@ -20,13 +20,14 @@
   <script defer src="./index_data.js"></script>
   <script defer src="./index.js"></script>
   <script defer src="./index_style.js"></script>
+  <script defer src="./index_content.js"></script>
 </head>
 <body>
   <main class="outline-page word-page">
     <header class="page-heading">
       <div class="heading-copy">
         <h1>慢慢藝術字</h1>
-        <p class="tagline">把想說的話，慢慢寫成喜歡的模樣。</p>
+        <p class="tagline" id="wordTagline"></p>
       </div>
     </header>
 
@@ -54,49 +55,22 @@
             spellcheck="false"
             enterkeyhint="search"
           >
-          <p class="search-hint">搜尋涵蓋所有字母。點擊結果會跳到作品所在的分頁與頁碼。</p>
+          <p class="search-hint" id="searchHint"></p>
           <p class="search-status" id="searchStatus" role="status" aria-live="polite"></p>
           <div class="search-results" id="searchResults"></div>
         </div>
 
-        <section class="svg-viewer-entry" aria-labelledby="svgViewerEntryTitle">
-          <div class="svg-viewer-entry-copy">
-            <p class="section-number">SVG <span aria-hidden="true">/</span> VIEWER</p>
-            <h2 id="svgViewerEntryTitle">SVG 檢視室</h2>
-            <p>下載的 SVG 無法在手機預覽？帶回這裡看動畫與向量細節。不上傳、不存檔，重新整理就清空。</p>
-          </div>
-          <a href="./svg-viewer/index.html" class="svg-viewer-entry-link">開啟檢視室 <span aria-hidden="true">→</span></a>
-        </section>
+        <!-- 入口由 viewer_content.json 的 modes 清單建立；一個檢視模式對應一張入口卡片。 -->
+        <div id="viewerEntries"></div>
 
         <section class="notes" aria-labelledby="notesTitle">
           <div class="section-heading notes-heading">
             <div>
-              <h2 id="notesTitle">使用前，看一下</h2>
+              <h2 id="notesTitle"></h2>
             </div>
           </div>
-          <div class="notice-list">
-            <article class="notice">
-              <span class="notice-index" aria-hidden="true">01</span>
-              <div>
-                <h3>字型與素材授權</h3>
-                <p>藝術字工具不提供第三方字型檔，也不代表替使用者取得字型或素材的使用授權。若自行更換字型、加入素材，請先確認對應授權，尤其是商業用途與再散布條件。</p>
-              </div>
-            </article>
-            <article class="notice">
-              <span class="notice-index" aria-hidden="true">02</span>
-              <div>
-                <h3>SVG 與裝置字型</h3>
-                <p>部分 SVG 文字會依開啟裝置可用的字型顯示，跨裝置可能略有差異。需要固定視覺時，請優先確認 PNG 輸出效果；如有動態 SVG，請用支援動畫的瀏覽器開啟。</p>
-              </div>
-            </article>
-            <article class="notice">
-              <span class="notice-index" aria-hidden="true">03</span>
-              <div>
-                <h3>下載與書封</h3>
-                <p>各系列提供的格式和尺寸以該工具頁面標示為準。700 × 1000 的書封 PNG 是圖檔尺寸，正式上傳前仍請檢查使用平台的最新規範與授權要求。</p>
-              </div>
-            </article>
-          </div>
+          <!-- 提醒內容由 index_notes.json 的 notes.items 建立。 -->
+          <div class="notice-list" id="noticeList"></div>
         </section>
       </section>
 

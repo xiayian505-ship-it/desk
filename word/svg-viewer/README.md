@@ -29,5 +29,9 @@
 - `viewer.js`：檔案驗證、安全圖片顯示與生命週期
 - `viewer_style.css`：網站 UI 外觀
 - `viewer_style.js`：UI 操作與資訊更新
+- `viewer_content.js`：讀取 `../viewer_content.json` 的 `pages.svg`，填入檢視室介紹、隱私提醒及空白提示
+- `../viewer_content.json`：檢視工具的入口 `modes` 清單與各工具頁說明（目前 `pages.svg`）
 
-首頁僅修改 `word/index.html` 與 `word/index_style.css`，其他作品產生器不變。
+首頁檢視工具入口由 `word/index_content.js` 從 `word/viewer_content.json` 生成；說明主體另放 `word/index_notes.json`。
+
+如增加其他檢視模式，先完成該工具自己的頁面與程式，再在 `modes` 加入口；**JSON 不會自動產生新的檢視功能**。藝術字產生器及本機檔案安全規則維持不變。

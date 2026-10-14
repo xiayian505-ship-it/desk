@@ -11,24 +11,25 @@
   <link rel="stylesheet" href="./viewer_style.css">
   <script defer src="./viewer.js"></script>
   <script defer src="./viewer_style.js"></script>
+  <script defer src="./viewer_content.js"></script>
 </head>
 <body class="svg-viewer-page">
   <div class="word-workbench">
     <header class="word-heading">
-      <h1><a href="../index.html" aria-label="返回慢慢藝術字首頁">SVG 檢視室</a></h1>
+      <h1><a href="../index.html" aria-label="返回慢慢藝術字首頁" id="viewerPageTitle">SVG 檢視室</a></h1>
     </header>
 
     <main class="word-workspace">
       <div class="viewer-heading">
-        <p class="viewer-eyebrow">SVG / VECTOR VIEWER</p>
-        <p class="viewer-lead">打開剛下載的 SVG，在瀏覽器檢查文字、向量細節與動畫。</p>
+        <p class="viewer-eyebrow" id="viewerEyebrow"></p>
+        <p class="viewer-lead" id="viewerLead"></p>
       </div>
 
       <section class="viewer-upload" aria-label="選擇檔案">
         <label class="viewer-file-button" for="svg-file">選擇本機 SVG</label>
         <input id="svg-file" class="viewer-file-input" type="file" accept=".svg,image/svg+xml" aria-describedby="viewer-privacy">
         <button class="viewer-clear" id="clear-file" type="button" disabled>清空預覽</button>
-        <p id="viewer-privacy" class="viewer-privacy">檔案只在這個瀏覽器分頁檢視，不傳送、不存檔；重新整理後即清空。</p>
+        <p id="viewer-privacy" class="viewer-privacy"></p>
       </section>
 
       <section class="viewer-section" aria-labelledby="viewer-preview-title">
@@ -57,7 +58,7 @@
 
         <div class="viewer-viewport is-empty" id="svg-viewport" data-background="checker" role="region" aria-label="SVG 檢視畫面" tabindex="0">
           <div class="viewer-stage" id="viewer-stage">
-            <p class="viewer-placeholder" id="viewer-placeholder">請先選擇 SVG 檔案，或將檔案拖曳到這裡。</p>
+            <p class="viewer-placeholder" id="viewer-placeholder"></p>
             <!-- 故意只用 img：外來 SVG 無法在主頁執行 script 或存取頁面。 -->
             <img id="svg-preview" alt="選取的 SVG 作品" hidden>
           </div>
