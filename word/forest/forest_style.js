@@ -7,6 +7,7 @@ window.SlowlyWordPageConfig = Object.freeze({
   examples: ["穿林打葉", "山嵐", "風"],
   vertical: "SlowlyForestArt",
   horizontal: "SlowlyForestHorizontalArt",
+  animated: "SlowlyForestAnimatedArt",
   previewMode: "controller",
   mountEffects({ image, status }) {
     image.addEventListener('error', () => {

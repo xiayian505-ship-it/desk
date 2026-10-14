@@ -3,8 +3,8 @@
 window.SlowlyWordPageConfig = Object.freeze({
   title: "筆下星辰",
   initial: "筆下星辰",
-  placeholder: "例如：星河入夢",
-  examples: ["星河入夢", "相思", "月"],
+  placeholder: "例如：星光",
+  examples: ["筆下星辰", "相思", "月"],
   vertical: "SlowlyStarArt",
   horizontal: "SlowlyStarHorizontalArt",
   animated: "SlowlyStarAnimatedArt",

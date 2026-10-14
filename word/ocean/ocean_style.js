@@ -7,6 +7,7 @@ window.SlowlyWordPageConfig = Object.freeze({
   examples: ["煙波浩渺", "海霧", "潮汐"],
   vertical: "SlowlyOceanArt",
   horizontal: "SlowlyOceanHorizontalArt",
+  animated: "SlowlyOceanExportArt",
   mountEffects() {
     const canvas = document.getElementById('ocean-fog');
     let fog = null;

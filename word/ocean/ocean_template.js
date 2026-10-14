@@ -8,7 +8,7 @@
   const FONT = '"Noto Serif CJK TC", "Source Han Serif TC", "Songti TC", "PMingLiU", serif';
   const round = value => Math.round(value * 10) / 10;
 
-  function oceanWaves(positions) {
+  function oceanWaves(positions, animated = false) {
     /* 造出「海平線一層層退至無窮遠」的字內波浪。所有波浪都 clip 進字形。 */
     return positions.map(({x, y, size}, index) => {
       const lines = [];
@@ -36,8 +36,8 @@
         }
       }
       return `<g id="ocean-waves-${index}">${lines.join('\n')}
-        <animateTransform attributeName="transform" type="translate" values="0 0;${round(index % 2 === 0 ? 12 : -12)} 0;0 0"
-          dur="${8.2 + index * 1.3}s" repeatCount="indefinite"/>
+        ${animated ? `<animateTransform attributeName="transform" type="translate" values="0 0;${round(index % 2 === 0 ? 12 : -12)} 0;0 0"
+          dur="${8.2 + index * 1.3}s" repeatCount="indefinite"/>` : ''}
       </g>`;
     }).join('\n');
   }
@@ -189,7 +189,7 @@
   <g fill="none" stroke="#c8edf0" stroke-width="11" stroke-linejoin="round" opacity=".66">${uses}</g>
   <g fill="url(#oceanFace)" stroke="url(#oceanOutline)" stroke-width="4.2" stroke-linejoin="round" paint-order="stroke fill">${uses}</g>
   <g id="letter-ocean" clip-path="url(#letterMask)">
-    ${oceanWaves(points)}
+    ${oceanWaves(points, !!config.animated)}
     ${oceanDepth(points)}
     ${waterGlints(points)}
     ${cloudsInLetters(points)}

@@ -14,14 +14,14 @@
     3: [[420,230,280,-2],[412,601,280,1],[428,965,280,-1]],
     4: [[417,174,248,-3],[429,453,248,1],[408,736,248,-2],[428,1014,248,2]]
   };
-  function renderSVG(text,helpers) {
+  function renderSVG(text,helpers,animated=false) {
     const places=arrangements[helpers.splitCharacters(text).length].map(([x,y,size,angle])=>({x,y,size,angle}));
-    return art.renderSVG(text,helpers,{width:W,height:H,orientation:'vertical',positions:places});
+    return art.renderSVG(text,helpers,{width:W,height:H,orientation:'vertical',positions:places,animated});
   }
   const instance=component.create({
     maxChars:MAX,
     sourceSize:{width:W,height:H},
-    renderSVG,
+    renderSVG: (text,helpers) => renderSVG(text,helpers),
     presets:{png:{scale:2},cover:{width:700,height:1000,fit:'contain',paddingX:54,paddingY:48}},
     filenames:{
       svg: text=>`${component.fileSafe(text)}_煙波浩渺.svg`,
@@ -29,7 +29,17 @@
       cover: text=>`${component.fileSafe(text)}_角角者書封_700x1000.png`
     }
   });
+  // 與靜態輸出分開：保留水波動畫供預覽與「動態 SVG」下載。
+  const animatedInstance=component.create({
+    maxChars:MAX,
+    sourceSize:{width:W,height:H},
+    renderSVG:(text,helpers)=>renderSVG(text,helpers,true),
+    filenames:{svg:text=>`${component.fileSafe(text)}_煙波浩渺_動態.svg`}
+  });
   global.SlowlyOceanArt=Object.freeze({
+    hasAnimatedSVG:true,
+    generateAnimatedSVG:animatedInstance.generateSVG,
+    downloadAnimatedSVG:animatedInstance.downloadSVG,
     MAX,
     characters:component.splitCharacters,
     normalize:instance.normalize,
