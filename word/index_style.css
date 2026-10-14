@@ -864,12 +864,15 @@ button {
   font-size: .85rem;
   font-weight: 700;
   text-decoration: none;
-  border-bottom: 1px solid var(--accent);
-  padding: 0 0 4px;
+  /* 用文字本身做入口，不加底線或箭頭。 */
 }
 
 .svg-viewer-entry-link:hover,
 .svg-viewer-entry-link:focus-visible {
   color: var(--text);
-  border-bottom-color: var(--text);
+}
+
+.svg-viewer-entry-link:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
 }

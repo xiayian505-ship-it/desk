@@ -86,7 +86,7 @@
 - 作品的 `index.html` 保留必要的 script / stylesheet 引用與 `<template id="word-preview-template">` 專屬預覽舞台；由共用控制器建立操作頁。`<代號>_style.js` 只宣告作品設定與必要特效回呼。
 - 保留即時預覽、直／橫切換、範例文字、下載區、透明棋盤格及手機版操作。
 - 網站標題遵守全系列一致的樣式；**不加裝飾點、不擅自替頁面標題加底線或特效**。
-- 網站頁尾保留「慢 慢 | Stillness by Slowly」。
+- 全站頁尾左右統一：左側「慢 慢 | Stillness by Slowly」連結 `https://stillnessbyslowly.com/`，右側「夏熠安」以純文字連結 `https://www.threads.com/@xiayian505`；不放箭頭、社群圖示或引導文字。共用樣式由 `word/shared/footer.css` 管理。
 - 主頁新增作品時，只需加入目錄資料、對應入口與必要視覺色票；作品簡介維持**短文案**，不額外增加長篇敘述。
 - 「慢慢看」文字從 `word/index_notes.json` 讀取；檢視室入口清單與 SVG 檢視室說明從 `word/viewer_content.json` 讀取。**改文案只改對應 JSON**，除非介面結構真的改變。
 - 作品目錄已在 `word/index_data.js` 獨立管理；新增作品只加資料，不把作品卡片寫回 `index.html`。

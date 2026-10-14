@@ -10,7 +10,7 @@
 
 | 修改目標 | 優先看 | 不需要順手改 |
 | --- | --- | --- |
-| 全系列標題、輸入框、下載位置、頁尾 | `word/shared/word_page.js`、`word/word_style.css` | 各款 SVG 模板／視覺效果 |
+| 全系列標題、輸入框、下載位置、頁尾 | `word/shared/word_page.js`、`word/word_style.css`、`word/shared/footer.css`；首頁及檢視室頁尾亦分別在自己的 `index.html` | 各款 SVG 模板／視覺效果 |
 | 單款精修 | 該作品的 `index.html`、`_style.js`、繪圖 JS／SVG 模板、必要 CSS | 其他全部作品 |
 | 新款接入共用頁 | `word/word_readme.md`、本檔、現有單款的接入範例、首頁目錄資料 | 複製一整套舊版 UI |
 | 單款特效有問題 | 該款預覽 `<template>`、`_style.js`、專用 CSS／軍火庫引用 | 共用頁樣式（除非確定是共通問題） |
@@ -23,6 +23,7 @@
 
 - **`word/shared/word_page.js`**：共用 HTML、標題、輸入與字數、直橫切換、預覽控制、四個下載按鈕、狀態提示和頁尾。
 - **`word/word_style.css`**：全系列共用的作品頁外觀與排版，由宿主網站管理。
+- **`word/shared/footer.css`**：全站共同頁尾樣式。首頁單獨引用，作品頁及 SVG 檢視室由 `word_style.css` 引用。左側品牌名稱連到主站，右側「夏熠安」純文字連到個人頁，不使用箭頭或社群圖示。
 - **每款 `index.html`**：引用共用樣式、軍火庫與本款生成器、作品設定；`<template id="word-preview-template">` 內只保留本款特別需要的預覽舞台 DOM。
 - **每款 `<代號>_style.js`**：設定 `window.SlowlyWordPageConfig`；必要時增加預覽特效回呼，**不要再複製共用輸入與下載事件**。
 - **每款繪圖／橫式／動態／SVG 模板 JS**：專屬的字體、配色、構圖、效果與實際匯出內容；不因修改 UI 而重寫。

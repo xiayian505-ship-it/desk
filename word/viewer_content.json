@@ -11,7 +11,6 @@
   "pages": {
     "svg": {
       "title": "SVG 檢視室",
-      "eyebrow": "SVG / VECTOR VIEWER",
       "lead": "打開剛下載的 SVG，在瀏覽器檢查文字、向量細節與動畫。",
       "privacy": "檔案只在這個瀏覽器分頁檢視，不傳送、不存檔；重新整理後即清空。",
       "placeholder": "請先選擇 SVG 檔案，或將檔案拖曳到這裡。"

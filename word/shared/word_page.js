@@ -48,11 +48,14 @@
           </div>
         </section>
       </main>
-      <footer class="sbs-signature" aria-label="Stillness by Slowly">
+      <footer class="sbs-signature sbs-footer" aria-label="品牌與創作者">
+      <a class="sbs-footer-brand" href="https://stillnessbyslowly.com/" aria-label="慢慢｜Stillness by Slowly 主站">
         <span class="sbs-signature-mark">慢 慢</span>
         <span class="sbs-signature-separator" aria-hidden="true">|</span>
         <span class="sbs-signature-name">Stillness by Slowly</span>
-      </footer>
+      </a>
+      <a class="sbs-footer-author" href="https://www.threads.com/@xiayian505" target="_blank" rel="noopener noreferrer" aria-label="夏熠安的個人頁">夏熠安</a>
+    </footer>
     </div>`;
     const slot = document.getElementById('word-art-stage-slot');
     // 作品獨有的預覽舞台原封不動放進共用外殼，保持 CSS 與特效容器識別碼。

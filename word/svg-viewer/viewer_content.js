@@ -11,7 +11,6 @@
     if (!page) throw new Error("缺少 pages.svg 說明資料");
     const fields = {
       viewerPageTitle: "title",
-      viewerEyebrow: "eyebrow",
       viewerLead: "lead",
       "viewer-privacy": "privacy",
       "viewer-placeholder": "placeholder"

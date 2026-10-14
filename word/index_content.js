@@ -101,7 +101,6 @@
         copy.append(heading, description);
         const link = el("a", "svg-viewer-entry-link", mode.linkText || "開啟檢視室");
         link.href = href;
-        link.append(el("span", "", " →"));
         card.append(copy, link);
         return card;
       });

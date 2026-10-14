@@ -7,14 +7,6 @@
   margin-bottom: 26px;
 }
 
-.viewer-eyebrow {
-  color: var(--word-accent);
-  letter-spacing: .15em;
-  font-size: .73rem;
-  font-weight: 700;
-  margin: 0 0 6px;
-}
-
 .viewer-lead {
   font-size: .91rem;
   line-height: 1.8;
