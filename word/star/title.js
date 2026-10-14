@@ -3,7 +3,7 @@
 (function (global) {
   if (!global.SlowlyTextGenerator) throw new Error("請先載入 text_generator_component.js");
   const TEMPLATE = global.SlowlyStarArtTemplate;
-  const WIDTH = 820;
+  const OUTPUT_SIZE = Object.freeze({ width: 840, height: 1200 });
   const MAX_COUNT = 4;
   const LAYOUTS = Object.freeze({
     1: { top: 345, height: 760, y: [722] },
@@ -50,7 +50,7 @@
   const KADOKADO_COVER = Object.freeze({ width: 700, height: 1000, ratio: "7:10" });
   const generator = global.SlowlyTextGenerator.create({
     maxChars: MAX_COUNT,
-    sourceSize: text => ({ width: WIDTH, height: LAYOUTS[splitCharacters(text).length].height }),
+    sourceSize: OUTPUT_SIZE,
     renderSVG: text => generateSVG(text),
     presets: {
       png: { scale: 2 },

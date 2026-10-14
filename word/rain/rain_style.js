@@ -7,6 +7,7 @@ window.SlowlyWordPageConfig = Object.freeze({
   examples: ["雨你相遇", "聽雨", "雨"],
   vertical: "SlowlyRainArt",
   horizontal: "SlowlyRainHorizontalArt",
+  animated: "SlowlyRainAnimatedArt",
   mountEffects() {
     let rain = null;
     try {

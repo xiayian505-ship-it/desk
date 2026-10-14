@@ -7,7 +7,5 @@ window.SlowlyWordPageConfig = Object.freeze({
   examples: ["星河入夢", "相思", "月"],
   vertical: "SlowlyStarArt",
   horizontal: "SlowlyStarHorizontalArt",
-  kind: "star",
-  verticalWidth: 820,
-  verticalHeight: 1450,
+  animated: "SlowlyStarAnimatedArt",
 });

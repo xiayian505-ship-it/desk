@@ -1,5 +1,5 @@
 /* 《筆下星辰》原版星軌與裝飾向量模板，字形由 title.js 動態產生。 */
-window.SlowlyStarArtTemplate = String.raw`<svg xmlns="http://www.w3.org/2000/svg" width="820" height="@@HEIGHT@@" viewBox="0 @@TOP@@ 820 @@HEIGHT@@" role="img" aria-labelledby="title desc">
+window.SlowlyStarArtTemplate = String.raw`<svg xmlns="http://www.w3.org/2000/svg" width="840" height="1200" viewBox="0 @@TOP@@ 820 @@HEIGHT@@" preserveAspectRatio="xMidYMid meet" role="img" aria-labelledby="title desc">
 <title id="title">@@TITLE@@</title>
 <desc id="desc">@@DESC@@</desc>
 <defs>
