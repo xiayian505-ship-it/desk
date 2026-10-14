@@ -1,0 +1,250 @@
+/* SVG 檢視室｜慢慢藝術字統一視覺；不修改主頁與藝術字生成器的排版。 */
+.svg-viewer-page {
+  --viewer-accent: #7b6682;
+}
+
+.viewer-heading {
+  margin-bottom: 26px;
+}
+
+.viewer-eyebrow {
+  color: var(--word-accent);
+  letter-spacing: .15em;
+  font-size: .73rem;
+  font-weight: 700;
+  margin: 0 0 6px;
+}
+
+.viewer-lead {
+  font-size: .91rem;
+  line-height: 1.8;
+  color: var(--word-muted);
+  margin: 0;
+}
+
+.viewer-upload {
+  border: 1px solid var(--word-line);
+  background: var(--word-paper);
+  padding: 23px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 32px;
+}
+
+.viewer-file-button,
+.viewer-clear {
+  appearance: none;
+  border-radius: 0;
+  padding: 10px 17px;
+  font: inherit;
+  font-size: .88rem;
+  cursor: pointer;
+  line-height: 1.5;
+}
+
+.viewer-file-button {
+  display: inline-block;
+  background: var(--word-accent);
+  color: white;
+  font-weight: 650;
+}
+
+.viewer-file-button:hover {
+  background: #66566d;
+}
+
+.viewer-file-button:has(+ .viewer-file-input:focus-visible) {
+  outline: 2px solid var(--word-accent);
+  outline-offset: 3px;
+}
+
+.viewer-clear {
+  border: 1px solid var(--word-line);
+  background: var(--word-paper);
+  color: var(--word-text);
+}
+
+.viewer-clear:disabled {
+  opacity: .42;
+  cursor: default;
+}
+
+.viewer-privacy {
+  flex-basis: 100%;
+  color: var(--word-muted);
+  font-size: .79rem;
+  line-height: 1.75;
+  margin: 3px 0 0;
+}
+
+.viewer-section {
+  margin-bottom: 29px;
+}
+
+.viewer-section-heading {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 13px;
+}
+
+.viewer-section-heading h2,
+.viewer-information h2 {
+  margin: 0;
+}
+
+.viewer-live-state {
+  color: var(--word-muted);
+  font-size: .76rem;
+}
+
+.viewer-controls {
+  display: flex;
+  gap: 16px 25px;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  border: 1px solid var(--word-line);
+  border-bottom: none;
+  background: var(--word-paper);
+}
+
+.viewer-control-group,
+.viewer-zoom-label {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.viewer-control-label {
+  color: var(--word-muted);
+  font-size: .78rem;
+  margin-right: 4px;
+}
+
+.viewer-option {
+  border: 1px solid var(--word-line);
+  border-radius: 0;
+  background: var(--word-paper);
+  color: var(--word-muted);
+  padding: 5px 10px;
+  font: inherit;
+  font-size: .78rem;
+}
+
+.viewer-option[aria-pressed="true"] {
+  border-color: var(--word-accent);
+  background: var(--word-soft);
+  color: var(--word-accent);
+  font-weight: 700;
+}
+
+.viewer-zoom-label select {
+  border: 1px solid var(--word-line);
+  border-radius: 0;
+  color: var(--word-text);
+  background: var(--word-paper);
+  padding: 6px 9px;
+  font: inherit;
+  font-size: .78rem;
+}
+
+.viewer-zoom-label select:disabled {
+  opacity: .5;
+}
+
+.viewer-viewport {
+  border: 1px solid var(--word-line);
+  background: #fff;
+}
+
+.viewer-viewport[data-background="checker"] {
+  background-color: #f6f3f6;
+  background-image:
+    linear-gradient(45deg, #e4dfe5 25%, transparent 25%, transparent 75%, #e4dfe5 75%),
+    linear-gradient(45deg, #e4dfe5 25%, transparent 25%, transparent 75%, #e4dfe5 75%);
+  background-size: 24px 24px;
+  background-position: 0 0, 12px 12px;
+}
+
+.viewer-viewport[data-background="light"] {
+  background: #ffffff;
+}
+
+.viewer-viewport[data-background="dark"] {
+  background: #24222a;
+}
+
+.viewer-placeholder {
+  color: var(--word-muted);
+  font-size: .87rem;
+  text-align: center;
+  padding: 22px;
+  max-width: 360px;
+  line-height: 1.9;
+}
+
+.viewer-viewport[data-background="dark"] .viewer-placeholder {
+  color: #e2dbe6;
+}
+
+.viewer-status {
+  margin: 9px 0 0;
+  color: var(--word-muted);
+  font-size: .79rem;
+  line-height: 1.8;
+}
+
+.viewer-status.is-error {
+  color: #9a4559;
+}
+
+.viewer-information {
+  border-top: 1px solid var(--word-line);
+  padding-top: 22px;
+}
+
+.viewer-info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 28px;
+  margin: 15px 0 0;
+}
+
+.viewer-info-grid > div {
+  border-bottom: 1px solid var(--word-line);
+  min-width: 0;
+  padding: 11px 0;
+}
+
+.viewer-info-grid dt {
+  font-size: .74rem;
+  color: var(--word-muted);
+}
+
+.viewer-info-grid dd {
+  font-size: .86rem;
+  color: var(--word-text);
+  overflow-wrap: anywhere;
+  margin: 3px 0 0;
+}
+
+@media (max-width: 600px) {
+  .viewer-upload {
+    padding: 16px;
+  }
+
+  .viewer-controls {
+    padding: 12px;
+  }
+
+  .viewer-info-grid {
+    grid-template-columns: 1fr;
+  }
+}

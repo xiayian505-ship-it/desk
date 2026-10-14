@@ -1,0 +1,66 @@
+/* SVG 檢視室｜必要功能樣式：卷軸、焦點、圖像縮放、拖曳狀態。 */
+[hidden] {
+  display: none !important;
+}
+
+.viewer-file-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+
+.viewer-viewport {
+  position: relative;
+  overflow: auto;
+  min-width: 0;
+  width: 100%;
+  height: min(64vh, 590px);
+  min-height: 350px;
+  scrollbar-gutter: stable;
+  overscroll-behavior: contain;
+}
+
+.viewer-stage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  min-width: 100%;
+  min-height: 100%;
+  box-sizing: border-box;
+}
+
+#svg-preview {
+  display: block;
+  flex: none;
+  max-width: none;
+  max-height: none;
+  object-fit: fill;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.viewer-viewport.is-dragover {
+  outline: 3px solid var(--word-accent);
+  outline-offset: -3px;
+}
+
+.viewer-file-input:focus-visible + .viewer-clear,
+.viewer-file-button:focus-within,
+.viewer-viewport:focus-visible,
+.viewer-option:focus-visible,
+.viewer-clear:focus-visible,
+.viewer-zoom-label select:focus-visible {
+  outline: 2px solid var(--word-accent);
+  outline-offset: 3px;
+}
+
+@media (max-width: 600px) {
+  .viewer-viewport {
+    min-height: 320px;
+    height: 53vh;
+  }
+}

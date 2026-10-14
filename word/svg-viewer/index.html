@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f8f7f5">
+  <meta name="description" content="慢慢藝術字 SVG 檢視室：在瀏覽器本機檢視 SVG、動畫與向量細節，不上傳、不保存。">
+  <title>SVG 檢視室｜慢慢藝術字</title>
+  <link rel="stylesheet" href="../word_style.css">
+  <link rel="stylesheet" href="./viewer.css">
+  <link rel="stylesheet" href="./viewer_style.css">
+  <script defer src="./viewer.js"></script>
+  <script defer src="./viewer_style.js"></script>
+</head>
+<body class="svg-viewer-page">
+  <div class="word-workbench">
+    <header class="word-heading">
+      <h1><a href="../index.html" aria-label="返回慢慢藝術字首頁">SVG 檢視室<span class="title-period" aria-hidden="true">.</span></a></h1>
+    </header>
+
+    <main class="word-workspace">
+      <div class="viewer-heading">
+        <p class="viewer-eyebrow">SVG / VECTOR VIEWER</p>
+        <p class="viewer-lead">打開剛下載的 SVG，在瀏覽器檢查文字、向量細節與動畫。</p>
+      </div>
+
+      <section class="viewer-upload" aria-label="選擇檔案">
+        <label class="viewer-file-button" for="svg-file">選擇本機 SVG</label>
+        <input id="svg-file" class="viewer-file-input" type="file" accept=".svg,image/svg+xml" aria-describedby="viewer-privacy">
+        <button class="viewer-clear" id="clear-file" type="button" disabled>清空預覽</button>
+        <p id="viewer-privacy" class="viewer-privacy">檔案只在這個瀏覽器分頁檢視，不傳送、不存檔；重新整理後即清空。</p>
+      </section>
+
+      <section class="viewer-section" aria-labelledby="viewer-preview-title">
+        <div class="viewer-section-heading">
+          <h2 id="viewer-preview-title" class="word-section-title">作品預覽</h2>
+          <span class="viewer-live-state" id="viewer-live-state">尚未選擇檔案</span>
+        </div>
+
+        <div class="viewer-controls" aria-label="檢視選項">
+          <div class="viewer-control-group" role="group" aria-label="預覽背景">
+            <span class="viewer-control-label">背景</span>
+            <button type="button" class="viewer-option" data-background="checker" aria-pressed="true">透明格</button>
+            <button type="button" class="viewer-option" data-background="light" aria-pressed="false">白色</button>
+            <button type="button" class="viewer-option" data-background="dark" aria-pressed="false">深色</button>
+          </div>
+          <label class="viewer-zoom-label" for="svg-zoom">
+            <span class="viewer-control-label">向量縮放</span>
+            <select id="svg-zoom" disabled>
+              <option value="1">適合視窗</option>
+              <option value="2">200%</option>
+              <option value="4">400%</option>
+              <option value="8">800%</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="viewer-viewport is-empty" id="svg-viewport" data-background="checker" role="region" aria-label="SVG 檢視畫面" tabindex="0">
+          <div class="viewer-stage" id="viewer-stage">
+            <p class="viewer-placeholder" id="viewer-placeholder">請先選擇 SVG 檔案，或將檔案拖曳到這裡。</p>
+            <!-- 故意只用 img：外來 SVG 無法在主頁執行 script 或存取頁面。 -->
+            <img id="svg-preview" alt="選取的 SVG 作品" hidden>
+          </div>
+        </div>
+        <p class="viewer-status" id="viewer-status" role="status" aria-live="polite"></p>
+      </section>
+
+      <section class="viewer-section viewer-information" aria-labelledby="viewer-info-title">
+        <h2 id="viewer-info-title" class="word-section-title">檔案資訊</h2>
+        <dl class="viewer-info-grid">
+          <div><dt>檔名</dt><dd id="file-name">—</dd></div>
+          <div><dt>檔案大小</dt><dd id="file-size">—</dd></div>
+          <div><dt>SVG 尺寸</dt><dd id="file-dimensions">—</dd></div>
+          <div><dt>ViewBox</dt><dd id="file-viewbox">—</dd></div>
+          <div><dt>動畫</dt><dd id="file-animation">—</dd></div>
+        </dl>
+      </section>
+    </main>
+
+    <footer class="sbs-signature" aria-label="Stillness by Slowly">
+      <span class="sbs-signature-mark">慢 慢</span>
+      <span class="sbs-signature-separator" aria-hidden="true">|</span>
+      <span class="sbs-signature-name">Stillness by Slowly</span>
+    </footer>
+  </div>
+</body>
+</html>
