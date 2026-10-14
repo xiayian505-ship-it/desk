@@ -1,5 +1,5 @@
 "use strict";
-/* 電閃雷鳴：此檔只保留作品設定與專屬預覽特效。介面統一由 ../_shared/word_page.js 管理。 */
+/* 電閃雷鳴：此檔只保留作品設定與專屬預覽特效。介面統一由 ../shared/word_page.js 管理。 */
 window.SlowlyWordPageConfig = Object.freeze({
   title: "電閃雷鳴",
   initial: "電閃雷鳴",

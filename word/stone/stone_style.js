@@ -1,5 +1,5 @@
 "use strict";
-/* 石破天驚：此檔只保留作品設定與專屬預覽特效。介面統一由 ../_shared/word_page.js 管理。 */
+/* 石破天驚：此檔只保留作品設定與專屬預覽特效。介面統一由 ../shared/word_page.js 管理。 */
 window.SlowlyWordPageConfig = Object.freeze({
   title: "石破天驚",
   initial: "石破天驚",

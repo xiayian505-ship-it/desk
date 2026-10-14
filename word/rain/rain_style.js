@@ -1,5 +1,5 @@
 "use strict";
-/* 雨你相遇：此檔只保留作品設定與專屬預覽特效。介面統一由 ../_shared/word_page.js 管理。 */
+/* 雨你相遇：此檔只保留作品設定與專屬預覽特效。介面統一由 ../shared/word_page.js 管理。 */
 window.SlowlyWordPageConfig = Object.freeze({
   title: "雨你相遇",
   initial: "雨你相遇",

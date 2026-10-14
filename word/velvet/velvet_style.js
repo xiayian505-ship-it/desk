@@ -1,5 +1,5 @@
 "use strict";
-/* 絲絨華彩：此檔只保留作品設定與專屬預覽特效。介面統一由 ../_shared/word_page.js 管理。 */
+/* 絲絨華彩：此檔只保留作品設定與專屬預覽特效。介面統一由 ../shared/word_page.js 管理。 */
 window.SlowlyWordPageConfig = Object.freeze({
   title: "絲絨華彩",
   initial: "絲絨華彩",

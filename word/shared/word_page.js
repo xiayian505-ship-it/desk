@@ -1,7 +1,7 @@
 "use strict";
 /* 慢慢藝術字｜作品頁共用 UI v1
  * 只負責頁面、預覽控制與下載按鈕；字體、構圖、繪圖、專屬特效由作品管理。
- * 路徑 word/_shared/，屬宿主共用 UI，不是軍火庫複製品。
+ * 路徑 word/shared/，屬宿主共用 UI，不是軍火庫複製品。
  */
 (function (global) {
   const htmlEscape = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
