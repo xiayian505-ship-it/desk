@@ -1,11 +1,11 @@
 "use strict";
-/* 青花入夢｜橫式藝術字邏輯。由軍火庫橫式產生器提供排版與輸出。 */
+/* 青花入夢｜橫式藝術字邏輯。 */
 (function (global) {
-  const artCore = global.SlowlyMaterialArtCore;
-  const theme = global.SlowlyMaterialTheme_porcelain;
-  if (!artCore || !theme) {
+  const factory = global.SlowlyPorcelainFactory;
+  const theme = global.SlowlyPorcelainTheme;
+  if (!factory || !theme) {
     console.error('青花入夢：橫式藝術字零件載入失敗。');
     return;
   }
-  global.SlowlyPorcelainHorizontalArt = artCore.create(theme, 'horizontal');
+  global.SlowlyPorcelainHorizontalArt = factory.create(theme, 'horizontal');
 })(window);
