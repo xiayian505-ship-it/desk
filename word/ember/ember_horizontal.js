@@ -1,11 +1,11 @@
 "use strict";
-/* 星火燎原｜橫式藝術字邏輯。由軍火庫橫式產生器提供排版與輸出。 */
+/* 星火燎原｜橫式藝術字邏輯。 */
 (function (global) {
-  const artCore = global.SlowlyMaterialArtCore;
-  const theme = global.SlowlyMaterialTheme_ember;
-  if (!artCore || !theme) {
+  const factory = global.SlowlyEmberFactory;
+  const theme = global.SlowlyEmberTheme;
+  if (!factory || !theme) {
     console.error('星火燎原：橫式藝術字零件載入失敗。');
     return;
   }
-  global.SlowlyEmberHorizontalArt = artCore.create(theme, 'horizontal');
+  global.SlowlyEmberHorizontalArt = factory.create(theme, 'horizontal');
 })(window);
