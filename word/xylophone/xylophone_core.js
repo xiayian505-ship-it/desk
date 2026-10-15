@@ -1,5 +1,5 @@
 "use strict";
-/* 輕音流轉｜專屬藝術字核心。
+/* 清音流轉｜專屬藝術字核心。
  * 目標：不依賴共用 word_material_core.js，保留本款自己的旋律線、音符點綴與動態邏輯。
  */
 (function (global) {

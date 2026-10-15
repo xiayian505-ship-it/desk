@@ -1,9 +1,9 @@
 "use strict";
-/* 輕音流轉｜專屬色系與材質定義。 */
+/* 清音流轉｜專屬色系與材質定義。 */
 (function (global) {
   global.SlowlyXylophoneTheme = Object.freeze({
     code: 'xylophone',
-    title: '輕音流轉',
+    title: '清音流轉',
     detail: '柔霧旋律線、淡木紋光澤與貼字流動的音符點綴',
     weight: 860,
     face: ['#fbf4de', '#ead5a6', '#c8a272'],
