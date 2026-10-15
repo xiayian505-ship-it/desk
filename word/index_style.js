@@ -19,6 +19,7 @@
 
   const missing = [
     ["SlowlyWordCatalog", catalog],
+    ["SlowlyWordCover.create", global.SlowlyWordCover?.create],
     ["SlowlyTabs.create", global.SlowlyTabs?.create],
     ["FictionSearch.search", global.FictionSearch?.search],
     ["FictionPaginate.paginate", global.FictionPaginate?.paginate]
@@ -43,10 +44,8 @@
     const card = createElement("article", "word-card");
     card.dataset.code = item.code;
 
-    // 目前是各系列的識別字樣，不冒充生成器的真實匯出圖。
-    const visual = createElement("div", "card-visual");
-    visual.dataset.visual = /^[a-z-]+$/.test(item.visual) ? item.visual : "plain";
-    visual.append(createElement("span", "card-art-text", item.phrase || item.title));
+    // 共用封面：只替換作品名稱，不再維護 33 種專屬色卡。
+    const visual = global.SlowlyWordCover.create(item);
 
     const content = createElement("div", "card-content");
     const top = createElement("div", "card-top");

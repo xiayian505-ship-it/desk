@@ -1,0 +1,190 @@
+/* 慢慢藝術字｜共用作品封面 v1
+ * 本檔只控制首頁每款作品的封面外觀，不改動藝術字生成器。
+ * 要磨封面，優先調整下方 CSS 變數和各區塊；不用改 33 款作品。
+ */
+
+.word-cover {
+  --cover-paper: #f1eee9;
+  --cover-light: #fffdf8;
+  --cover-ink: #4c414c;
+  --cover-muted: #8c8089;
+  --cover-line: #bcb1b5;
+  --cover-accent: #9b798d;
+  --cover-type-size: 2.5rem;
+
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-self: stretch;
+  box-sizing: border-box;
+  min-width: 0;
+  min-height: 220px;
+  padding: 18px 17px 15px;
+  overflow: hidden;
+  isolation: isolate;
+  background:
+    radial-gradient(ellipse 82% 68% at 90% 5%, rgba(255, 255, 255, .76), transparent 72%),
+    linear-gradient(138deg, var(--cover-light) 0%, var(--cover-paper) 52%, #e7dfe0 100%);
+  color: var(--cover-ink);
+}
+
+/* 兩圈紙本編輯框：純 CSS，無須另外維護封面圖檔。 */
+.word-cover::before,
+.word-cover::after {
+  position: absolute;
+  content: "";
+  pointer-events: none;
+}
+
+.word-cover::before {
+  inset: 7px;
+  z-index: -1;
+  border: 1px solid rgba(135, 113, 126, .39);
+}
+
+.word-cover::after {
+  inset: 12px;
+  z-index: -1;
+  border: 1px solid rgba(185, 170, 178, .32);
+}
+
+.word-cover__header,
+.word-cover__footer {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.word-cover__header {
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(137, 115, 128, .42);
+}
+
+.word-cover__brand {
+  font-size: .65rem;
+  font-weight: 700;
+  letter-spacing: .15em;
+}
+
+.word-cover__edition {
+  color: var(--cover-muted);
+  font-size: .47rem;
+  font-weight: 600;
+  letter-spacing: .06em;
+}
+
+.word-cover__stage {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  flex: 1;
+  min-height: 122px;
+  padding: 8px 0;
+}
+
+.word-cover__orbit {
+  position: absolute;
+  width: min(90%, 170px);
+  height: 75%;
+  border: 1px solid rgba(143, 122, 138, .15);
+  border-radius: 50%;
+  transform: rotate(-29deg);
+  pointer-events: none;
+}
+
+.word-cover__name {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  color: var(--cover-ink);
+  font-family: "Noto Serif TC", "Noto Serif CJK TC", "Songti TC", "PMingLiU", serif;
+  font-size: var(--cover-type-size);
+  font-weight: 800;
+  line-height: 1.16;
+  letter-spacing: .06em;
+  text-shadow: 1px 1px 0 rgba(255, 255, 255, .75), 2px 3px 1px rgba(77, 57, 74, .12);
+}
+
+.word-cover__row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+}
+
+.word-cover__glyph {
+  display: inline-block;
+}
+
+/* 若新作品只有 1～3 字，仍使用同一套封面，僅調整排版比例。 */
+.word-cover__name[data-length="1"] {
+  font-size: 4.6rem;
+}
+
+.word-cover__name[data-length="2"] {
+  font-size: 3.35rem;
+}
+
+.word-cover__name[data-length="3"] {
+  font-size: 2.85rem;
+}
+
+.word-cover__name[data-length="4"] {
+  font-size: var(--cover-type-size);
+}
+
+.word-cover__name[data-length="5"],
+.word-cover__name[data-length="6"] {
+  font-size: 1.95rem;
+}
+
+.word-cover__footer {
+  padding-top: 9px;
+  border-top: 1px solid rgba(137, 115, 128, .42);
+}
+
+.word-cover__signature {
+  color: var(--cover-muted);
+  font-size: .52rem;
+  font-weight: 700;
+  letter-spacing: .09em;
+}
+
+.word-cover__mark {
+  color: var(--cover-accent);
+  font-size: .95rem;
+  line-height: 1;
+}
+
+@media (max-width: 700px) {
+  .word-cover {
+    min-height: 205px;
+  }
+}
+
+@media (max-width: 520px) {
+  .word-cover {
+    --cover-type-size: 2.7rem;
+    min-height: 215px;
+    padding: 18px 22px 15px;
+  }
+
+  .word-cover__stage {
+    min-height: 140px;
+  }
+
+  .word-cover__orbit {
+    width: min(64%, 230px);
+    height: 84%;
+  }
+}
