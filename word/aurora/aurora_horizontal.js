@@ -1,7 +1,7 @@
 "use strict";
-/* 極光漫舞｜橫式藝術字邏輯。由軍火庫橫式產生器提供排版與輸出。 */
+/* 極光漫舞｜橫式藝術字邏輯。 */
 (function (global) {
-  const artCore = global.SlowlyMaterialArtCore;
+  const artCore = global.SlowlyAuroraArtCore;
   const theme = global.SlowlyMaterialTheme_aurora;
   if (!artCore || !theme) {
     console.error('極光漫舞：橫式藝術字零件載入失敗。');
