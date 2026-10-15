@@ -1,5 +1,5 @@
-/* 清音流轉：介面文字顏色與字體材質分開；維持足夠對比。 */
+/* 輕音流轉：介面色與作品內材質分離。 */
 .word-xylophone {
-  --word-accent: #74503a;
-  --word-accent-soft: #f3d5a4;
+  --word-accent: #8b6f57;
+  --word-accent-soft: #f0dfb6;
 }
