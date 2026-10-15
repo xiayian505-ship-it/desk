@@ -57,9 +57,9 @@
       cover: { width: 700, height: 1000, fit: "contain", paddingX: 76, paddingY: 52, roundPlacement: true }
     },
     filenames: {
-      svg: text => `${global.SlowlyTextGenerator.fileSafe(text)}_星辰藝術字.svg`,
-      png: text => `${global.SlowlyTextGenerator.fileSafe(text)}_星辰藝術字_2x.png`,
-      cover: text => `${global.SlowlyTextGenerator.fileSafe(text)}_角角者書封_700x1000.png`
+      svg: text => `${global.SlowlyTextGenerator.fileSafe(text)}_星河入夢.svg`,
+      png: text => `${global.SlowlyTextGenerator.fileSafe(text)}_星河入夢_2x.png`,
+      cover: text => `${global.SlowlyTextGenerator.fileSafe(text)}_星河入夢_角角者書封_700x1000.png`
     }
   });
   global.SlowlyStarArt = Object.freeze({

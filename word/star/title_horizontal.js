@@ -22,9 +22,9 @@
       cover: { width: 700, height: 1000, fit: "contain", paddingX: 46, paddingY: 60 }
     },
     filenames: {
-      svg: text => `${global.SlowlyTextGeneratorCore.fileSafe(text)}_星辰_橫式.svg`,
-      png: text => `${global.SlowlyTextGeneratorCore.fileSafe(text)}_星辰_橫式_2x.png`,
-      cover: text => `${global.SlowlyTextGeneratorCore.fileSafe(text)}_星辰_橫式_角角者書封_700x1000.png`
+      svg: text => `${global.SlowlyTextGeneratorCore.fileSafe(text)}_星河入夢_橫式.svg`,
+      png: text => `${global.SlowlyTextGeneratorCore.fileSafe(text)}_星河入夢_橫式_2x.png`,
+      cover: text => `${global.SlowlyTextGeneratorCore.fileSafe(text)}_星河入夢_橫式_角角者書封_700x1000.png`
     }
   });
 
@@ -50,7 +50,7 @@
       <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
            width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" role="img"
            aria-label="${escaped}橫式藝術字">
-        <title>${escaped}｜星辰橫式藝術字</title>
+        <title>${escaped}｜星河入夢・橫式藝術字</title>
         <desc>透明背景，橫式文字及主題裝飾。</desc>
         <defs>
           <linearGradient id="starInk" x1="0" y1="0" x2="1" y2="1">

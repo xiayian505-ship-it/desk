@@ -53,9 +53,9 @@ window.SlowlyWordIndex = [
   },
   {
     "code": "star",
-    "title": "筆下星辰",
+    "title": "星河入夢",
     "subtitle": "Star Lettering",
-    "phrase": "筆下星辰",
+    "phrase": "星河入夢",
     "desc": "星軌、月牙與藍紫粉流光。讓文字成為一段小小銀河。",
     "keywords": [
       "星辰",
@@ -63,7 +63,7 @@ window.SlowlyWordIndex = [
       "星光",
       "星空",
       "銀河",
-      "筆下星辰",
+      "星河入夢",
       "直式",
       "橫式"
     ],
