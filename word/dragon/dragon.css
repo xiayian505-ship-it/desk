@@ -20,9 +20,9 @@
   object-fit: contain;
   user-select: none;
   -webkit-user-drag: none;
-  --slowly-glow-color: #236054;
-  --slowly-glow-size: 8px;
-  --slowly-glow-opacity: .14;
+  --slowly-glow-color: #b48d55;
+  --slowly-glow-size: 7px;
+  --slowly-glow-opacity: .11;
   --slowly-lift-y: -2px;
   --slowly-lift-speed: .3s;
 }

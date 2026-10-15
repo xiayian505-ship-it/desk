@@ -89,7 +89,7 @@
 - 各款作品頁的標題遵守全系列一致的樣式；**不加裝飾點、不擅自替作品頁標題加底線或特效**。主頁「慢慢藝術字」則經使用者另行定案：以軍火庫 `effects/typography/shine_text.css` 套流動漸層，宿主設定陰影與色票；主頁副標由 `index_notes.json` 取文案，以軍火庫 `effects/typography/marquee.css` 循環橫移。兩項原件一律 HTTPS 引用，不複製入專案；副標只循環原本的文字，不加入星號或裝飾符號。首頁標題不放 Enso 圓環。
 - 全站頁尾左右統一：左側「慢 慢 | Stillness by Slowly」連結 `https://stillnessbyslowly.com/`，右側「夏熠安」以純文字連結 `https://www.threads.com/@xiayian505`；不放箭頭、社群圖示或引導文字。共用樣式由 `word/shared/footer.css` 管理。
 - 主頁新增作品時，只需加入目錄資料、對應入口與必要視覺色票；作品簡介維持**短文案**，不額外增加長篇敘述。
-- 主頁網址分享預覽：`word/index.html` 內的 Open Graph / Twitter Card 標籤指定預覽標題「慢慢藝術字」、副標「讓想說的話，成為心動的模樣」，封面（1200 × 630）使用自有圖床 HTTPS 外連 `https://img.stillnessbyslowly.com/images/2026/10/df1287c2-7dcf-4632-b318-453b4aa58aec_slowly-word-share.png`，不存入 GitHub 儲存庫。分享圖是**靜態圖片**；網頁標題的 Shine Text、Marquee 等動態效果仍由既有軍火庫與宿主處理。分享平台可能快取預覽，部署後不保證立即更新。
+- 主頁網址分享預覽：`word/index.html` 內的 Open Graph / Twitter Card 標籤指定預覽標題「慢慢藝術字」、副標「想說的話，動人心弦」，封面（1200 × 630）使用自有圖床 HTTPS 外連 `https://img.stillnessbyslowly.com/images/2026/10/df1287c2-7dcf-4632-b318-453b4aa58aec_slowly-word-share.png`，不存入 GitHub 儲存庫。分享圖是**靜態圖片**；網頁標題的 Shine Text、Marquee 等動態效果仍由既有軍火庫與宿主處理。分享平台可能快取預覽，部署後不保證立即更新。
 - 「慢慢看」六項說明文字從 `word/index_notes.json` 讀取；01～03 是授權條款，04「展現心動模樣」、05「寄放心動模樣」、06「製作心動模樣」是作品說明。外層六項使用軍火庫 TreeSelection 互斥收合；05 由 JSON 的 `formats` 陣列建立 SVG／PNG 內層互斥收合，內部的 `variants` 只作為一般小標題。新增 GIF、MPEG 等格式，先加資料，再確認下載功能是否真的提供，不能因說明新增而宣稱已支援。
 - 檢視室入口清單與 SVG 檢視室說明從 `word/viewer_content.json` 讀取。**僅改文案時只改對應 JSON**，除非介面結構真的改變。
 - 作品目錄已在 `word/index_data.js` 獨立管理；新增作品只加資料，不把作品卡片寫回 `index.html`。

@@ -1,5 +1,5 @@
 /* 龍騰九霄：介面文字顏色與字體材質分開；維持足夠對比。 */
 .word-dragon {
-  --word-accent: #244f48;
-  --word-accent-soft: #d4dfa4;
+  --word-accent: #7a6141;
+  --word-accent-soft: #e2c996;
 }
