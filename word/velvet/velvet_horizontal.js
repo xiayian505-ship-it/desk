@@ -1,11 +1,11 @@
 "use strict";
-/* 絲絨華彩｜橫式藝術字邏輯。由軍火庫橫式產生器提供排版與輸出。 */
+/* 絲絨華彩｜橫式藝術字邏輯。 */
 (function (global) {
-  const artCore = global.SlowlyMaterialArtCore;
-  const theme = global.SlowlyMaterialTheme_velvet;
-  if (!artCore || !theme) {
+  const factory = global.SlowlyVelvetFactory;
+  const theme = global.SlowlyVelvetTheme;
+  if (!factory || !theme) {
     console.error('絲絨華彩：橫式藝術字零件載入失敗。');
     return;
   }
-  global.SlowlyVelvetHorizontalArt = artCore.create(theme, 'horizontal');
+  global.SlowlyVelvetHorizontalArt = factory.create(theme, 'horizontal');
 })(window);

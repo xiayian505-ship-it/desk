@@ -1,11 +1,11 @@
 "use strict";
-/* 羽翼生風｜橫式藝術字邏輯。由軍火庫橫式產生器提供排版與輸出。 */
+/* 羽翼生風｜橫式藝術字邏輯。 */
 (function (global) {
-  const artCore = global.SlowlyMaterialArtCore;
-  const theme = global.SlowlyMaterialTheme_wings;
-  if (!artCore || !theme) {
+  const factory = global.SlowlyWingsFactory;
+  const theme = global.SlowlyWingsTheme;
+  if (!factory || !theme) {
     console.error('羽翼生風：橫式藝術字零件載入失敗。');
     return;
   }
-  global.SlowlyWingsHorizontalArt = artCore.create(theme, 'horizontal');
+  global.SlowlyWingsHorizontalArt = factory.create(theme, 'horizontal');
 })(window);

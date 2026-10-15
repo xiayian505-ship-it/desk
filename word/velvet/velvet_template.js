@@ -1,19 +1,46 @@
 "use strict";
-/* 絲絨華彩｜此檔只定義該系列的專屬材質、色系與字體風格，方便日後獨立改版。 */
+/* 絲絨華彩｜獨立色系與服飾細節定義。 */
 (function (global) {
-  global.SlowlyMaterialTheme_velvet = Object.freeze({
-  "code": "velvet",
-  "title": "絲絨華彩",
-  "detail": "酒紅絲絨、細絨絲理與柔亮緞光",
-  "colors": [
-    "#ffb5b9",
-    "#af4f6b",
-    "#430c2b"
-  ],
-  "outline": "#70314b",
-  "highlight": "#ffb5b9",
-  "shadow": "#430c2b",
-  "font": "serif",
-  "weight": 820
-});
+  global.SlowlyVelvetTheme = Object.freeze({
+    code: 'velvet',
+    title: '絲絨華彩',
+    detail: '酒紅絲絨、靜態偏光、柔亮緞光與白色襯衫鈕扣的服飾感字面',
+    weight: 830,
+    faceLight: '#f7b2c8',
+    faceMid: '#c46488',
+    faceDeep: '#8e2f5b',
+    faceDark: '#481026',
+    strokeLight: '#f8dbe2',
+    strokeMid: '#8b3554',
+    strokeDark: '#53142d',
+    sheenLight: '#fff7fa',
+    sheenMid: '#f8d0e2',
+    sheenDark: '#6a143d',
+    shadow: '#2e0917',
+    backGlow: '#f4b7c7',
+    innerLine: '#f9deea',
+    fiberA: '#ffd7e5',
+    fiberB: '#e28cae',
+    fiberC: '#7b1e48',
+    ribbonSoft: '#f3bfd0',
+    ribbonEdge: '#d384a2',
+    ribbonThin: '#fff1f7',
+    sheenStrokeA: '#ffe7ef',
+    sheenStrokeB: '#ffd1e3',
+    polarA: '#ffe7b8',
+    polarA2: '#ffd0df',
+    polarB: '#f9c7ff',
+    polarB2: '#b8f3ff',
+    polarC: '#ffc8d2',
+    polarC2: '#fff0b3',
+    buttonLight: '#ffffff',
+    buttonMid: '#f0eef1',
+    buttonDark: '#d8d3d8',
+    buttonGlow: '#ffffff',
+    buttonStroke: '#c7c2c8',
+    buttonInnerRing: '#ece7ec',
+    buttonThread: '#d4d0d4',
+    buttonHole: '#b7b1b8',
+    buttonShadow: '#5a1a35'
+  });
 })(window);
