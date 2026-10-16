@@ -1,0 +1,35 @@
+/* 錦繡河山：作品預覽本身由 SVG 提供全部圖層；本檔不為匯出添加裝飾。 */
+.word-landscape .landscape-preview {
+  min-width: 0;
+  padding: 17px;
+  border: 1px solid rgba(56, 118, 91, .22);
+  background: #f6f9f5;
+}
+.word-landscape .landscape-stage {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  margin: 0;
+  min-height: 460px;
+  border: 1px solid rgba(48, 108, 91, .23);
+  background: repeating-conic-gradient(#e3ede8 0 25%, #fafcf7 0 50%) 0 0 / 24px 24px;
+}
+.word-landscape .landscape-stage .art-image {
+  position: relative;
+  display: block;
+  z-index: 1;
+  box-sizing: border-box;
+  width: min(100%, 520px);
+  height: auto;
+  max-height: min(76vh, 800px);
+  object-fit: contain;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+@media (max-width: 650px) {
+  .word-landscape .landscape-preview { padding: 9px; }
+  .word-landscape .landscape-stage { min-height: 380px; }
+  .word-landscape .landscape-stage .art-image { max-height: 620px; }
+}

@@ -5,6 +5,16 @@
  */
 window.SlowlyWordIndex = [
   {
+    "code": "landscape",
+    "title": "錦繡河山",
+    "subtitle": "Landscape Lettering",
+    "phrase": "錦繡河山",
+    "desc": "青綠山巒藏入筆畫，碧水穿字而行。錦金織線與雲紋，繡出一卷千里河山。",
+    "keywords": ["錦繡河山", "Landscape", "青山綠水", "錦繡", "山巒", "江河", "刺繡", "織錦", "絲線", "動態 SVG", "直式", "橫式"],
+    "href": "https://desk.stillnessbyslowly.com/word/landscape/index.html",
+    "visual": "landscape"
+  },
+  {
     "code": "imperial",
     "title": "御駕親征",
     "subtitle": "Imperial Lettering",
