@@ -162,7 +162,8 @@ button {
 
 .alphabet-nav button:first-child {
   grid-column: span 2;
-  font-size: 0.8rem;
+  /* 「慢慢看」獨立放大兩級，其他 A～Z 分頁字級不變。 */
+  font-size: 1.1rem;
   letter-spacing: 0;
 }
 
@@ -243,7 +244,7 @@ button {
 
 .search-hint {
   margin: 9px 0 0;
-  font-size: 0.77rem;
+  font-size: 1.17rem;
   color: #8a6b82;
 }
 
@@ -625,14 +626,14 @@ button {
 .svg-viewer-entry p:not(.section-number) {
   margin: 0;
   color: #8a6b82;
-  font-size: .81rem;
+  font-size: 1.17rem;
   line-height: 1.8;
 }
 
 .svg-viewer-entry-link {
   flex: 0 0 auto;
   color: var(--accent);
-  font-size: .85rem;
+  font-size: 1.17rem;
   font-weight: 700;
   text-decoration: none;
   /* 用文字本身做入口，不加底線或箭頭。 */
