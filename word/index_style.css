@@ -441,6 +441,14 @@ button {
   background: var(--paper);
 }
 
+/* 只讓作品縮圖成為入口，不增加額外的點擊提示或動態效果。 */
+.card-cover-link {
+  display: grid;
+  min-width: 0;
+  color: inherit;
+  text-decoration: none;
+}
+
 .card-content {
   display: flex;
   flex-direction: column;
@@ -467,32 +475,12 @@ button {
   color: #8a6b82;
 }
 
-.card-content h3 {
-  margin: 0;
-  font-size: 1.17rem;
-  letter-spacing: 0.04em;
-}
-
+/* 中文簡介改為原本卡片中文標題的 1.17rem 字級，字色和字重不變。 */
 .card-content p {
   margin: 0;
   color: #8a6b82;
-  font-size: 0.82rem;
+  font-size: 1.17rem;
   line-height: 1.72;
-}
-
-.card-entry {
-  width: fit-content;
-  margin-top: auto;
-  padding-top: 5px;
-  color: var(--accent);
-  font-size: 0.83rem;
-  font-weight: 700;
-  text-decoration: none;
-}
-
-.card-entry:hover,
-.card-entry:focus-visible {
-  text-decoration: underline;
 }
 
 .empty-letter {
@@ -608,9 +596,6 @@ button {
     padding: 16px 18px 19px;
   }
 
-  .card-entry {
-    margin-top: 5px;
-  }
 }
 
 /* SVG 檢視室入口：與新增作品卡片樣式同時保留。 */

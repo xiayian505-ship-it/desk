@@ -44,8 +44,12 @@
     const card = createElement("article", "word-card");
     card.dataset.code = item.code;
 
-    // 共用封面：只替換作品名稱，不再維護 33 種專屬色卡。
+    // 縮圖直接連到對應產生器；封面樣式仍由共用零件管理。
     const visual = global.SlowlyWordCover.create(item);
+    const coverLink = createElement("a", "card-cover-link");
+    coverLink.href = item.href;
+    coverLink.setAttribute("aria-label", `進入 ${item.title} 產生器`);
+    coverLink.append(visual);
 
     const content = createElement("div", "card-content");
     const top = createElement("div", "card-top");
@@ -54,14 +58,10 @@
       createElement("span", "card-subtitle", item.subtitle)
     );
 
-    const heading = createElement("h3", "", item.title);
     const desc = createElement("p", "", item.desc);
-    const link = createElement("a", "card-entry", "進入藝術字產生器");
-    link.href = item.href;
-    link.setAttribute("aria-label", `進入 ${item.title} 產生器`);
 
-    content.append(top, heading, desc, link);
-    card.append(visual, content);
+    content.append(top, desc);
+    card.append(coverLink, content);
     return card;
   }
 
