@@ -1,0 +1,35 @@
+/* 御駕親征：作品預覽本身由 SVG 提供全部圖層；本檔不為匯出添加裝飾。 */
+.word-imperial .imperial-preview {
+  min-width: 0;
+  padding: 17px;
+  border: 1px solid rgba(124, 90, 43, .24);
+  background: #faf8f4;
+}
+.word-imperial .imperial-stage {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  margin: 0;
+  min-height: 460px;
+  border: 1px solid rgba(154, 118, 54, .25);
+  background: repeating-conic-gradient(#f1ede5 0 25%, #faf9f5 0 50%) 0 0 / 24px 24px;
+}
+.word-imperial .imperial-stage .art-image {
+  position: relative;
+  display: block;
+  z-index: 1;
+  box-sizing: border-box;
+  width: min(100%, 520px);
+  height: auto;
+  max-height: min(76vh, 800px);
+  object-fit: contain;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+@media (max-width: 650px) {
+  .word-imperial .imperial-preview { padding: 9px; }
+  .word-imperial .imperial-stage { min-height: 380px; }
+  .word-imperial .imperial-stage .art-image { max-height: 620px; }
+}

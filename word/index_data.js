@@ -5,6 +5,16 @@
  */
 window.SlowlyWordIndex = [
   {
+    "code": "imperial",
+    "title": "御駕親征",
+    "subtitle": "Imperial Lettering",
+    "phrase": "御駕親征",
+    "desc": "明皇御筆、玄墨雕金與朱紅旌旗。龍雲盤繞軍令，金光隨征旗出陣。",
+    "keywords": ["御駕親征", "皇帝", "明皇色", "皇黃", "旌旗", "軍令", "鎏金", "龍紋", "直式", "橫式", "動態 SVG"],
+    "href": "https://desk.stillnessbyslowly.com/word/imperial/index.html",
+    "visual": "imperial"
+  },
+  {
     "code": "feather",
     "title": "黑羽舞動",
     "subtitle": "Feather Lettering",
