@@ -5,6 +5,16 @@
  */
 window.SlowlyWordIndex = [
   {
+    "code": "ballot",
+    "title": "投我一票",
+    "subtitle": "Ballot Lettering",
+    "phrase": "投我一票",
+    "desc": "鮮黃胖字跳著拉票，勾選紙片飛向笑臉票箱。彩紙與漫畫星星一起替你歡呼！",
+    "keywords": ["投我一票", "Ballot", "選票", "票箱", "卡通", "黃色", "鮮黃", "競選", "彈跳", "直式", "橫式", "動態 SVG"],
+    "href": "https://desk.stillnessbyslowly.com/word/ballot/index.html",
+    "visual": "ballot"
+  },
+  {
     "code": "landscape",
     "title": "錦繡河山",
     "subtitle": "Landscape Lettering",
