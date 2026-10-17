@@ -1,0 +1,41 @@
+/* 饕餮盛宴｜只處理本款預覽舞台，不改共用作品頁色彩與標題。 */
+.word-gluttony .gluttony-preview {
+  min-width: 0;
+  padding: 15px;
+}
+
+.word-gluttony .gluttony-stage {
+  position: relative;
+  display: grid;
+  place-items: center;
+  margin: 0;
+  min-height: 460px;
+  overflow: hidden;
+  border: 1px solid var(--word-line, #dedbe0);
+  background: repeating-conic-gradient(#f1f0f0 0 25%, #ffffff 0 50%) 0 0 / 24px 24px;
+}
+
+.word-gluttony .gluttony-stage .art-image {
+  display: block;
+  box-sizing: border-box;
+  width: min(100%, 530px);
+  height: auto;
+  max-height: min(77vh, 805px);
+  object-fit: contain;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+@media (max-width: 650px) {
+  .word-gluttony .gluttony-preview {
+    padding: 9px;
+  }
+
+  .word-gluttony .gluttony-stage {
+    min-height: 380px;
+  }
+
+  .word-gluttony .gluttony-stage .art-image {
+    max-height: 630px;
+  }
+}
