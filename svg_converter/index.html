@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f6f7fb">
+  <meta name="description" content="動態 SVG 轉換成透明 PNG、GIF、WebM 與 MP4 的瀏覽器工具。">
+  <title>SVG 動畫轉檔室｜慢慢</title>
+  <link rel="stylesheet" href="./svg_converter.css">
+  <link rel="stylesheet" href="./svg_converter_style.css">
+
+  <!-- 直接引用慢慢軍火庫；不在此專案存放軍火庫副本。 -->
+  <script defer src="https://lib.stillnessbyslowly.com/Image/png/canvas_png.js"></script>
+  <script defer src="https://lib.stillnessbyslowly.com/Image/png/png_download.js"></script>
+  <script defer src="https://lib.stillnessbyslowly.com/data/blob/blob_url.js"></script>
+  <script defer src="https://lib.stillnessbyslowly.com/data/file/filename_sanitize.js"></script>
+  <script defer src="https://lib.stillnessbyslowly.com/video/recording/mime_type.js"></script>
+  <script defer src="https://lib.stillnessbyslowly.com/video/recording/media_recorder.js"></script>
+  <script defer src="https://lib.stillnessbyslowly.com/video/recording/recorded_chunks.js"></script>
+
+  <!-- 本專案自己的獨立 GIF 編碼器；暫不納入軍火庫。 -->
+  <script defer src="./svg_gif_encoder.js"></script>
+  <script defer src="./svg_converter.js"></script>
+  <script defer src="./svg_converter_style.js"></script>
+</head>
+<body>
+  <div class="page-shell">
+    <header class="site-header">
+      <p class="site-eyebrow">STILLNESS BY SLOWLY · LAB</p>
+      <h1>SVG 動畫轉檔室</h1>
+      <p class="site-description">讓會動的 SVG，變成更容易分享的圖片與影片。</p>
+    </header>
+
+    <main class="page-layout">
+      <section class="tool-section editor-panel" aria-labelledby="source-title">
+        <div class="section-heading">
+          <h2 id="source-title">載入作品</h2>
+          <span class="section-hint">本機轉換，不上傳檔案</span>
+        </div>
+        <div class="source-actions">
+          <label class="primary-action file-label" for="svg-file">選擇 SVG 檔案</label>
+          <input id="svg-file" type="file" accept=".svg,image/svg+xml">
+          <button id="load-example" class="secondary-action" type="button">載入範例動畫</button>
+        </div>
+        <div id="file-drop-zone" class="file-drop-zone" tabindex="0">也可以把 SVG 檔拖進這裡</div>
+        <details class="source-details">
+          <summary>貼上或查看 SVG 原始碼</summary>
+          <label for="svg-source" class="field-label">SVG 程式碼</label>
+          <textarea id="svg-source" spellcheck="false" placeholder="貼上完整的 &lt;svg&gt; ... &lt;/svg&gt;" aria-label="SVG 原始碼"></textarea>
+          <button id="apply-source" class="secondary-action" type="button">套用原始碼</button>
+        </details>
+      </section>
+
+      <section class="tool-section preview-panel" aria-labelledby="preview-title">
+        <div class="section-heading">
+          <h2 id="preview-title">動畫預覽</h2>
+          <span id="source-size" class="section-hint">尚未載入</span>
+        </div>
+        <div class="preview-frame">
+          <div id="svg-preview" class="svg-preview" aria-label="SVG 動畫預覽"></div>
+        </div>
+        <div class="preview-actions">
+          <button id="replay-animation" class="secondary-action" type="button">重新播放</button>
+          <span id="animation-detection" class="muted-copy"></span>
+        </div>
+      </section>
+
+      <section class="tool-section options-panel" aria-labelledby="options-title">
+        <div class="section-heading"><h2 id="options-title">輸出設定</h2></div>
+        <div class="settings-grid">
+          <div class="field">
+            <label for="export-width">輸出寬度（px）</label>
+            <input id="export-width" type="number" min="160" max="1400" step="2" value="560">
+            <span id="output-size" class="field-help">高度依原圖比例計算</span>
+          </div>
+          <div class="field">
+            <label for="animation-duration">動畫長度（秒）</label>
+            <input id="animation-duration" type="number" min="1" max="15" step="0.5" value="3">
+          </div>
+          <div class="field">
+            <label for="animation-fps">影格率（fps）</label>
+            <input id="animation-fps" type="number" min="4" max="24" step="1" value="12">
+          </div>
+          <div class="field">
+            <label for="still-time">PNG 擷取時間（秒）</label>
+            <input id="still-time" type="number" min="0" max="15" step="0.1" value="0">
+          </div>
+        </div>
+        <div class="background-setting">
+          <label class="checkbox-line" for="transparent-background">
+            <input id="transparent-background" type="checkbox" checked>
+            GIF／PNG 使用透明背景
+          </label>
+          <label class="background-color-label" for="background-color">實色背景</label>
+          <input id="background-color" type="color" value="#ffffff">
+        </div>
+        <p class="field-help">MP4／WebM 一律使用實色背景；GIF 僅支援單一透明色，柔邊可能失真。GIF 寬度上限 640px。</p>
+      </section>
+
+      <section class="tool-section downloads-panel" aria-labelledby="download-title">
+        <div class="section-heading"><h2 id="download-title">下載作品</h2></div>
+        <div class="download-grid">
+          <button type="button" data-download-format="png" disabled>透明／實色 PNG</button>
+          <button type="button" data-download-format="gif" disabled>GIF 動圖</button>
+          <button type="button" data-download-format="webm" disabled>WebM 影片</button>
+          <button type="button" data-download-format="mp4" disabled>MP4 影片</button>
+        </div>
+        <progress id="export-progress" max="1" value="0" hidden></progress>
+        <p id="conversion-status" class="conversion-status" role="status" aria-live="polite">載入 SVG 後，就可以選擇輸出格式。</p>
+        <p id="format-support" class="format-support"></p>
+      </section>
+
+      <details class="tool-section help-panel">
+        <summary>格式限制與使用提醒</summary>
+        <p>支援內嵌的 SVG SMIL 動畫（animate、animateTransform）與常見 CSS 動畫；複雜的濾鏡、路徑變形、外部字型或其他動畫語法不保證每款都能正確轉換。</p>
+        <p>影片輸出取決於目前瀏覽器支援的 MediaRecorder 編碼，尤其 MP4 並非所有手機都可輸出。轉檔時請讓分頁保持前景，不要鎖定螢幕。</p>
+        <p>為了避免假動畫，若輸出影格全部相同、但原圖明明包含動畫，GIF 與影片匯出會停止並顯示原因。詳細驗收方式請見 ZIP 內 README。</p>
+      </details>
+    </main>
+    <footer class="site-footer">慢 慢｜Stillness by Slowly</footer>
+  </div>
+</body>
+</html>

@@ -1,0 +1,66 @@
+/* 介面樣式：調整外觀不應修改 SVG 解析或影片匯出邏輯。 */
+:root {
+  font-family: system-ui, -apple-system, "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+  color: #263042;
+  background: #f6f7fb;
+  font-synthesis: none;
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; }
+button, input, textarea { font: inherit; }
+button { cursor: pointer; }
+button:focus-visible, input:focus-visible, textarea:focus-visible,
+summary:focus-visible, .file-label:focus-visible, .file-drop-zone:focus-visible {
+  outline: 3px solid #99a1ea;
+  outline-offset: 3px;
+}
+
+.page-shell { max-width: 900px; margin: auto; padding: 32px 18px 50px; }
+.site-header { padding: 14px 6px 26px; text-align: center; }
+.site-eyebrow { color: #748099; letter-spacing: 0.16em; font-size: 0.78rem; }
+h1 { margin: 10px 0; font-size: clamp(1.9rem, 5vw, 2.65rem); letter-spacing: 0.06em; }
+.site-description { margin: 10px 0 0; line-height: 1.65; color: #64718a; }
+.page-layout { display: grid; gap: 20px; }
+.tool-section { background: #fff; border: 1px solid #e3e7f0; border-radius: 18px; padding: 23px; box-shadow: 0 7px 30px rgba(35,45,83,0.035); }
+.section-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 16px; }
+h2 { margin: 0; font-size: 1.2rem; }
+.section-hint, .muted-copy { font-size: 0.88rem; color: #718097; }
+.source-actions, .preview-actions { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+button, .file-label { border: 1px solid #dce1ed; background: white; border-radius: 11px; padding: 10px 17px; color: inherit; text-align: center; }
+.primary-action, .download-grid button { background: #525cb5; color: white; border-color: #525cb5; }
+.secondary-action:hover, button:not(:disabled):hover { filter: brightness(0.96); }
+.file-label { cursor: pointer; display: inline-block; }
+.file-drop-zone { margin: 14px 0 0; padding: 14px; border: 1px dashed #cbd3e4; border-radius: 11px; text-align: center; font-size: 0.9rem; color: #6a7690; }
+.source-details { margin-top: 17px; }
+summary { cursor: pointer; font-weight: 600; }
+.field-label { display: block; margin-top: 16px; font-size: 0.9rem; }
+textarea { width: 100%; min-height: 160px; resize: vertical; padding: 12px; margin: 8px 0 12px; border: 1px solid #d9dfeb; border-radius: 12px; background: #fcfdff; font-size: 0.83rem; line-height: 1.55; }
+.preview-frame { display: grid; place-items: center; min-height: 320px; border: 1px solid #e0e4ed; border-radius: 12px; padding: 16px; }
+.preview-actions { margin-top: 14px; }
+.settings-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 18px; }
+.field label { display: block; margin-bottom: 7px; font-size: 0.91rem; font-weight: 600; }
+.field input { width: 100%; padding: 10px; border: 1px solid #d8deea; border-radius: 9px; }
+.field-help { font-size: 0.84rem; color: #758098; line-height: 1.65; margin: 9px 0 0; }
+.background-setting { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin-top: 20px; }
+.checkbox-line { display: inline-flex; align-items: center; gap: 7px; font-size: 0.92rem; }
+.background-color-label { margin-left: auto; font-size: 0.88rem; color: #69758e; }
+#background-color { height: 34px; width: 50px; padding: 1px; border: 1px solid #d6dcea; border-radius: 7px; background: white; }
+.download-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 12px; }
+.download-grid button { padding: 13px 10px; }
+.conversion-status { margin: 18px 0 0; font-size: 0.94rem; line-height: 1.6; }
+.format-support { font-size: 0.86rem; color: #737e93; line-height: 1.6; }
+.help-panel p { line-height: 1.75; color: #66738b; font-size: 0.91rem; margin-bottom: 0; }
+.site-footer { padding: 30px 0 0; text-align: center; color: #8991a2; font-size: 0.85rem; }
+
+@media(max-width: 580px) {
+  .page-shell { padding: 14px 12px 35px; }
+  .tool-section { padding: 17px 15px; border-radius: 14px; }
+  .section-heading { flex-wrap: wrap; }
+  .settings-grid { gap: 13px; }
+  .download-grid { gap: 9px; }
+  .download-grid button { padding: 12px 6px; font-size: 0.9rem; }
+  .source-actions button, .file-label { flex: 1; }
+  .svg-preview { min-height: 250px; }
+  .preview-frame { min-height: 290px; }
+}

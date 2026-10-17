@@ -1,0 +1,70 @@
+/* 功能樣式：只處理轉換工具的預覽舞台、進度與操作狀態。 */
+#svg-file {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+
+.svg-preview {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  min-height: 290px;
+  overflow: hidden;
+}
+
+.svg-preview > svg {
+  display: block;
+  max-width: 100%;
+  max-height: 440px;
+  width: auto;
+  height: auto;
+  pointer-events: none;
+}
+
+.preview-frame {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  /* 棋盤格僅為透明區域的查看輔助，不參與匯出。 */
+  background-color: #ffffff;
+  background-image: linear-gradient(45deg, #e9ecf1 25%, transparent 25%),
+    linear-gradient(-45deg, #e9ecf1 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #e9ecf1 75%),
+    linear-gradient(-45deg, transparent 75%, #e9ecf1 75%);
+  background-size: 24px 24px;
+  background-position: 0 0, 0 12px, 12px -12px, -12px 0;
+}
+
+.file-drop-zone.is-dragging {
+  outline: 2px solid #6b77d6;
+  background: #f0f0ff;
+}
+
+#export-progress {
+  width: 100%;
+  height: 10px;
+  margin-top: 18px;
+  accent-color: #6874c9;
+}
+
+.conversion-status[data-error="true"] {
+  color: #a32242;
+}
+
+body.is-exporting [data-download-format],
+body.is-exporting #apply-source,
+body.is-exporting #replay-animation,
+body.is-exporting #load-example,
+body.is-exporting .file-label {
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
