@@ -343,8 +343,8 @@
       ${contentDefinitions(mode, labels.maskText)}
       ${outsideSensors(mode, animated)}
       <g id="tunnel-sea-hull">
-        <!-- 艙體輪廓是作品本身，四周畫布依然透明。 -->
-        <path d="${shape}" fill="url(#tunnel-sea-depth)" opacity=".99"/>
+        <!-- 依需求取消整片艙體底板填色，保留外框與內部結構；四周畫布依然透明。 -->
+        <path d="${shape}" fill="none"/>
         <g clip-path="url(#tunnel-sea-hull-clip)">
           <ellipse cx="${center.x}" cy="${center.y}" rx="${center.rx}" ry="${center.ry}"
             fill="url(#tunnel-sea-shell-light)"/>

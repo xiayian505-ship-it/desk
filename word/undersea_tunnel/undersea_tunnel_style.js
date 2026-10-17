@@ -4,7 +4,7 @@ window.SlowlyWordPageConfig = Object.freeze({
   title: "海底隧道",
   initial: "海底隧道",
   placeholder: "例如：海底、深潛",
-  examples: ["海底隧道", "深潛", "幽藍", "星海"],
+  examples: ["海底隧道", "深潛", "幽藍"],
   vertical: "SlowlyUnderseaTunnelArt",
   horizontal: "SlowlyUnderseaTunnelHorizontalArt",
   animated: "SlowlyUnderseaTunnelAnimatedArt",

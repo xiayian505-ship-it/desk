@@ -114,7 +114,7 @@
       </linearGradient>
     </defs>
     <g id="gluttony-banquet-scene">
-      <path d="${serving}" fill="url(#gluttony-banquet-plate)" stroke="#51301f" stroke-width="20"/>
+      <path d="${serving}" fill="none" stroke="#51301f" stroke-width="20"/>
       <path d="${serving}" fill="none" stroke="#d3ae7b" stroke-width="8" opacity=".9"/>
       <ellipse cx="${cx}" cy="${cy}" rx="${rx * .79}" ry="${ry * .72}"
         fill="none" stroke="#527d6d" stroke-width="10" opacity=".7"/>

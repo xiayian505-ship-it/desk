@@ -116,8 +116,6 @@
       </filter>
     </defs>
     <g id="lust-curtains-and-gaze">
-      <path d="${curtain}" fill="url(#lust-night-canvas)" stroke="#654274" stroke-width="11"/>
-      <path d="${curtain}" fill="none" stroke="#cf8abe" stroke-width="2.4" opacity=".8"/>
       ${flowingVeils}
       ${petals}
       ${mask}

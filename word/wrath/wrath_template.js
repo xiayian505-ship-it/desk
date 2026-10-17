@@ -101,7 +101,7 @@
     </defs>
     <g id="wrath-detonation">
       ${shock}
-      <path d="${blastShape}" fill="url(#wrath-pressure-core)" stroke="#1d050b" stroke-width="11"/>
+      <path d="${blastShape}" fill="none" stroke="#1d050b" stroke-width="11"/>
       <path d="${blastShape}" fill="none" stroke="#ff7a32" stroke-width="3.5" opacity=".88"/>
       <ellipse cx="${cx}" cy="${cy}" rx="${spreadX * .81}" ry="${spreadY * .75}"
         fill="none" stroke="#ff8b46" stroke-width="18" opacity=".15"/>

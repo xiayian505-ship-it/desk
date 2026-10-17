@@ -106,8 +106,6 @@
       </linearGradient>
     </defs>
     <g id="greed-bottomless-vault">
-      <path d="${outline}" fill="url(#greed-pit)" stroke="#897d56" stroke-width="8"/>
-      <path d="${outline}" fill="none" stroke="#d4c380" stroke-width="2" stroke-dasharray="14 11"/>
       ${coils}
       ${treasure}
       <ellipse cx="${cx}" cy="${cy}" rx="${rx * .20}" ry="${ry * .24}"

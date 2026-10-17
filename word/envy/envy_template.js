@@ -107,8 +107,6 @@
       </linearGradient>
     </defs>
     <g id="envy-fractured-reflection">
-      <path d="${mirror}" fill="url(#envy-glass)" stroke="#5b385a" stroke-width="13"/>
-      <path d="${mirror}" fill="none" stroke="#acd76c" stroke-width="2" opacity=".72"/>
       <path d="M${centerX} 56 L${centerX - 68} ${centerY - 65} L${centerX + 89} ${centerY + 140}
         L${centerX - 124} ${h - 50} M${centerX - 330} ${h * .39} L${centerX + 128} ${h * .52}
         L${centerX + 335} ${h * .30} M${centerX + 270} ${h * .9} L${centerX - 87} ${h * .58}"
