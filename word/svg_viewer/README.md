@@ -3,7 +3,7 @@
 ## 入口
 
 - 首頁：「慢慢看」內新增 **SVG 檢視室** 入口。
-- 網址：`https://desk.stillnessbyslowly.com/word/svg-viewer/index.html`
+- 網址：`https://desk.stillnessbyslowly.com/word/svg_viewer/index.html`
 
 ## 功能
 
@@ -35,3 +35,5 @@
 首頁檢視工具入口由 `word/index_content.js` 從 `word/viewer_content.json` 生成；說明主體另放 `word/index_notes.json`。
 
 如增加其他檢視模式，先完成該工具自己的頁面與程式，再在 `modes` 加入口；**JSON 不會自動產生新的檢視功能**。藝術字產生器及本機檔案安全規則維持不變。
+
+> 舊網址 `word/svg-viewer/index.html` 不保留轉址；部署時請刪除整個舊 `word/svg-viewer/` 目錄。

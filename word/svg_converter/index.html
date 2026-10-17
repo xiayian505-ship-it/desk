@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f8f7f5">
+  <meta name="description" content="慢慢藝術字 SVG 動畫轉檔室：將 SVG 在瀏覽器本機轉換為 PNG、GIF、WebM 或 MP4，不上傳檔案。">
+  <title>SVG 動畫轉檔室｜慢慢藝術字</title>
+
+  <!-- 和藝術字及 SVG 檢視室共用宿主外觀；不把共用樣式複製到此資料夾。 -->
+  <link rel="stylesheet" href="../word_style.css">
+  <link rel="stylesheet" href="./svg_converter.css">
+  <link rel="stylesheet" href="./svg_converter_style.css">
+
+  <!-- 軍火庫以正式 HTTPS URL 直接引用，不能複製到專案。 -->
+  <script defer src="https://lib.stillnessbyslowly.com/Image/png/canvas_png.js"></script>
+  <script defer src="https://lib.stillnessbyslowly.com/Image/png/png_download.js"></script>
+  <script defer src="https://lib.stillnessbyslowly.com/data/blob/blob_url.js"></script>
+  <script defer src="https://lib.stillnessbyslowly.com/data/file/filename_sanitize.js"></script>
+  <script defer src="https://lib.stillnessbyslowly.com/video/recording/mime_type.js"></script>
+  <script defer src="https://lib.stillnessbyslowly.com/video/recording/media_recorder.js"></script>
+  <script defer src="https://lib.stillnessbyslowly.com/video/recording/recorded_chunks.js"></script>
+
+  <!-- GIF 編碼仍是本轉檔室專用測試功能，尚未加入軍火庫。 -->
+  <script defer src="./svg_gif_encoder.js"></script>
+  <script defer src="./svg_converter.js"></script>
+  <script defer src="./svg_converter_style.js"></script>
+</head>
+<body class="svg-converter-page">
+  <div class="word-workbench">
+    <header class="word-heading">
+      <h1><a href="../index.html" aria-label="返回慢慢藝術字首頁">SVG 動畫轉檔室</a></h1>
+    </header>
+
+    <main class="word-workspace">
+      <div class="converter-heading">
+        <p class="converter-lead">把會動的 SVG，轉成方便分享的圖片與影片。</p>
+        <p class="converter-privacy">檔案只在這個瀏覽器分頁轉換，不會上傳。部分動畫效果可能因瀏覽器而有所差異。</p>
+      </div>
+
+      <section class="converter-section" aria-labelledby="source-title">
+        <h2 id="source-title" class="word-section-title">載入作品</h2>
+        <div class="converter-upload">
+          <div class="source-actions">
+            <label class="converter-file-button" for="svg-file">選擇本機 SVG</label>
+            <input id="svg-file" type="file" accept=".svg,image/svg+xml">
+            <button id="load-example" class="converter-outline-button" type="button">載入範例動畫</button>
+          </div>
+          <div id="file-drop-zone" class="file-drop-zone" role="button" tabindex="0" aria-label="把 SVG 檔案拖到這裡，或按下選擇檔案">也可以把 SVG 檔拖進這裡</div>
+          <details class="source-details">
+            <summary>貼上或查看 SVG 原始碼</summary>
+            <label for="svg-source" class="field-label">SVG 程式碼</label>
+            <textarea id="svg-source" spellcheck="false" placeholder="貼上完整的 &lt;svg&gt; ... &lt;/svg&gt;" aria-label="SVG 原始碼"></textarea>
+            <button id="apply-source" class="converter-outline-button" type="button">套用原始碼</button>
+          </details>
+        </div>
+      </section>
+
+      <section class="converter-section" aria-labelledby="preview-title">
+        <div class="converter-section-heading">
+          <h2 id="preview-title" class="word-section-title">作品預覽</h2>
+          <span id="source-size" class="converter-side-note">尚未載入</span>
+        </div>
+        <div class="preview-frame">
+          <div id="svg-preview" class="svg-preview" aria-label="SVG 動畫預覽"></div>
+        </div>
+        <div class="preview-actions">
+          <button id="replay-animation" class="converter-text-button" type="button">重新播放</button>
+          <span id="animation-detection" class="converter-side-note"></span>
+        </div>
+      </section>
+
+      <section class="converter-section" aria-labelledby="options-title">
+        <h2 id="options-title" class="word-section-title">輸出設定</h2>
+        <div class="settings-grid">
+          <div class="field">
+            <label for="export-width">輸出寬度（px）</label>
+            <input id="export-width" type="number" min="160" max="1400" step="2" value="560">
+            <span id="output-size" class="field-help">高度依原圖比例計算</span>
+          </div>
+          <div class="field">
+            <label for="animation-duration">動畫長度（秒）</label>
+            <input id="animation-duration" type="number" min="1" max="15" step="0.5" value="3">
+          </div>
+          <div class="field">
+            <label for="animation-fps">影格率（fps）</label>
+            <input id="animation-fps" type="number" min="4" max="24" step="1" value="12">
+          </div>
+          <div class="field">
+            <label for="still-time">PNG 擷取時間（秒）</label>
+            <input id="still-time" type="number" min="0" max="15" step="0.1" value="0">
+          </div>
+        </div>
+        <div class="background-setting">
+          <label class="checkbox-line" for="transparent-background">
+            <input id="transparent-background" type="checkbox" checked>
+            GIF／PNG 使用透明背景
+          </label>
+          <label class="background-color-label" for="background-color">實色背景</label>
+          <input id="background-color" type="color" value="#ffffff">
+        </div>
+        <p class="field-help converter-limit">MP4／WebM 使用實色背景；GIF 只能保留單一透明色，柔邊可能失真。GIF 輸出寬度上限為 640px。</p>
+      </section>
+
+      <section class="converter-section converter-downloads" aria-labelledby="download-title">
+        <h2 id="download-title" class="word-section-title">下載作品</h2>
+        <div class="download-grid">
+          <button type="button" data-download-format="png" disabled>透明／實色 PNG</button>
+          <button type="button" data-download-format="gif" disabled>GIF 動圖</button>
+          <button type="button" data-download-format="webm" disabled>WebM 影片</button>
+          <button type="button" data-download-format="mp4" disabled>MP4 影片</button>
+        </div>
+        <progress id="export-progress" max="1" value="0" hidden></progress>
+        <p id="conversion-status" class="conversion-status" role="status" aria-live="polite">載入 SVG 後，就可以選擇輸出格式。</p>
+        <p id="format-support" class="format-support"></p>
+      </section>
+
+      <details class="converter-help">
+        <summary>格式限制與使用提醒</summary>
+        <div class="converter-help-body">
+          <p>支援常見 SVG 原生動畫及 CSS 動畫；複雜濾鏡、路徑變形、外部字型與特殊動畫不保證完整轉換。</p>
+          <p>影片輸出視目前瀏覽器的 MediaRecorder 格式支援而定。轉換期間請保持分頁在前景，不要鎖定螢幕。</p>
+          <p>有動畫的 SVG 若擷取到完全相同的影格，轉檔器會停止並顯示原因，避免輸出看似成功卻不會動的檔案。</p>
+        </div>
+      </details>
+    </main>
+
+    <footer class="sbs-signature sbs-footer" aria-label="品牌與創作者">
+      <a class="sbs-footer-brand" href="https://stillnessbyslowly.com/" aria-label="慢慢｜Stillness by Slowly 主站">
+        <span class="sbs-signature-mark">慢 慢</span>
+        <span class="sbs-signature-separator" aria-hidden="true">|</span>
+        <span class="sbs-signature-name">Stillness by Slowly</span>
+      </a>
+      <a class="sbs-footer-author" href="https://www.threads.com/@xiayian505" target="_blank" rel="noopener noreferrer" aria-label="夏熠安的個人頁">夏熠安</a>
+    </footer>
+  </div>
+</body>
+</html>

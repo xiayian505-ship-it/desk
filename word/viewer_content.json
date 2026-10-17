@@ -5,7 +5,14 @@
       "title": "SVG 檢視室",
       "description": "下載的 SVG 無法在手機預覽？帶回這裡看動畫與向量細節。不上傳、不存檔，重新整理就清空。",
       "linkText": "開啟檢視室",
-      "href": "./svg-viewer/index.html"
+      "href": "./svg_viewer/index.html"
+    },
+    {
+      "id": "converter",
+      "title": "SVG 動畫轉檔室",
+      "description": "把 SVG 動畫轉成透明 PNG、GIF 動圖、WebM 或 MP4 影片。直接在瀏覽器本機轉換，方便分享，也不需要懂 SVG。",
+      "linkText": "開啟轉檔室",
+      "href": "./svg_converter/index.html"
     }
   ],
   "pages": {

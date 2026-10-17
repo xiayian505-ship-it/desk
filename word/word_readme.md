@@ -24,10 +24,11 @@
 | 修改單款特殊預覽 | 該款的預覽舞台、CSS、`_style.js` 特效接線 | 其他作品的專屬特效 |
 | 修改藝術字首頁 | `word/index.html`、`word/index_data.js`、`word/index_style.css` 與相關首頁 JS | 各款生成器 |
 | 修改「慢慢看」說明文字 | `word/index_notes.json` | HTML、搜尋分頁、各款作品 JS |
-| 修改檢視工具入口／SVG 檢視室說明 | `word/viewer_content.json`；必要時 `word/svg-viewer/viewer_content.js` | 藝術字生成器、檢視核心 `viewer.js` |
+| 修改檢視工具入口／SVG 檢視室說明 | `word/viewer_content.json`；必要時 `word/svg_viewer/viewer_content.js` | 藝術字生成器、檢視核心 `viewer.js` |
 | 修改下載的操作介面 | `word/shared/word_page.js`、`word/shared/README.md` | 未受影響的作品模板 |
 | 修改下載檔的實際畫面或內容 | 該款 SVG 模板、生成器、匯出流程、必要的軍火庫元件 | 不相關的作品頁 UI |
-| 修改 SVG 檢視室 | `word/svg-viewer/`，需要時再查首頁入口 | 全部藝術字繪圖核心 |
+| 修改 SVG 檢視室 | `word/svg_viewer/`，需要時再查首頁入口 | 全部藝術字繪圖核心 |
+| 修改 SVG 動畫轉檔室 | `word/svg_converter/`，入口由 `word/viewer_content.json` 提供 | 全部藝術字繪圖核心、軍火庫 |
 
 **分工底線：共用頁面只處理 UI 與接線；各款作品控制字體、視覺、SVG 模板、特效和輸出內容。** 不要在單款重新實作整套 UI，也不要為了修改共用 UI 順便調整已可用的藝術字。
 每款藝術字進入精修階段時，必須重新建立自己的獨立 SVG 繪圖模板。不得再依賴共用材質核心產生藝術字主體。共用 UI、操作控制器與下載流程維持既有架構，不受此限制。
@@ -139,7 +140,8 @@ word/
 ├── viewer_content.json           # 檢視室入口模式清單及說明
 ├── index_content.js              # 只讀取兩份 JSON 並填入首頁
 ├── index_style.css               # 首頁樣式
-├── svg-viewer/                   # SVG 檢視室：獨立工具、viewer_content.js 讀取說明 JSON
+├── svg_viewer/                   # SVG 檢視室：獨立工具、viewer_content.js 讀取說明 JSON
+├── svg_converter/                 # SVG 動畫轉檔室：獨立工具，直接引用軍火庫正式 HTTPS URL
 └── <系列代號>/
     ├── index.html                # 共用頁所需引用 + 本款預覽 template
     ├── <代號>.css                 # 本款預覽／效果必要樣式

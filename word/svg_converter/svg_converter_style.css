@@ -1,0 +1,378 @@
+/* SVG 動畫轉檔室｜視覺層
+ * 對齊慢慢藝術字與 SVG 檢視室：米白底、灰紫字、細框、直角。
+ * 所有繪圖、轉檔與下載邏輯仍交由 svg_converter.js；此檔只調外觀。
+ */
+.svg-converter-page {
+  --converter-accent: var(--word-accent);
+}
+
+.svg-converter-page button,
+.svg-converter-page textarea,
+.svg-converter-page input {
+  font: inherit;
+}
+
+.svg-converter-page button {
+  cursor: pointer;
+}
+
+.svg-converter-page button:focus-visible,
+.svg-converter-page input:focus-visible,
+.svg-converter-page textarea:focus-visible,
+.svg-converter-page summary:focus-visible,
+.svg-converter-page .converter-file-button:focus-visible,
+.svg-converter-page .file-drop-zone:focus-visible {
+  outline: 2px solid var(--word-accent);
+  outline-offset: 3px;
+}
+
+.converter-heading {
+  margin-bottom: 28px;
+}
+
+.converter-lead {
+  margin: 0 0 9px;
+  color: var(--word-text);
+  font-size: 0.95rem;
+  line-height: 1.85;
+}
+
+.converter-privacy {
+  margin: 0;
+  color: var(--word-muted);
+  font-size: 0.8rem;
+  line-height: 1.9;
+}
+
+.converter-section {
+  min-width: 0;
+  margin: 0 0 32px;
+}
+
+.converter-section-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 7px 14px;
+  margin-bottom: 12px;
+}
+
+.converter-section-heading .word-section-title {
+  margin: 0;
+}
+
+.converter-side-note {
+  color: var(--word-muted);
+  font-size: 0.8rem;
+  line-height: 1.7;
+}
+
+.converter-upload {
+  padding: 21px;
+  border: 1px solid var(--word-line);
+  background: var(--word-paper);
+}
+
+.source-actions,
+.preview-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+.converter-file-button,
+.converter-outline-button {
+  display: inline-block;
+  appearance: none;
+  padding: 10px 17px;
+  border-radius: 0;
+  font-size: 0.88rem;
+  line-height: 1.5;
+  text-align: center;
+}
+
+.converter-file-button {
+  border: 1px solid var(--word-accent);
+  background: var(--word-accent);
+  color: #ffffff;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.converter-file-button:hover {
+  background: #66566d;
+}
+
+.converter-file-button:has(+ #svg-file:focus-visible) {
+  outline: 2px solid var(--word-accent);
+  outline-offset: 3px;
+}
+
+.converter-outline-button {
+  border: 1px solid var(--word-line);
+  background: var(--word-paper);
+  color: var(--word-text);
+}
+
+.converter-outline-button:hover:not(:disabled) {
+  border-color: var(--word-accent);
+  color: var(--word-accent);
+}
+
+.file-drop-zone {
+  margin-top: 13px;
+  padding: 17px 12px;
+  border: 1px dashed var(--word-line);
+  color: var(--word-muted);
+  text-align: center;
+  font-size: 0.86rem;
+  line-height: 1.8;
+  cursor: pointer;
+}
+
+.file-drop-zone:hover,
+.file-drop-zone.is-dragging {
+  border-color: var(--word-accent);
+  background: var(--word-soft);
+}
+
+.source-details {
+  margin-top: 16px;
+}
+
+.source-details summary,
+.converter-help summary {
+  color: var(--word-text);
+  font-size: 0.87rem;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.field-label {
+  display: block;
+  margin-top: 15px;
+  margin-bottom: 7px;
+  color: var(--word-text);
+  font-size: 0.85rem;
+}
+
+#svg-source {
+  display: block;
+  width: 100%;
+  min-height: 156px;
+  padding: 12px;
+  margin: 0 0 13px;
+  resize: vertical;
+  border: 1px solid var(--word-line);
+  border-radius: 0;
+  background: var(--word-paper);
+  color: var(--word-text);
+  font-size: 0.84rem;
+  line-height: 1.6;
+}
+
+.preview-frame {
+  display: grid;
+  place-items: center;
+  min-height: 365px;
+  padding: 16px;
+  border: 1px solid var(--word-line);
+  border-radius: 0;
+}
+
+.preview-actions {
+  margin-top: 12px;
+}
+
+.converter-text-button {
+  appearance: none;
+  padding: 0 0 4px;
+  border: 0;
+  border-bottom: 1px solid var(--word-accent);
+  border-radius: 0;
+  background: transparent;
+  color: var(--word-accent);
+  font-size: 0.88rem;
+  font-weight: 650;
+}
+
+.converter-text-button:hover:not(:disabled) {
+  color: var(--word-text);
+}
+
+.settings-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px 23px;
+  margin-top: 17px;
+}
+
+.field {
+  min-width: 0;
+}
+
+.field label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 0.84rem;
+  font-weight: 650;
+}
+
+.field input {
+  width: 100%;
+  min-height: 45px;
+  padding: 9px 11px;
+  border: 1px solid var(--word-line);
+  border-radius: 0;
+  background: var(--word-paper);
+  color: var(--word-text);
+}
+
+.field input:focus {
+  border-color: var(--word-accent);
+}
+
+.field-help {
+  display: block;
+  margin: 7px 0 0;
+  color: var(--word-muted);
+  font-size: 0.79rem;
+  line-height: 1.75;
+}
+
+.background-setting {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px 22px;
+  margin-top: 20px;
+  font-size: 0.84rem;
+}
+
+.checkbox-line {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.checkbox-line input {
+  accent-color: var(--word-accent);
+}
+
+.background-color-label {
+  margin-left: auto;
+  color: var(--word-muted);
+}
+
+#background-color {
+  width: 46px;
+  height: 37px;
+  padding: 3px;
+  border: 1px solid var(--word-line);
+  border-radius: 0;
+  background: var(--word-paper);
+  cursor: pointer;
+}
+
+.converter-limit {
+  margin-top: 12px;
+}
+
+.download-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 13px 20px;
+  margin-top: 18px;
+}
+
+.download-grid button {
+  min-height: 42px;
+  padding: 9px 12px;
+  border: 1px solid var(--word-line);
+  border-radius: 0;
+  background: var(--word-paper);
+  color: var(--word-accent);
+  text-align: left;
+  font-size: 0.95rem;
+  font-weight: 650;
+}
+
+.download-grid button:hover:not(:disabled) {
+  border-color: var(--word-accent);
+  background: var(--word-soft);
+}
+
+.download-grid button:disabled {
+  color: var(--word-muted);
+  opacity: 0.47;
+  cursor: not-allowed;
+}
+
+.conversion-status {
+  margin: 14px 0 0;
+  color: var(--word-accent);
+  font-size: 0.84rem;
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+}
+
+.format-support {
+  margin: 8px 0 0;
+  color: var(--word-muted);
+  font-size: 0.79rem;
+  line-height: 1.8;
+}
+
+.converter-help {
+  margin: 6px 0 28px;
+  padding: 19px 0 0;
+  border-top: 1px solid var(--word-line);
+}
+
+.converter-help-body p {
+  margin: 13px 0 0;
+  color: var(--word-muted);
+  font-size: 0.82rem;
+  line-height: 1.9;
+}
+
+/* 所有欄位跟檢視室一樣，必須在窄螢幕保持內容不撐破版心。 */
+.svg-converter-page .word-workspace,
+.svg-converter-page .converter-section,
+.svg-converter-page .converter-upload,
+.svg-converter-page .preview-frame {
+  min-width: 0;
+  max-width: 100%;
+}
+
+@media (max-width: 600px) {
+  .converter-upload {
+    padding: 16px;
+  }
+
+  .preview-frame {
+    min-height: 300px;
+    padding: 10px;
+  }
+
+  .settings-grid {
+    gap: 14px;
+  }
+
+  .download-grid {
+    gap: 12px;
+  }
+
+  .download-grid button {
+    padding: 9px;
+    font-size: 0.86rem;
+  }
+
+  .source-actions > label,
+  .source-actions > button {
+    flex: 1 1 140px;
+  }
+}
