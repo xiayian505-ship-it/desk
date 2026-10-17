@@ -1,0 +1,19 @@
+/* 海底隧道｜僅管理預覽舞台的必要顯示特性，不改全系列 UI。 */
+.word-undersea-tunnel .undersea-tunnel-stage {
+  display: grid;
+  place-items: center;
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  /* 棋盤格只是辨識透明區域，不會隨作品下載。 */
+  background-color: #eaf0f1;
+  background-image: repeating-conic-gradient(#e9eff0 0% 25%, #fcfdfc 0% 50%);
+  background-size: 26px 26px;
+}
+
+.word-undersea-tunnel .undersea-tunnel-stage .art-image {
+  display: block;
+  max-width: 100%;
+  user-select: none;
+  -webkit-user-drag: none;
+}
