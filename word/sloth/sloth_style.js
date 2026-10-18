@@ -7,7 +7,7 @@ window.SlowlyWordPageConfig = Object.freeze({
   "examples": [
     "好逸惡勞",
     "偷懶",
-    "不想動"
+    "不動"
   ],
   "vertical": "SlowlySlothArt",
   "horizontal": "SlowlySlothHorizontalArt",
