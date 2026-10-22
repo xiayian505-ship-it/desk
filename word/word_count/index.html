@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f8f7f5">
+  <meta name="description" content="字數統計｜慢慢藝術字。科技青綠字形、數位字元掃描、資料節點與計數刻度，支援直橫式及四種下載。">
+  <title>字數統計｜慢慢藝術字</title>
+  <link rel="stylesheet" href="../word_style.css">
+  <link rel="stylesheet" href="./word_count.css">
+  <!-- 共用機制一律載入慢慢軍火庫正式 HTTPS 原件，作品僅定義專屬 SVG。 -->
+  <script defer src="https://lib.stillnessbyslowly.com/data/blob/blob_url.js"></script>
+  <script defer src="https://lib.stillnessbyslowly.com/Image/png/canvas_png.js"></script>
+  <script defer src="https://lib.stillnessbyslowly.com/Image/png/png_download.js"></script>
+  <script defer src="https://lib.stillnessbyslowly.com/component/text_generator/text_generator_component.js"></script>
+  <script defer src="https://lib.stillnessbyslowly.com/component/text_generator/text_generator_core.js"></script>
+  <script defer src="https://lib.stillnessbyslowly.com/component/text_generator/text_generator_horizontal_component.js"></script>
+  <script defer src="./word_count_template.js"></script>
+  <script defer src="./word_count.js"></script>
+  <script defer src="./word_count_horizontal.js"></script>
+  <script defer src="./word_count_animated.js"></script>
+  <script defer src="./word_count_style.js"></script>
+  <script defer src="../shared/word_page.js"></script>
+</head>
+<body class="word-word-count">
+  <template id="word-preview-template">
+    <div class="word-preview word-count-preview">
+      <figure class="word-preview-frame word-count-stage">
+        <img class="art-image" id="art-image" width="840" height="1200" alt="字數統計藝術字預覽">
+      </figure>
+    </div>
+  </template>
+</body>
+</html>

@@ -4,6 +4,16 @@
  * 網站入口一律使用正式 HTTPS 絕對網址。
  */
 window.SlowlyWordIndex = [
+  {
+    "code": "word_count",
+    "title": "字數統計",
+    "subtitle": "Word Count Lettering",
+    "phrase": "字數統計",
+    "desc": "翡翠青綠字形被掃描光逐筆解析，數位刻度與字元代碼沿輪廓浮現。計數器依序點亮，讓每一個字都成為未來系統裡精準讀取的資料。",
+    "keywords": ["字數統計", "Word Count", "文字", "字元", "科技青綠", "未來", "掃描", "數據", "分析", "計數器", "字元代碼", "數位刻度", "直式", "橫式", "動態 SVG"],
+    "href": "https://desk.stillnessbyslowly.com/word/word_count/index.html",
+    "visual": "word_count"
+  },
 {
   "code": "pride",
   "title": "唯我獨尊",

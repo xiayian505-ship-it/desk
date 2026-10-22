@@ -1,0 +1,41 @@
+/* 字數統計｜作品預覽舞台樣式；不影響共用頁標題、下載按鈕與頁尾。 */
+.word-word-count .word-count-preview {
+  min-width: 0;
+  padding: 15px;
+}
+
+.word-word-count .word-count-stage {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: 460px;
+  margin: 0;
+  overflow: hidden;
+  border: 1px solid var(--word-line, #dedbe0);
+  background: repeating-conic-gradient(#f1f0f0 0 25%, #ffffff 0 50%) 0 0 / 24px 24px;
+}
+
+.word-word-count .word-count-stage .art-image {
+  display: block;
+  box-sizing: border-box;
+  width: min(100%, 530px);
+  height: auto;
+  max-height: min(77vh, 805px);
+  object-fit: contain;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+@media (max-width: 650px) {
+  .word-word-count .word-count-preview {
+    padding: 9px;
+  }
+
+  .word-word-count .word-count-stage {
+    min-height: 380px;
+  }
+
+  .word-word-count .word-count-stage .art-image {
+    max-height: 630px;
+  }
+}
