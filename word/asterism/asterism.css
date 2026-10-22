@@ -1,0 +1,36 @@
+.word-asterism .asterism-preview {
+  min-width: 0;
+  padding: 15px;
+}
+
+.word-asterism .asterism-stage {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: 460px;
+  margin: 0;
+  overflow: hidden;
+  border: 1px solid var(--word-line, #dedbe0);
+  background: repeating-conic-gradient(#eeeef0 0 25%, #fff 0 50%) 0 0 / 24px 24px;
+}
+
+.word-asterism .asterism-stage .art-image {
+  display: block;
+  box-sizing: border-box;
+  width: min(100%, 530px);
+  height: auto;
+  max-height: min(77vh, 805px);
+  object-fit: contain;
+  user-select: none;
+  -webkit-user-drag: none;
+  /* Basic Glow：網站直接引用軍火庫；淡淡外光與 SVG 本體光暈互為呼應。 */
+  --slowly-glow-color: #a5d2df;
+  --slowly-glow-size: 4px;
+  --slowly-glow-opacity: .16;
+}
+
+@media (max-width: 650px) {
+  .word-asterism .asterism-preview { padding: 9px; }
+  .word-asterism .asterism-stage { min-height: 380px; }
+  .word-asterism .asterism-stage .art-image { max-height: 630px; }
+}

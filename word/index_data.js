@@ -5,6 +5,16 @@
  */
 window.SlowlyWordIndex = [
   {
+    "code": "asterism",
+    "title": "星象萬千",
+    "subtitle": "Asterism Lettering",
+    "phrase": "星象萬千",
+    "desc": "七顆北斗主星以銀金光點串出斗形，沿星圖穿過冷銀文字。細緻天球弧線與觀測刻度浮現，讓繁星在靜謐中循序閃爍。",
+    "keywords": ["星象萬千", "Asterism", "北斗七星", "星群", "星象", "星圖", "天文", "觀測", "銀白", "冷青", "星軌", "直式", "橫式", "動態 SVG"],
+    "href": "https://desk.stillnessbyslowly.com/word/asterism/index.html",
+    "visual": "asterism"
+  },
+  {
     "code": "traffic",
     "title": "車水馬龍",
     "subtitle": "Traffic Lettering",
