@@ -5,6 +5,31 @@
  */
 window.SlowlyWordIndex = [
   {
+    "code": "traffic",
+    "title": "車水馬龍",
+    "subtitle": "Traffic Lettering",
+    "phrase": "車水馬龍",
+    "desc": "霓虹主字立在夜城車流中央，上下兩道流光長帶像高架與車軌一路奔行。青藍、紫粉與暖黃交錯閃爍，把繁華夜色壓進四個字裡。",
+    "keywords": [
+      "車水馬龍",
+      "Traffic",
+      "夜城",
+      "霓虹",
+      "車流",
+      "流光",
+      "都市",
+      "繁華",
+      "高架",
+      "車軌",
+      "深夜藍",
+      "動態 SVG",
+      "直式",
+      "橫式"
+    ],
+    "href": "https://desk.stillnessbyslowly.com/word/traffic/index.html",
+    "visual": "traffic"
+  },
+  {
     "code": "ill_fate",
     "title": "死於非命",
     "subtitle": "Ill Fate Lettering",

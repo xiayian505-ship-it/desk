@@ -1,0 +1,40 @@
+.word-traffic .traffic-preview {
+  min-width: 0;
+  padding: 15px;
+}
+
+.word-traffic .traffic-stage {
+  position: relative;
+  display: grid;
+  place-items: center;
+  margin: 0;
+  min-height: 460px;
+  overflow: hidden;
+  border: 1px solid var(--word-line, #dedbe0);
+  background: repeating-conic-gradient(#eeeef0 0 25%, #fff 0 50%) 0 0 / 24px 24px;
+}
+
+.word-traffic .traffic-stage .art-image {
+  display: block;
+  box-sizing: border-box;
+  width: min(100%, 530px);
+  height: auto;
+  max-height: min(77vh, 805px);
+  object-fit: contain;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+@media (max-width: 650px) {
+  .word-traffic .traffic-preview {
+    padding: 9px;
+  }
+
+  .word-traffic .traffic-stage {
+    min-height: 380px;
+  }
+
+  .word-traffic .traffic-stage .art-image {
+    max-height: 630px;
+  }
+}
