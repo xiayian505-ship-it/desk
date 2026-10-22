@@ -5,6 +5,33 @@
  */
 window.SlowlyWordIndex = [
   {
+    "code": "ill_fate",
+    "title": "死於非命",
+    "subtitle": "Ill Fate Lettering",
+    "phrase": "死於非命",
+    "desc": "骨白裂字墜入幽冥，破符與懸飾沿殘缺咒印輕晃。冷藍陰光穿過碎痕，彷彿命數已被悄悄劃去。",
+    "keywords": [
+      "死於非命",
+      "Ill Fate",
+      "幽冥咒印",
+      "咒符",
+      "骨白",
+      "裂字",
+      "幽藍",
+      "陰氣",
+      "破符",
+      "銅錢",
+      "風化",
+      "封印",
+      "恐怖",
+      "動態 SVG",
+      "直式",
+      "橫式"
+    ],
+    "href": "https://desk.stillnessbyslowly.com/word/ill_fate/index.html",
+    "visual": "ill_fate"
+  },
+  {
     "code": "word_count",
     "title": "字數統計",
     "subtitle": "Word Count Lettering",
