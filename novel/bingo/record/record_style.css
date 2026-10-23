@@ -366,3 +366,38 @@ button:focus-visible, textarea:focus-visible, select:focus-visible, a:focus-visi
         font-size: .95rem;
     }
 }
+
+/* v3.0｜構思紀錄：淡入與捲動細線，仍保持純文字無卡片外框。 */
+.slowly-scroll-progress {
+    --slowly-scroll-height: 2px;
+    --slowly-scroll-color: #c9b184;
+    --slowly-scroll-z: 1500;
+    opacity: .82;
+}
+
+.sbs-portal-overlay {
+    --sbs-portal-core: #d2c3a7;
+    --sbs-portal-color: #425950;
+    --sbs-portal-edge: #10191e;
+    --sbs-portal-duration: .65s;
+}
+
+.record-header.slowly-fade-up,
+.record-controls.slowly-fade-up,
+.record-workspace.slowly-fade-up {
+    --slowly-reveal-y: 9px;
+    --slowly-reveal-speed: .52s;
+    --slowly-reveal-easing: cubic-bezier(.2,.65,.3,1);
+}
+
+.record-detail { scroll-margin-top: 36px; }
+
+@media (prefers-reduced-motion: reduce) {
+    .record-header.slowly-fade-up,
+    .record-controls.slowly-fade-up,
+    .record-workspace.slowly-fade-up {
+        opacity: 1;
+        transform: none;
+    }
+}
+

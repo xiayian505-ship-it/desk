@@ -23,6 +23,9 @@
 <link href="https://lib.stillnessbyslowly.com/effects/line/underline.css" rel="stylesheet"/>
 <link href="https://lib.stillnessbyslowly.com/ui/custom_select.css" rel="stylesheet"/>
 <!-- 宿主專案：功能必要樣式與 UI 外觀分離。 -->
+<link href="https://lib.stillnessbyslowly.com/effects/stage/portal_wipe.css" rel="stylesheet"/>
+<link href="https://lib.stillnessbyslowly.com/effects/reveal/fade_up.css" rel="stylesheet"/>
+<link href="https://lib.stillnessbyslowly.com/effects/scroll/progress.css" rel="stylesheet"/>
 <link href="./bingo.css" rel="stylesheet"/>
 <link href="./bingo_style.css" rel="stylesheet"/>
 <script defer="" src="https://lib.stillnessbyslowly.com/ui/custom_select.js"></script>
@@ -46,15 +49,21 @@
 </script>
 <script defer="" src="https://lib.stillnessbyslowly.com/effects/light/area_burst.js">
 </script>
+<script defer="" src="https://lib.stillnessbyslowly.com/effects/stage/portal_wipe.js"></script>
+<script defer="" src="https://lib.stillnessbyslowly.com/effects/reveal/auto_reveal.js"></script>
+<script defer="" src="https://lib.stillnessbyslowly.com/effects/scroll/progress.js"></script>
+<script defer="" src="https://lib.stillnessbyslowly.com/effects/camera/camera_movement_presets.js"></script>
+<script defer="" src="https://lib.stillnessbyslowly.com/effects/camera/camera_movement_player.js"></script>
 <script defer="" src="./bingo.js">
 </script>
 <script defer="" src="./bingo_style.js">
 </script>
 </head>
 <body>
+<div class="slowly-scroll-progress" aria-hidden="true"></div>
 <div class="site-wrap">
 <header class="site-header">
-<div class="header-inner">
+<div class="header-inner slowly-fade-up" data-slowly-reveal>
 <div class="brand-lockup">
 <img alt="構思賓果" class="brand-art" height="760" src="./bingo_icon.svg" width="1200"/>
 <h1 class="visually-hidden">
@@ -66,7 +75,7 @@
 <main class="site-main">
 <div class="error-banner" hidden="" id="errorBanner" role="alert">
 </div>
-<section aria-label="小說與賓果管理" class="workbar">
+<section aria-label="小說與賓果管理" class="workbar slowly-fade-up" data-slowly-reveal>
 <div class="workbar-group">
 <label class="control-title" for="novelSelect">
        小說
@@ -100,7 +109,7 @@
      </button>
 </section>
 <div class="workspace" hidden="" id="workspace">
-<section aria-labelledby="boardTitle" class="board-panel">
+<section aria-labelledby="boardTitle" class="board-panel slowly-fade-up" data-slowly-reveal>
 <div class="board-panel-top">
 <div>
 <h2 class="board-title" id="boardTitle">

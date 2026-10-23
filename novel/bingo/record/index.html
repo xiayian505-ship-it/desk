@@ -12,6 +12,9 @@
 <link href="https://lib.stillnessbyslowly.com/ui/responsive.css" rel="stylesheet"/>
 <link href="https://lib.stillnessbyslowly.com/effects/line/underline.css" rel="stylesheet"/>
 <link href="https://lib.stillnessbyslowly.com/ui/custom_select.css" rel="stylesheet"/>
+<link href="https://lib.stillnessbyslowly.com/effects/stage/portal_wipe.css" rel="stylesheet"/>
+<link href="https://lib.stillnessbyslowly.com/effects/reveal/fade_up.css" rel="stylesheet"/>
+<link href="https://lib.stillnessbyslowly.com/effects/scroll/progress.css" rel="stylesheet"/>
 <link href="./record.css" rel="stylesheet"/>
 <link href="./record_style.css" rel="stylesheet"/>
 <script defer="" src="https://lib.stillnessbyslowly.com/ui/custom_select.js"></script>
@@ -23,17 +26,21 @@
 <script defer="" src="https://lib.stillnessbyslowly.com/ui/accordion/accordion.js"></script>
 <script defer="" src="../bingo.js"></script>
 <script defer="" src="./record.js"></script>
+<script defer="" src="https://lib.stillnessbyslowly.com/effects/stage/portal_wipe.js"></script>
+<script defer="" src="https://lib.stillnessbyslowly.com/effects/reveal/auto_reveal.js"></script>
+<script defer="" src="https://lib.stillnessbyslowly.com/effects/scroll/progress.js"></script>
 <script defer="" src="./record_style.js"></script>
 </head>
 <body>
+<div class="slowly-scroll-progress" aria-hidden="true"></div>
 <div class="record-shell">
-<header class="record-header">
+<header class="record-header slowly-fade-up" data-slowly-reveal>
 <h1>構思紀錄</h1>
-<a class="back-link slowly-underline" href="../" id="backToBingo">← 返回賓果</a>
+<a class="back-link slowly-underline" href="../" id="backToBingo">返回賓果</a>
 </header>
 <main>
 <div class="record-error" hidden="" id="recordError" role="alert"></div>
-<section aria-label="選擇作品與賓果" class="record-controls">
+<section aria-label="選擇作品與賓果" class="record-controls slowly-fade-up" data-slowly-reveal>
 <label class="record-control">
 <span>小說</span>
 <select aria-label="選擇小說" id="recordNovelSelect"></select>
@@ -43,7 +50,7 @@
 <select aria-label="選擇賓果" id="recordBoardSelect"></select>
 </label>
 </section>
-<section class="record-workspace" hidden="" id="recordWorkspace">
+<section class="record-workspace slowly-fade-up" data-slowly-reveal hidden="" id="recordWorkspace">
 <section class="record-card">
 <h2 class="record-board-title" id="recordBoardTitle"></h2>
 <div aria-label="構思清單" class="record-items" data-slowly-accordion="" id="recordItems"></div>
@@ -65,7 +72,7 @@
 </div>
 </section>
 <section class="record-empty" hidden="" id="recordEmpty">
-<a class="back-link slowly-underline" href="../">返回賓果</a>
+<a class="back-link slowly-underline" href="../" id="backToBingoEmpty">返回賓果</a>
 </section>
 </main>
 </div>

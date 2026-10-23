@@ -1675,3 +1675,43 @@ summary:focus-visible {
         padding-bottom: 20px;
     }
 }
+
+/* v3.0｜軍火庫進場、捲動與傳送門：宿主只指定視覺參數。 */
+.slowly-scroll-progress {
+    --slowly-scroll-height: 2px;
+    --slowly-scroll-color: #c9b184;
+    --slowly-scroll-z: 1500;
+    opacity: .82;
+}
+
+/* 避免傳送門的預設白色中心過亮，整體配合慢慢的墨綠／香檳色。 */
+.sbs-portal-overlay {
+    --sbs-portal-core: #d2c3a7;
+    --sbs-portal-color: #425950;
+    --sbs-portal-edge: #10191e;
+    --sbs-portal-duration: .65s;
+}
+
+.header-inner.slowly-fade-up,
+.workbar.slowly-fade-up,
+.board-panel.slowly-fade-up {
+    --slowly-reveal-y: 10px;
+    --slowly-reveal-speed: .54s;
+    --slowly-reveal-easing: cubic-bezier(.2,.65,.3,1);
+}
+
+/* 原有的格子外觀由 bingo.css / bingo_style.css 管理；運鏡只影響舞台層。 */
+.board-stage {
+    will-change: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .board-stage { transform: none !important; opacity: 1 !important; }
+    .header-inner.slowly-fade-up,
+    .workbar.slowly-fade-up,
+    .board-panel.slowly-fade-up {
+        opacity: 1;
+        transform: none;
+    }
+}
+

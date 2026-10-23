@@ -116,3 +116,13 @@
 - 參照使用者提供的 `match3_v1.css`：標題下方改為最大 860px、1px、18% 白色透明度的置中線條。
 - 主頁底部增加相同線條，線下靠右顯示「慢 慢 | Stillness by Slowly」。
 - 只修改主頁 HTML 與外觀 CSS；`record/`、功能 JS、已儲存資料不變。
+
+
+### v3.0｜軍火庫動畫組合
+
+- 主頁、構思紀錄頁新增軍火庫 Portal Wipe（前往紀錄／返回前先暫存草稿）。
+- 捲動進度細線：軍火庫 Scroll Progress；頁面區塊進場：Auto Reveal + Fade Up。
+- 主頁切換、新增、重新排列賓果時：Camera Movement Player + Movement Presets（小幅 Tracking + Zoom In，480ms）。
+- 支援 prefers-reduced-motion，不使用強烈旋轉、模糊、震動；特效 CDN 不可用時仍可正常使用。
+- 紀錄頁「返回賓果」移除箭頭，保留純文字與 70% 底線。
+- 不更動核心資料結構、連線規則、點擊模式或草稿取消／確認流程。

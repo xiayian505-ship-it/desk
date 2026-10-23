@@ -21,7 +21,10 @@
         nameOperation: null,
         exportPreview: null,
         initialized: false,
-        selects: []
+        selects: [],
+        camera: null,
+        reveal: null,
+        navigating: false
     };
 
     function showError(error) {
@@ -361,6 +364,88 @@
             .catch(error => console.warn("[構思賓果] 特效略過", error));
     }
 
+
+    // 只有切換賓果／重新排列時，使用軍火庫播放器與運鏡預設。
+    // 將 Tracking 與 Zoom In 的參數映射成輕量 2D 位移，不做 3D 旋轉。
+    function motionReduced() {
+        return global.matchMedia?.("(prefers-reduced-motion: reduce)").matches === true;
+    }
+
+    function resetBoardCamera() {
+        const stage = $("boardStage");
+        stage.style.removeProperty("transform");
+        stage.style.removeProperty("opacity");
+    }
+
+    function runBoardCamera() {
+        if (!global.SlowlyCameraMovementPlayer ||
+            !global.SlowlyCameraMovementPresets || motionReduced() ||
+            $("workspace").hidden) {
+            resetBoardCamera();
+            return;
+        }
+        if (!ui.camera) {
+            ui.camera = global.SlowlyCameraMovementPlayer.create({
+                duration_ms: 480,
+                on_progress(progress) {
+                    const move = global.SlowlyCameraMovementPresets.calculate(
+                        "tracking", progress, {}, {
+                            target_start: { x: 12, y: 0, z: 0 },
+                            target_end: { x: 0, y: 0, z: 0 },
+                            offset: { x: 0, y: 0, z: -500 }
+                        }
+                    );
+                    const zoom = global.SlowlyCameraMovementPresets.calculate(
+                        "zoom_in", progress, { focal: 600 }, {
+                            from_focal: 591,
+                            to_focal: 600
+                        }
+                    );
+                    const scale = zoom.focal / 600;
+                    $("boardStage").style.transform = `translate3d(${move.x}px, 0, 0) scale(${scale})`;
+                    $("boardStage").style.opacity = String(.76 + .24 * progress);
+                },
+                on_complete() {
+                    resetBoardCamera();
+                }
+            });
+        }
+        ui.camera.restart();
+    }
+
+    async function navigateToRecord(destination, pointer) {
+        if (ui.navigating) return;
+        ui.navigating = true;
+        setBusy(true);
+        try {
+            // 外部軍火庫未載入或減少動態時，直接進入，不影響操作。
+            if (global.SlowlyPortalWipe && !motionReduced()) {
+                await global.SlowlyPortalWipe.play({
+                    x: pointer?.x ?? global.innerWidth / 2,
+                    y: pointer?.y ?? global.innerHeight / 2,
+                    hold: true
+                });
+            }
+        } catch (error) {
+            console.warn("[構思賓果] 頁面轉場略過", error);
+        }
+        global.location.assign(destination);
+    }
+
+    function startReveal() {
+        if (global.SlowlyReveal) {
+            ui.reveal = global.SlowlyReveal.create({
+                selector: "[data-slowly-reveal]",
+                threshold: .08,
+                rootMargin: "0px 0px -18px 0px",
+                once: true
+            });
+        } else {
+            document.querySelectorAll("[data-slowly-reveal]")
+                .forEach(element => element.classList.add("is-visible"));
+        }
+    }
+
     function registerEvents() {
         $("createNovel").addEventListener("click", () => openNameDialog("novel-create", "新增小說", "小說名稱（選填）"));
         $("renameNovel").addEventListener("click", () => {
@@ -442,7 +527,7 @@
                 // 使用 UID 定位同名格子，交由 record/ 自動展開對應的構思。
                 const destination = new URL($("recordPageLink").href);
                 destination.searchParams.set("cell_uid", target.dataset.cellUid);
-                global.location.assign(destination.href);
+                void navigateToRecord(destination.href, { x: event.clientX, y: event.clientY });
                 return;
             }
             perform(() => core.toggleCell(target.dataset.cellUid));
@@ -453,6 +538,14 @@
                 perform(() => style === "record"
                     ? core.setCellClickMode("record")
                     : core.setCompletionStyle(style));
+            });
+        });
+        $("recordPageLink").addEventListener("click", event => {
+            if (event.defaultPrevented || event.button !== 0 || event.ctrlKey ||
+                event.metaKey || event.shiftKey || event.altKey) return;
+            event.preventDefault();
+            void navigateToRecord($("recordPageLink").href, {
+                x: event.clientX, y: event.clientY
             });
         });
         $("shuffleBoard").addEventListener("click", () => perform(() => core.shuffleBoard(), "已重新排列"));
@@ -476,6 +569,9 @@
             registerEvents();
             core.subscribe(event => {
                 render();
+                if (["board-created", "board-shuffled", "selection-changed", "novel-created"].includes(event.type)) {
+                    runBoardCamera();
+                }
                 if (event.type === "cell-changed" && event.newlyCompletedLines?.length) {
                     highlightBingo(event.newlyCompletedLines);
                 }
@@ -489,6 +585,8 @@
                 .filter(Boolean);
             ui.initialized = true;
             render();
+            startReveal();
+            runBoardCamera();
         } catch (error) {
             showError(error);
             $("emptyAction").disabled = true;

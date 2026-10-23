@@ -298,6 +298,45 @@
         syncSelects();
     }
 
+
+    function motionReduced() {
+        return global.matchMedia?.("(prefers-reduced-motion: reduce)").matches === true;
+    }
+
+    function startReveal() {
+        if (global.SlowlyReveal) {
+            ui.reveal = global.SlowlyReveal.create({
+                selector: "[data-slowly-reveal]",
+                threshold: .08,
+                rootMargin: "0px 0px -18px 0px",
+                once: true
+            });
+        } else {
+            document.querySelectorAll("[data-slowly-reveal]")
+                .forEach(element => element.classList.add("is-visible"));
+        }
+    }
+
+    // 返回前先將未確認內容寫入草稿，再播放傳送門；不動正式確認狀態。
+    async function returnToBingo(event, link) {
+        if (event.defaultPrevented || event.button !== 0 || event.ctrlKey ||
+            event.metaKey || event.shiftKey || event.altKey) return;
+        event.preventDefault();
+        if (!(await runBusy(() => flushDraft()))) return;
+        try {
+            if (global.SlowlyPortalWipe && !motionReduced()) {
+                await global.SlowlyPortalWipe.play({
+                    x: event.clientX || global.innerWidth / 2,
+                    y: event.clientY || global.innerHeight / 2,
+                    hold: true
+                });
+            }
+        } catch (error) {
+            console.warn("[構思紀錄] 頁面轉場略過", error);
+        }
+        global.location.assign(link.href);
+    }
+
     function bindEvents() {
         $("recordContent").addEventListener("input", scheduleDraft);
         $("recordContent").addEventListener("blur", () => {
@@ -316,11 +355,11 @@
             const uid = event.target.value;
             void switchContext(() => record.chooseBoard(uid));
         });
-        $("backToBingo").addEventListener("click", async event => {
-            event.preventDefault();
-            if (await runBusy(() => flushDraft())) {
-                global.location.assign($("backToBingo").href);
-            }
+        ["backToBingo", "backToBingoEmpty"].forEach(id => {
+            const link = $(id);
+            link?.addEventListener("click", event => {
+                void returnToBingo(event, link);
+            });
         });
         document.addEventListener("visibilitychange", () => {
             if (document.visibilityState === "hidden") void flushDraft().catch(showError);
@@ -339,13 +378,14 @@
                 .map(id => global.SlowlySelect.create($(id)))
                 .filter(Boolean);
             render();
+            startReveal();
             // 從主頁按格子進來時，只自動展開明確指定且屬於本賓果的格子。
             const requestedUid = new URLSearchParams(global.location.search).get("cell_uid");
             if (requestedUid && record.selectedCellUid() === requestedUid) {
                 await openEditor(requestedUid);
                 const detail = Array.from($("recordItems").querySelectorAll(".record-detail"))
                     .find(item => item.dataset.accordionId === requestedUid);
-                detail?.scrollIntoView({ block: "start" });
+                detail?.scrollIntoView({ block: "start", behavior: motionReduced() ? "instant" : "smooth" });
             }
         } catch (error) {
             showError(error);
