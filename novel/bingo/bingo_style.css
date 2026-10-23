@@ -1590,3 +1590,88 @@ summary:focus-visible {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 }
+
+
+/* v2.9｜標題與頁尾細線：參照使用者提供的 match3_v1.css 品牌署名。
+   宿主自行設定排版；不影響賓果格、資料或軍火庫零件。
+   兩條線均限制在三消 .wrap 的 860px 寬度，手機留側邊空隙。 */
+.site-wrap {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.site-main {
+    flex: 1 0 auto;
+}
+
+/* 原本的全螢幕邊線改為與三消頁尾相同的局部細線。 */
+.site-header {
+    border-bottom: 0;
+}
+
+.site-header::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    z-index: 2;
+    width: min(calc(100% - 28px), 860px);
+    border-top: 1px solid rgba(255, 255, 255, .18);
+    transform: translateX(-50%);
+    pointer-events: none;
+}
+
+/* 與三消署名共用相同的線條亮度與文字節奏，但置於線的右下方。 */
+.site-signature {
+    position: relative;
+    isolation: isolate;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 9px;
+    width: min(calc(100% - 28px), 860px);
+    margin: 28px auto 0;
+    padding: 18px 4px 24px;
+    border-top: 1px solid rgba(255, 255, 255, .18);
+    color: rgba(245, 242, 237, .68);
+    font-size: .78rem;
+    letter-spacing: .04em;
+    white-space: nowrap;
+}
+
+.site-signature::before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    inset: -10px 14% -8px;
+    background: radial-gradient(ellipse at center, rgba(134, 169, 183, .14), transparent 70%);
+    filter: blur(10px);
+    pointer-events: none;
+}
+
+.site-signature-mark {
+    color: #f5f2ed;
+    font-weight: 700;
+    letter-spacing: .22em;
+}
+
+.site-signature-divider {
+    opacity: .55;
+}
+
+.site-signature-name {
+    font-weight: 500;
+}
+
+@media (max-width: 600px) {
+    .site-header::before,
+    .site-signature {
+        width: calc(100% - 20px);
+    }
+
+    .site-signature {
+        padding-inline: 3px;
+        padding-bottom: 20px;
+    }
+}
