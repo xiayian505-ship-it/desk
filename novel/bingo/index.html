@@ -1,198 +1,248 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="zh-Hant">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-    <meta name="theme-color" content="#18242c">
-    <meta name="description" content="構思賓果｜為小說作者準備的5×5寫作構思工具。36種題目、六大類，支援固定、隨機、自訂賓果與本機儲存。">
-    <meta property="og:type" content="website">
-    <meta property="og:title" content="構思賓果｜Stillness by Slowly">
-    <meta property="og:description" content="讓故事慢慢成形。小說構思進度、自由抽題與自訂賓果。">
-    <meta property="og:image" content="https://img.stillnessbyslowly.com/images/2026/10/f1226ede-34dd-4107-a659-da1d1db89897_%E6%A7%8B%E6%80%9D%E8%B3%93%E6%9E%9C_yin-yang_horizontal_2x.png">
-    <title>構思賓果｜Stillness by Slowly</title>
-
-    <!-- 慢慢軍火庫：直接以 HTTPS 載入，不複製零件到專案。 -->
-    <link rel="stylesheet" href="https://lib.stillnessbyslowly.com/ui/responsive.css">
-    <link rel="stylesheet" href="https://lib.stillnessbyslowly.com/ui/confirm/confirm.css">
-    <link rel="stylesheet" href="https://lib.stillnessbyslowly.com/ui/toast.css">
-    <link rel="stylesheet" href="https://lib.stillnessbyslowly.com/effects/light/area_burst.css">
-
-    <!-- 宿主專案：功能必要樣式與 UI 外觀分離。 -->
-    <link rel="stylesheet" href="./bingo.css">
-    <link rel="stylesheet" href="./bingo_style.css">
-
-    <script defer src="https://lib.stillnessbyslowly.com/data/random/random_id.js"></script>
-    <script defer src="https://lib.stillnessbyslowly.com/data/random/random.js"></script>
-    <script defer src="https://lib.stillnessbyslowly.com/fiction/Fiction_shuffle.js"></script>
-    <script defer src="https://lib.stillnessbyslowly.com/fiction/Fiction_storage.js"></script>
-    <script defer src="https://lib.stillnessbyslowly.com/Image/canvas/wrapped_text.js"></script>
-    <script defer src="https://lib.stillnessbyslowly.com/Image/png/canvas_png.js"></script>
-    <script defer src="https://lib.stillnessbyslowly.com/Image/png/png_download.js"></script>
-    <script defer src="https://lib.stillnessbyslowly.com/ui/confirm/confirm.js"></script>
-    <script defer src="https://lib.stillnessbyslowly.com/ui/toast.js"></script>
-    <script defer src="https://lib.stillnessbyslowly.com/effects/light/area_burst.js"></script>
-    <script defer src="./bingo.js"></script>
-    <script defer src="./bingo_style.js"></script>
-</head>
-<body>
-    <div class="site-wrap">
-        <header class="site-header">
-            <div class="header-inner">
-                <div class="brand-lockup">
-                    <p class="micro-label">STILLNESS BY SLOWLY <span aria-hidden="true">/</span> NOVEL STUDIO</p>
-                    <img class="brand-art" src="https://img.stillnessbyslowly.com/images/2026/10/f1226ede-34dd-4107-a659-da1d1db89897_%E6%A7%8B%E6%80%9D%E8%B3%93%E6%9E%9C_yin-yang_horizontal_2x.png" alt="構思賓果" width="1565" height="968">
-                    <h1 class="visually-hidden">構思賓果</h1>
-                    <p class="brand-subtitle">讓一個念頭，慢慢連成故事。</p>
-                </div>
-                <div class="header-side" aria-hidden="true">
-                    <span class="big-five">5<span>×</span>5</span>
-                    <span class="header-note">不必照順序寫。<br>有想法，就勾一格。</span>
-                </div>
-            </div>
-        </header>
-
-        <main class="site-main">
-            <div id="errorBanner" class="error-banner" role="alert" hidden></div>
-
-            <section class="workbar" aria-label="小說與賓果牌管理">
-                <div class="workbar-group">
-                    <label class="control-title" for="novelSelect">正在構思的小說</label>
-                    <div class="select-row">
-                        <select id="novelSelect" aria-label="選擇小說"></select>
-                        <button class="icon-button" id="createNovel" type="button" title="新增小說" aria-label="新增小說">＋</button>
-                        <button class="icon-button" id="renameNovel" type="button" title="重新命名小說" aria-label="重新命名小說">✎</button>
-                        <button class="icon-button icon-button-danger" id="deleteNovel" type="button" title="刪除小說" aria-label="刪除小說">×</button>
-                    </div>
-                </div>
-                <div class="workbar-divider" aria-hidden="true"></div>
-                <div class="workbar-group">
-                    <label class="control-title" for="boardSelect">目前的賓果牌</label>
-                    <div class="select-row">
-                        <select id="boardSelect" aria-label="選擇賓果牌"></select>
-                        <button class="icon-button" id="createBoard" type="button" title="新增賓果牌" aria-label="新增賓果牌">＋</button>
-                        <button class="icon-button" id="renameBoard" type="button" title="重新命名賓果牌" aria-label="重新命名賓果牌">✎</button>
-                        <button class="icon-button icon-button-danger" id="deleteBoard" type="button" title="刪除賓果牌" aria-label="刪除賓果牌">×</button>
-                    </div>
-                </div>
-            </section>
-
-            <section id="emptyState" class="empty-state" aria-live="polite">
-                <div class="empty-orb" aria-hidden="true">✦</div>
-                <p class="section-kicker">A STORY BEGINS HERE</p>
-                <h2 id="emptyTitle">先替故事取個名字吧。</h2>
-                <p id="emptyDescription">即使只是暫定名稱也沒關係。你可以隨時更改，構思進度會保留在這個瀏覽器裡。</p>
-                <button id="emptyAction" class="primary-button" type="button">建立第一部小說 <span aria-hidden="true">↗</span></button>
-            </section>
-
-            <div id="workspace" class="workspace" hidden>
-                <section class="board-panel" aria-labelledby="boardTitle">
-                    <div class="board-panel-top">
-                        <div>
-                            <p class="section-kicker">YOUR STORY, IN PROGRESS</p>
-                            <h2 id="boardTitle" class="board-title"></h2>
-                            <p id="boardMode" class="board-mode"></p>
-                        </div>
-                        <div class="board-counter" aria-label="賓果連線數">
-                            <strong id="lineCount">0</strong>
-                            <span>／12 BINGO</span>
-                        </div>
-                    </div>
-
-                    <div class="progress-info">
-                        <span id="progressLabel">已完成 0 / 25 格</span>
-                        <span id="progressPercent">0%</span>
-                    </div>
-                    <div class="progress-track" aria-hidden="true">
-                        <div id="progressFill" class="progress-fill"></div>
-                    </div>
-
-                    <div id="boardStage" class="board-stage">
-                        <div id="bingoGrid" class="bingo-grid" role="group" aria-label="5乘5構思賓果牌"></div>
-                    </div>
-
-                    <div class="board-actions">
-                        <button id="shuffleBoard" class="secondary-button" type="button">↝ 重新排列</button>
-                        <button id="exportCard" class="secondary-button" type="button">⇩ 匯出 PNG 展示卡</button>
-                        <button id="anotherBoard" class="quiet-button" type="button">＋ 再開一張賓果</button>
-                    </div>
-                    <p class="board-hint">重新排列只換位置，不會抹掉格子的 UID 或完成記錄；連線會依新位置重新計算。</p>
-                </section>
-
-                <aside class="guide-panel" aria-label="構思賓果說明">
-                    <p class="section-kicker">A LITTLE GUIDE</p>
-                    <h2>構思沒有標準順序。</h2>
-                    <p>想到一項，就輕點格子標記完成。橫、直或斜連成五格，就得到一條賓果！</p>
-                    <div class="guide-rules">
-                        <div class="guide-row"><span class="guide-number">01</span><span>同名格子可以有很多個，各自獨立。</span></div>
-                        <div class="guide-row"><span class="guide-number">02</span><span>六大類自由混搭，不限制賓果牌數量。</span></div>
-                        <div class="guide-row"><span class="guide-number">03</span><span>進度保存在本機，不會公開你的構思。</span></div>
-                    </div>
-                    <div class="topic-key" id="topicKey" aria-label="題目分類圖例"></div>
-                    <div class="guide-footer">
-                        <strong>36</strong> 種構思元素 <span aria-hidden="true">·</span> <strong>6</strong> 大分類
-                    </div>
-                </aside>
-            </div>
-
-            <footer class="site-footer">
-                <span>STILLNESS BY SLOWLY</span>
-                <span>構思留在你的瀏覽器裡。清除網站資料可能失去紀錄。</span>
-            </footer>
-        </main>
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1, viewport-fit=cover" name="viewport"/>
+  <meta content="#18242c" name="theme-color"/>
+  <meta content="構思賓果｜小說寫作構思工具。4&times;4賓果、36種題目、固定／隨機／自訂牌面與本機儲存。" name="description"/>
+  <meta content="website" property="og:type"/>
+  <meta content="構思賓果｜Stillness by Slowly" property="og:title"/>
+  <meta content="讓故事慢慢成形。小說構思進度、自由抽題與自訂賓果。" property="og:description"/>
+  <meta content="https://img.stillnessbyslowly.com/images/2026/10/f1226ede-34dd-4107-a659-da1d1db89897_%E6%A7%8B%E6%80%9D%E8%B3%93%E6%9E%9C_yin-yang_horizontal_2x.png" property="og:image"/>
+  <title>
+   構思賓果｜Stillness by Slowly
+  </title>
+  <!-- 慢慢軍火庫：直接以 HTTPS 載入，不複製零件到專案。 -->
+  <link href="https://lib.stillnessbyslowly.com/ui/responsive.css" rel="stylesheet"/>
+  <link href="https://lib.stillnessbyslowly.com/ui/confirm/confirm.css" rel="stylesheet"/>
+  <link href="https://lib.stillnessbyslowly.com/ui/toast.css" rel="stylesheet"/>
+  <link href="https://lib.stillnessbyslowly.com/effects/light/area_burst.css" rel="stylesheet"/>
+  <!-- 宿主專案：功能必要樣式與 UI 外觀分離。 -->
+  <link href="./bingo.css" rel="stylesheet"/>
+  <link href="./bingo_style.css" rel="stylesheet"/>
+  <script defer="" src="https://lib.stillnessbyslowly.com/data/random/random_id.js">
+  </script>
+  <script defer="" src="https://lib.stillnessbyslowly.com/data/random/random.js">
+  </script>
+  <script defer="" src="https://lib.stillnessbyslowly.com/fiction/Fiction_shuffle.js">
+  </script>
+  <script defer="" src="https://lib.stillnessbyslowly.com/fiction/Fiction_storage.js">
+  </script>
+  <script defer="" src="https://lib.stillnessbyslowly.com/Image/canvas/wrapped_text.js">
+  </script>
+  <script defer="" src="https://lib.stillnessbyslowly.com/Image/png/canvas_png.js">
+  </script>
+  <script defer="" src="https://lib.stillnessbyslowly.com/Image/png/png_download.js">
+  </script>
+  <script defer="" src="https://lib.stillnessbyslowly.com/ui/confirm/confirm.js">
+  </script>
+  <script defer="" src="https://lib.stillnessbyslowly.com/ui/toast.js">
+  </script>
+  <script defer="" src="https://lib.stillnessbyslowly.com/effects/light/area_burst.js">
+  </script>
+  <script defer="" src="./bingo.js">
+  </script>
+  <script defer="" src="./bingo_style.js">
+  </script>
+ </head>
+ <body>
+  <div class="site-wrap">
+   <header class="site-header">
+    <div class="header-inner">
+     <div class="brand-lockup">
+      <img alt="構思賓果" class="brand-art" height="968" src="https://img.stillnessbyslowly.com/images/2026/10/f1226ede-34dd-4107-a659-da1d1db89897_%E6%A7%8B%E6%80%9D%E8%B3%93%E6%9E%9C_yin-yang_horizontal_2x.png" width="1565"/>
+      <h1 class="visually-hidden">
+       構思賓果
+      </h1>
+     </div>
     </div>
-
-    <div id="toastMessage" class="app-toast" role="status" aria-live="polite"></div>
-
-    <dialog id="nameDialog" class="app-dialog" aria-labelledby="nameDialogTitle">
-        <form id="nameForm" novalidate>
-            <div class="dialog-head">
-                <p class="section-kicker">STORY STUDIO</p>
-                <h2 id="nameDialogTitle"></h2>
-                <button type="button" class="dialog-close" id="nameCancelIcon" aria-label="關閉">×</button>
-            </div>
-            <label for="nameInput" class="field-label" id="nameLabel">名稱</label>
-            <input id="nameInput" name="name" type="text" maxlength="90" autocomplete="off" required placeholder="替它取個名字">
-            <div class="dialog-actions">
-                <button type="button" class="quiet-button" id="nameCancel">取消</button>
-                <button type="submit" class="primary-button" id="nameSubmit">儲存</button>
-            </div>
-        </form>
-    </dialog>
-
-    <dialog id="boardDialog" class="app-dialog board-dialog" aria-labelledby="boardDialogTitle">
-        <form id="boardForm" novalidate>
-            <div class="dialog-head">
-                <p class="section-kicker">BUILD YOUR BINGO</p>
-                <h2 id="boardDialogTitle">新增一張構思賓果</h2>
-                <button type="button" class="dialog-close" id="boardCancelIcon" aria-label="關閉">×</button>
-            </div>
-
-            <label for="newBoardName" class="field-label">賓果牌名稱 <span class="field-optional">可留白，系統會命名</span></label>
-            <input id="newBoardName" name="boardName" type="text" maxlength="90" autocomplete="off" placeholder="例：第一幕的人物與世界">
-
-            <fieldset class="mode-fieldset">
-                <legend class="field-label">選擇牌面生成方式</legend>
-                <div class="mode-options">
-                    <label class="mode-option"><input type="radio" name="boardMode" value="fixed" checked><span class="mode-option-body"><strong>固定</strong><small>六大類各取前四種，加一格配角人設</small></span></label>
-                    <label class="mode-option"><input type="radio" name="boardMode" value="random"><span class="mode-option-body"><strong>隨機</strong><small>前四大類可重複，後兩大類不重複</small></span></label>
-                    <label class="mode-option"><input type="radio" name="boardMode" value="custom"><span class="mode-option-body"><strong>自訂</strong><small>跨類選題，決定同名格子出現幾次</small></span></label>
-                </div>
-            </fieldset>
-
-            <div id="customEditor" class="custom-editor" hidden>
-                <div class="custom-head">
-                    <strong>勾選想要的構思項目</strong>
-                    <span id="customCounter" role="status">尚未選擇</span>
-                </div>
-                <p class="field-help">每個已勾選項目至少一格。次數留白表示交給系統補滿25格；填入數字則固定該項的次數。自訂牌不受分類重複限制。</p>
-                <div id="customTopicGroups" class="custom-topic-groups"></div>
-            </div>
-
-            <div class="dialog-actions">
-                <button id="boardCancel" type="button" class="quiet-button">取消</button>
-                <button id="boardSubmit" type="submit" class="primary-button">產生 5×5 賓果 <span aria-hidden="true">↗</span></button>
-            </div>
-        </form>
-    </dialog>
-</body>
+   </header>
+   <main class="site-main">
+    <div class="error-banner" hidden="" id="errorBanner" role="alert">
+    </div>
+    <section aria-label="小說與賓果牌管理" class="workbar">
+     <div class="workbar-group">
+      <label class="control-title" for="novelSelect">
+       小說
+      </label>
+      <div class="select-row">
+       <select aria-label="選擇小說" id="novelSelect">
+       </select>
+       <button aria-label="新增小說" class="icon-button" id="createNovel" title="新增小說" type="button">
+        ＋
+       </button>
+       <button aria-label="重新命名小說" class="icon-button" id="renameNovel" title="重新命名小說" type="button">
+        ✎
+       </button>
+       <button aria-label="刪除小說" class="icon-button icon-button-danger" id="deleteNovel" title="刪除小說" type="button">
+        &times;
+       </button>
+      </div>
+     </div>
+     <div aria-hidden="true" class="workbar-divider">
+     </div>
+     <div class="workbar-group">
+      <label class="control-title" for="boardSelect">
+       賓果牌
+      </label>
+      <div class="select-row">
+       <select aria-label="選擇賓果牌" id="boardSelect">
+       </select>
+       <button aria-label="新增賓果牌" class="icon-button" id="createBoard" title="新增賓果牌" type="button">
+        ＋
+       </button>
+       <button aria-label="重新命名賓果牌" class="icon-button" id="renameBoard" title="重新命名賓果牌" type="button">
+        ✎
+       </button>
+       <button aria-label="刪除賓果牌" class="icon-button icon-button-danger" id="deleteBoard" title="刪除賓果牌" type="button">
+        &times;
+       </button>
+      </div>
+     </div>
+    </section>
+    <section aria-live="polite" class="empty-state" id="emptyState">
+     <button class="primary-button" id="emptyAction" type="button">
+      新增賓果
+     </button>
+    </section>
+    <div class="workspace" hidden="" id="workspace">
+     <section aria-labelledby="boardTitle" class="board-panel">
+      <div class="board-panel-top">
+       <div>
+        <h2 class="board-title" id="boardTitle">
+        </h2>
+       </div>
+       <div aria-label="賓果連線數" class="board-counter">
+        <strong id="lineCount">
+         0
+        </strong>
+        <span>
+         ／10 BINGO
+        </span>
+       </div>
+      </div>
+      <div class="progress-info">
+       <span id="progressLabel">
+        0 / 16
+       </span>
+       <span id="progressPercent">
+        0%
+       </span>
+      </div>
+      <div aria-hidden="true" class="progress-track">
+       <div class="progress-fill" id="progressFill">
+       </div>
+      </div>
+      <div class="board-stage" id="boardStage">
+       <div aria-label="構思賓果牌" class="bingo-grid" id="bingoGrid" role="group">
+       </div>
+      </div>
+      <div class="board-actions">
+       <button class="secondary-button" id="shuffleBoard" type="button">
+        重新排列
+       </button>
+       <button class="secondary-button" id="exportCard" type="button">
+        匯出 PNG
+       </button>
+       <button class="quiet-button" id="anotherBoard" type="button">
+        新增賓果
+       </button>
+      </div>
+     </section>
+    </div>
+   </main>
+  </div>
+  <div aria-live="polite" class="app-toast" id="toastMessage" role="status">
+  </div>
+  <dialog aria-labelledby="nameDialogTitle" class="app-dialog" id="nameDialog">
+   <form id="nameForm" novalidate="">
+    <div class="dialog-head">
+     <h2 id="nameDialogTitle">
+     </h2>
+     <button aria-label="關閉" class="dialog-close" id="nameCancelIcon" type="button">
+      &times;
+     </button>
+    </div>
+    <label class="field-label" for="nameInput" id="nameLabel">
+     名稱
+    </label>
+    <input autocomplete="off" id="nameInput" maxlength="90" name="name" placeholder="名稱" type="text"/>
+    <div class="dialog-actions">
+     <button class="quiet-button" id="nameCancel" type="button">
+      取消
+     </button>
+     <button class="primary-button" id="nameSubmit" type="submit">
+      儲存
+     </button>
+    </div>
+   </form>
+  </dialog>
+  <dialog aria-labelledby="boardDialogTitle" class="app-dialog board-dialog" id="boardDialog">
+   <form id="boardForm" novalidate="">
+    <div class="dialog-head">
+     <h2 id="boardDialogTitle">
+      新增一張構思賓果
+     </h2>
+     <button aria-label="關閉" class="dialog-close" id="boardCancelIcon" type="button">
+      &times;
+     </button>
+    </div>
+    <label class="field-label" for="newBoardName">
+     賓果牌名稱（選填）
+    </label>
+    <input autocomplete="off" id="newBoardName" maxlength="90" name="boardName" placeholder="選填" type="text"/>
+    <fieldset class="mode-fieldset">
+     <legend class="field-label">
+      牌面
+     </legend>
+     <div class="mode-options">
+      <label class="mode-option">
+       <input checked="" name="boardMode" type="radio" value="fixed"/>
+       <span class="mode-option-body">
+        <strong>
+         固定
+        </strong>
+       </span>
+      </label>
+      <label class="mode-option">
+       <input name="boardMode" type="radio" value="random"/>
+       <span class="mode-option-body">
+        <strong>
+         隨機
+        </strong>
+       </span>
+      </label>
+      <label class="mode-option">
+       <input name="boardMode" type="radio" value="custom"/>
+       <span class="mode-option-body">
+        <strong>
+         自訂
+        </strong>
+       </span>
+      </label>
+     </div>
+    </fieldset>
+    <div class="custom-editor" hidden="" id="customEditor">
+     <div class="custom-head">
+      <strong>
+       題目
+      </strong>
+      <span id="customCounter" role="status">
+       尚未選擇
+      </span>
+     </div>
+     <div class="custom-topic-groups" id="customTopicGroups">
+     </div>
+    </div>
+    <div class="dialog-actions">
+     <button class="quiet-button" id="boardCancel" type="button">
+      取消
+     </button>
+     <button class="primary-button" id="boardSubmit" type="submit">
+      產生賓果
+     </button>
+    </div>
+   </form>
+  </dialog>
+ </body>
 </html>

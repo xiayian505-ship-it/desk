@@ -1,15 +1,16 @@
 /*
- * 構思賓果｜功能核心 v1.0.0
+ * 構思賓果｜功能核心 v1.4.0
  * 負責題庫、小說／賓果牌／格子 UID、抽題、完成狀態、賓果判定、本機保存與 PNG 資料繪製。
  * 網頁介面與事件由 bingo_style.js 負責；共用功能只呼叫慢慢軍火庫的 HTTPS 零件。
  */
 (function (global) {
     "use strict";
 
-    const BOARD_SIZE = 5;
+    const BOARD_SIZE = 4;
     const CELL_COUNT = BOARD_SIZE * BOARD_SIZE;
     const STORAGE_NAMESPACE = "sbs_story_bingo";
-    const VERSION = "1.0.0";
+    const VERSION = "1.4.0";
+    const STORAGE_SCHEMA_VERSION = 2;
 
     const TOPIC_GROUPS = Object.freeze([
         {
@@ -146,6 +147,14 @@
         return String(value ?? "").trim().slice(0, 90) || fallback;
     }
 
+    function defaultNovelName(date = new Date()) {
+        // 使用作者裝置的當地日期，避免午夜前後因 UTC 而顯示錯誤日期。
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const day = String(date.getDate()).padStart(2, "0");
+        return `構思賓果 ${year}-${month}-${day}`;
+    }
+
     function createUniqueUid(prefix, existingIds) {
         for (let attempt = 0; attempt < 12; attempt += 1) {
             const uid = global.RandomId.create({ prefix });
@@ -190,7 +199,8 @@
         const board = findCurrentBoard();
         const cells = resolveCells(board);
         const completed = cells.filter(cell => cell.completed).length;
-        const lines = cells.length === CELL_COUNT ? getCompletedLines(cells) : [];
+        const expectedCount = CELL_COUNT;
+        const lines = cells.length === expectedCount ? getCompletedLines(cells) : [];
 
         return {
             novels: state.novels.slice(),
@@ -199,9 +209,9 @@
             board,
             cells,
             completed,
-            total: CELL_COUNT,
+            total: expectedCount,
             lines,
-            percent: Math.round(completed / CELL_COUNT * 100)
+            percent: Math.round(completed / expectedCount * 100)
         };
     }
 
@@ -209,18 +219,19 @@
         if (!Array.isArray(cells) || cells.length !== CELL_COUNT) {
             return [];
         }
+        const size = BOARD_SIZE;
 
         const lines = [];
         const candidates = [];
 
-        for (let row = 0; row < BOARD_SIZE; row += 1) {
-            candidates.push({ type: "row", index: row, positions: Array.from({ length: BOARD_SIZE }, (_, col) => row * BOARD_SIZE + col) });
+        for (let row = 0; row < size; row += 1) {
+            candidates.push({ type: "row", index: row, positions: Array.from({ length: size }, (_, col) => row * size + col) });
         }
-        for (let col = 0; col < BOARD_SIZE; col += 1) {
-            candidates.push({ type: "column", index: col, positions: Array.from({ length: BOARD_SIZE }, (_, row) => row * BOARD_SIZE + col) });
+        for (let col = 0; col < size; col += 1) {
+            candidates.push({ type: "column", index: col, positions: Array.from({ length: size }, (_, row) => row * size + col) });
         }
-        candidates.push({ type: "diagonal", index: 0, positions: [0, 6, 12, 18, 24] });
-        candidates.push({ type: "diagonal", index: 1, positions: [4, 8, 12, 16, 20] });
+        candidates.push({ type: "diagonal", index: 0, positions: Array.from({ length: size }, (_, pos) => pos * size + pos) });
+        candidates.push({ type: "diagonal", index: 1, positions: Array.from({ length: size }, (_, pos) => pos * size + size - 1 - pos) });
 
         for (const candidate of candidates) {
             if (candidate.positions.every(index => cells[index]?.completed === true)) {
@@ -242,8 +253,12 @@
     }
 
     function fixedTopics() {
-        const topics = TOPIC_GROUPS.flatMap(group => group.topics.slice(0, 4));
-        topics.push(TOPIC_BY_ID.get("character.supporting"));
+        // 4×4 版：每類先取前 2 種 (共 12 格)，剩下 4 格補「配角人設」。
+        // 延續固定牌的原則：先涵蓋六類，空位優先配角。
+        const topics = TOPIC_GROUPS.flatMap(group => group.topics.slice(0, 2));
+        for (let i = topics.length; i < CELL_COUNT; i += 1) {
+            topics.push(TOPIC_BY_ID.get("character.supporting"));
+        }
         return shuffled(topics);
     }
 
@@ -271,7 +286,7 @@
             throw new Error("請先勾選至少一種構思項目。");
         }
         if (selections.length > CELL_COUNT) {
-            throw new Error("一張牌只有25格，最多能勾選25種不同題目。");
+            throw new Error(`一張牌只有${CELL_COUNT}格，最多能勾選${CELL_COUNT}種不同題目。`);
         }
 
         const seen = new Set();
@@ -291,7 +306,7 @@
             } else {
                 const count = Number(selection.count);
                 if (!Number.isInteger(count) || count < 1 || count > CELL_COUNT) {
-                    throw new Error(`「${topic.label}」的出現次數必須是1～25的整數。`);
+                    throw new Error(`「${topic.label}」的出現次數必須是1～${CELL_COUNT}的整數。`);
                 }
                 for (let i = 0; i < count; i += 1) {
                     result.push(topic);
@@ -300,10 +315,10 @@
         }
 
         if (result.length > CELL_COUNT) {
-            throw new Error(`目前已指定${result.length}格，超過25格。`);
+            throw new Error(`目前已指定${result.length}格，超過${CELL_COUNT}格。`);
         }
         if (result.length < CELL_COUNT && automatic.length === 0) {
-            throw new Error(`目前只有${result.length}格；請把次數加到25，或留一些題目次數空白交給系統補齊。`);
+            throw new Error(`目前只有${result.length}格；請把次數加到${CELL_COUNT}，或留一些題目次數空白交給系統補齊。`);
         }
         while (result.length < CELL_COUNT) {
             result.push(randomArrayItem(automatic));
@@ -321,6 +336,7 @@
     async function storeSelections() {
         const record = {
             id: "app",
+            schemaVersion: STORAGE_SCHEMA_VERSION,
             activeNovelUid: state.activeNovelUid,
             activeBoardUid: state.activeBoardUid
         };
@@ -354,11 +370,23 @@
             settings: state.store.collection("settings", { idField: "id" })
         };
 
-        const [novels, boards, cells, settings] = await Promise.all([
+        // 舊測試版資料不相容，也不做遷移。只在首次進入 v1.2 時清空本專案資料。
+        // schemaVersion 存在同一個 FictionStorage 命名空間，後續重開不會再清除新資料。
+        let settings = await state.collections.settings.get("app");
+        if (settings?.schemaVersion !== STORAGE_SCHEMA_VERSION) {
+            await state.store.clearAll();
+            settings = await state.collections.settings.add({
+                id: "app",
+                schemaVersion: STORAGE_SCHEMA_VERSION,
+                activeNovelUid: null,
+                activeBoardUid: null
+            });
+        }
+
+        const [novels, boards, cells] = await Promise.all([
             state.collections.novels.all(),
             state.collections.boards.all(),
-            state.collections.cells.all(),
-            state.collections.settings.get("app")
+            state.collections.cells.all()
         ]);
 
         state.novels = novels;
@@ -380,8 +408,8 @@
 
     async function createNovel(name) {
         ready();
-        const title = normalizeName(name);
-        if (!title) throw new Error("請輸入小說名稱。");
+        // 作品名稱可留白；作者日後仍可使用重新命名功能修改。
+        const title = normalizeName(name, defaultNovelName());
 
         const ids = new Set(state.novels.map(novel => novel.novel_uid));
         const novel = {
@@ -439,18 +467,31 @@
         emit("selection-changed");
     }
 
-    function defaultBoardName(mode) {
+    function defaultBoardName(mode, excludeBoardUid = null) {
         const names = { fixed: "固定賓果", random: "隨機賓果", custom: "自訂賓果" };
         const title = names[mode] || "構思賓果";
-        const count = listBoardsForNovel(state.activeNovelUid).filter(board => board.mode === mode).length + 1;
+        const existingNames = new Set(
+            listBoardsForNovel(state.activeNovelUid)
+                .filter(board => board.board_uid !== excludeBoardUid)
+                .map(board => board.name)
+        );
+
+        let count = 1;
+        while (existingNames.has(`${title} ${count}`)) {
+            count += 1;
+        }
         return `${title} ${count}`;
     }
 
     async function createBoard({ name, mode, selections = [] } = {}) {
         ready();
-        if (!findCurrentNovel()) throw new Error("請先建立或選擇一部小說。");
         const topicInstances = generateTopicInstances(mode, selections);
-        if (topicInstances.length !== CELL_COUNT) throw new Error("賓果牌沒有產生完整25格。");
+        if (topicInstances.length !== CELL_COUNT) throw new Error(`賓果牌沒有產生完整${CELL_COUNT}格。`);
+
+        // 不需預先輸入作品名稱；第一次直接建牌時，自動建立日期命名的小說。
+        if (!findCurrentNovel()) {
+            await createNovel("");
+        }
 
         const boardIds = new Set(state.boards.map(board => board.board_uid));
         const cellIds = new Set(state.cells.map(cell => cell.cell_uid));
@@ -501,8 +542,10 @@
 
     async function renameBoard(uid, name) {
         ready();
-        const title = normalizeName(name);
-        if (!title) throw new Error("賓果牌名稱不能留白。");
+        const board = state.boards.find(item => item.board_uid === uid);
+        if (!board) throw new Error("找不到要重新命名的賓果牌。");
+        // 建牌及改名均可留白；由系統產生名稱，UID 不變。
+        const title = normalizeName(name, defaultBoardName(board.mode, uid));
         const record = await state.collections.boards.update(uid, { name: title });
         state.boards = state.boards.map(board => board.board_uid === uid ? record : board);
         emit("board-renamed");
@@ -566,6 +609,10 @@
         emit("board-shuffled");
     }
 
+    function sizeForLines() {
+        return BOARD_SIZE * 2 + 2;
+    }
+
     function modeLabel(mode) {
         return { fixed: "固定牌", random: "隨機牌", custom: "自訂牌" }[mode] || "賓果牌";
     }
@@ -577,8 +624,8 @@
 
     async function exportCurrentBoardPng() {
         ready();
-        const { novel, board, cells, completed, lines } = currentSnapshot();
-        if (!novel || !board || cells.length !== CELL_COUNT) {
+        const { novel, board, cells, completed, total, lines } = currentSnapshot();
+        if (!novel || !board || cells.length !== total) {
             throw new Error("請先選擇一張完整的賓果牌。");
         }
         if (document.fonts?.ready) {
@@ -624,12 +671,13 @@
         context.fillText(board.name.slice(0, 38), 143, 443);
         context.fillStyle = "#7b807e";
         context.font = "500 27px system-ui, sans-serif";
-        context.fillText(`${modeLabel(board.mode)}  ·  ${completed}/25 完成  ·  ${lines.length}/12 連線`, 143, 493);
+        context.fillText(`${modeLabel(board.mode)}  ·  ${completed}/${total} 完成  ·  ${lines.length}/${sizeForLines()} 連線`, 143, 493);
 
-        const cellWidth = 236;
-        const cellHeight = 212;
+        const size = BOARD_SIZE;
+        const cellWidth = 302;
+        const cellHeight = 254;
         const gap = 14;
-        const originX = 132;
+        const originX = 125;
         const originY = 560;
         const groupColor = {
             foundation: "#665968",
@@ -642,8 +690,8 @@
 
         cells.forEach((cell, index) => {
             const topic = TOPIC_BY_ID.get(cell.topic_id);
-            const row = Math.floor(index / BOARD_SIZE);
-            const col = index % BOARD_SIZE;
+            const row = Math.floor(index / size);
+            const col = index % size;
             const x = originX + col * (cellWidth + gap);
             const y = originY + row * (cellHeight + gap);
 
@@ -660,10 +708,10 @@
             context.fillText(groupLabel, x + 20, y + 34);
 
             context.fillStyle = cell.completed ? "#f7fff9" : "#202d31";
-            context.font = '700 31px "Noto Sans TC", "Microsoft JhengHei", sans-serif';
-            const textLines = global.SlowlyCanvasWrappedText.buildLines(context, topic?.label || "未知題目", 198, 3);
-            const lineHeight = 39;
-            const top = y + 115 - (textLines.length - 1) * lineHeight / 2;
+            context.font = '700 39px "Noto Sans TC", "Microsoft JhengHei", sans-serif';
+            const textLines = global.SlowlyCanvasWrappedText.buildLines(context, topic?.label || "未知題目", cellWidth - 34, 3);
+            const lineHeight = 47;
+            const top = y + cellHeight * .55 - (textLines.length - 1) * lineHeight / 2;
             textLines.forEach((line, lineIndex) => {
                 const textWidth = context.measureText(line).width;
                 context.fillText(line, x + (cellWidth - textWidth) / 2, top + lineIndex * lineHeight);
@@ -689,8 +737,8 @@
         context.lineWidth = 9;
         context.lineCap = "round";
         const center = index => ({
-            x: originX + (index % BOARD_SIZE) * (cellWidth + gap) + cellWidth / 2,
-            y: originY + Math.floor(index / BOARD_SIZE) * (cellHeight + gap) + cellHeight / 2
+            x: originX + (index % size) * (cellWidth + gap) + cellWidth / 2,
+            y: originY + Math.floor(index / size) * (cellHeight + gap) + cellHeight / 2
         });
         lines.forEach(line => {
             const first = center(line.positions[0]);
@@ -703,7 +751,7 @@
 
         context.fillStyle = "#66706c";
         context.font = '400 24px "Noto Sans TC", sans-serif';
-        context.fillText("只展示構思進度，不包含私人筆記。", 143, 1770);
+        // 展示卡不顯示任何引導說明或私人筆記。
         context.textAlign = "right";
         context.fillText("STILLNESS BY SLOWLY", 1350, 1770);
         context.textAlign = "left";
@@ -728,6 +776,8 @@
         snapshot: currentSnapshot,
         getCompletedLines,
         generateTopicInstances,
+        defaultNovelName,
+        defaultBoardName,
         createNovel,
         renameNovel,
         deleteNovel,

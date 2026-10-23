@@ -1,5 +1,5 @@
 /*
- * 構思賓果｜介面互動 v1.0.0
+ * 構思賓果｜介面互動 v1.4.0
  * 畫面繪製、視窗、操作事件與訊息回饋。遊戲資料與規則由 bingo.js 管理。
  * 共用視窗／Toast／效果直接使用慢慢軍火庫，不複製共用函式碼。
  */
@@ -13,15 +13,6 @@
         "createBoard", "renameBoard", "deleteBoard", "shuffleBoard", "exportCard",
         "anotherBoard", "emptyAction"
     ];
-
-    const groupColor = {
-        foundation: "#b29db8",
-        world: "#8baebb",
-        character: "#d4b38b",
-        plot: "#cca6ab",
-        narrative: "#9ebd9f",
-        structure: "#aab1c8"
-    };
 
     const ui = {
         busy: false,
@@ -152,51 +143,30 @@
         setUnavailable($("createNovel"), false);
         setUnavailable($("renameNovel"), !snapshot.novel);
         setUnavailable($("deleteNovel"), !snapshot.novel);
-        setUnavailable($("createBoard"), !snapshot.novel);
+        setUnavailable($("createBoard"), false);
         setUnavailable($("renameBoard"), !snapshot.board);
         setUnavailable($("deleteBoard"), !snapshot.board);
 
-        const hasPlayableBoard = Boolean(snapshot.board && snapshot.cells.length === 25);
-        const hasIncompleteBoard = Boolean(snapshot.board && !hasPlayableBoard);
+        const hasPlayableBoard = Boolean(snapshot.board && snapshot.cells.length === snapshot.total);
         $("workspace").hidden = !hasPlayableBoard;
         $("emptyState").hidden = hasPlayableBoard;
 
         setUnavailable($("shuffleBoard"), !hasPlayableBoard);
         setUnavailable($("exportCard"), !hasPlayableBoard);
-        setUnavailable($("anotherBoard"), !snapshot.novel);
+        setUnavailable($("anotherBoard"), false);
 
-        if (!snapshot.novel) {
-            $("emptyTitle").textContent = "先替故事取個名字吧。";
-            $("emptyDescription").textContent = "即使只是暫定名稱也沒關係。你可以隨時更改，構思進度會保留在這個瀏覽器裡。";
-            $("emptyAction").textContent = "建立第一部小說 ↗";
-        } else if (hasIncompleteBoard) {
-            $("emptyTitle").textContent = "這張牌的資料不完整。";
-            $("emptyDescription").textContent = "本機找不到完整的25格資料。為保護舊紀錄，系統不會自動覆蓋這張牌；你可以建立另一張新牌。";
-            $("emptyAction").textContent = "新增另一張賓果 ↗";
-        } else {
-            $("emptyTitle").textContent = "故事已經有名字，現在來開一張賓果。";
-            $("emptyDescription").textContent = "可以使用固定牌、完全隨機牌，也能自行挑選36種構思題目並指定重複次數。";
-            $("emptyAction").textContent = "建立第一張賓果 ↗";
-        }
+        $("emptyAction").textContent = "新增賓果";
 
         if (!hasPlayableBoard) return;
         $("boardTitle").textContent = snapshot.board.name;
-        $("boardMode").textContent = `${core.modeLabel(snapshot.board.mode)}  ·  ${snapshot.novel.name}`;
         $("lineCount").textContent = String(snapshot.lines.length);
-        $("progressLabel").textContent = `已完成 ${snapshot.completed} / 25 格`;
+        $("progressLabel").textContent = `${snapshot.completed} / ${snapshot.total}`;
+        $("bingoGrid").style.setProperty("--board-size", "4");
+        $("bingoGrid").setAttribute("aria-label", "4乘4構思賓果");
+        $("lineCount").nextElementSibling.textContent = `／${Math.sqrt(snapshot.total) * 2 + 2} BINGO`;
         $("progressPercent").textContent = `${snapshot.percent}%`;
         $("progressFill").style.width = `${snapshot.percent}%`;
         drawGrid(snapshot);
-    }
-
-    function drawCategoryLegend() {
-        const fragment = document.createDocumentFragment();
-        for (const group of core.groups) {
-            const chip = createTextElement("span", "topic-chip", group.label);
-            chip.style.setProperty("--chip-color", groupColor[group.id] || "#bac1bc");
-            fragment.append(chip);
-        }
-        $("topicKey").replaceChildren(fragment);
     }
 
     function openNameDialog(operation, title, label, initialValue = "") {
@@ -219,7 +189,7 @@
             const details = document.createElement("details");
             details.className = "custom-topic-group";
             details.open = group.id === "character";
-            details.append(createTextElement("summary", "", `${group.label}（${group.topics.length}種）`));
+            details.append(createTextElement("summary", "", group.label));
 
             const list = createTextElement("div", "custom-topic-list", "");
             for (const topic of group.topics) {
@@ -239,7 +209,7 @@
                 quantity.type = "number";
                 quantity.inputMode = "numeric";
                 quantity.min = "1";
-                quantity.max = "25";
+                quantity.max = "16";
                 quantity.step = "1";
                 quantity.placeholder = "自動";
                 quantity.disabled = true;
@@ -283,17 +253,12 @@
         if (!selected.length) {
             counter.textContent = "尚未選擇";
         } else {
-            counter.textContent = `已選 ${selected.length} 種｜至少 ${reserved}/25 格${automatic ? "，其餘自動" : ""}`;
+            counter.textContent = `${selected.length} 種 · ${reserved}/16${automatic ? " ＋自動" : ""}`;
         }
-        counter.style.color = (reserved > 25 || selected.length > 25) ? "#aa4e48" : "";
+        counter.style.color = (reserved > 16 || selected.length > 16) ? "#aa4e48" : "";
     }
 
     function openBoardDialog() {
-        const snapshot = core.snapshot();
-        if (!snapshot.novel) {
-            tell("請先建立小說，再新增賓果牌。");
-            return;
-        }
         $("boardForm").reset();
         $("newBoardName").value = "";
         $("customTopicGroups").querySelectorAll(".topic-quantity").forEach(input => {
@@ -323,7 +288,7 @@
 
     function highlightBingo(newLines) {
         if (!newLines.length) return;
-        tell(`BINGO！又完成 ${newLines.length} 條連線 ✦`);
+        tell(`BINGO ×${newLines.length} ✦`);
         if (!global.SlowlyAreaBurst) return;
 
         const stage = $("boardStage");
@@ -340,7 +305,7 @@
     }
 
     function registerEvents() {
-        $("createNovel").addEventListener("click", () => openNameDialog("novel-create", "新增小說", "小說名稱"));
+        $("createNovel").addEventListener("click", () => openNameDialog("novel-create", "新增小說", "小說名稱（選填）"));
         $("renameNovel").addEventListener("click", () => {
             const novel = core.snapshot().novel;
             if (novel) openNameDialog("novel-rename", "重新命名小說", "小說名稱", novel.name);
@@ -348,7 +313,7 @@
         $("deleteNovel").addEventListener("click", async () => {
             const snapshot = core.snapshot();
             if (!snapshot.novel) return;
-            const agreed = await confirmDelete("刪除整部小說？", `「${snapshot.novel.name}」底下的所有賓果牌與已勾選進度將被刪除，無法復原。`);
+            const agreed = await confirmDelete("刪除整部小說？", `「${snapshot.novel.name}」及所有賓果牌資料將刪除，無法復原。`);
             if (agreed) await perform(() => core.deleteNovel(snapshot.novel.novel_uid), "小說已刪除");
         });
         $("novelSelect").addEventListener("change", event => perform(() => core.setActiveNovel(event.target.value)));
@@ -357,20 +322,17 @@
         $("anotherBoard").addEventListener("click", openBoardDialog);
         $("renameBoard").addEventListener("click", () => {
             const board = core.snapshot().board;
-            if (board) openNameDialog("board-rename", "重新命名賓果牌", "賓果牌名稱", board.name);
+            if (board) openNameDialog("board-rename", "重新命名賓果牌", "賓果牌名稱（選填）", board.name);
         });
         $("deleteBoard").addEventListener("click", async () => {
             const board = core.snapshot().board;
             if (!board) return;
-            const agreed = await confirmDelete("刪除這張賓果牌？", `「${board.name}」與它的25格完成記錄將被刪除，無法復原。其他賓果牌不受影響。`);
+            const agreed = await confirmDelete("刪除這張賓果牌？", `「${board.name}」將刪除，無法復原。`);
             if (agreed) await perform(() => core.deleteBoard(board.board_uid), "賓果牌已刪除");
         });
         $("boardSelect").addEventListener("change", event => perform(() => core.setActiveBoard(event.target.value)));
 
-        $("emptyAction").addEventListener("click", () => {
-            if (core.snapshot().novel) openBoardDialog();
-            else openNameDialog("novel-create", "新增小說", "小說名稱");
-        });
+        $("emptyAction").addEventListener("click", openBoardDialog);
 
         $("nameForm").addEventListener("submit", async event => {
             event.preventDefault();
@@ -420,7 +382,7 @@
             if (!target || ui.busy) return;
             perform(() => core.toggleCell(target.dataset.cellUid));
         });
-        $("shuffleBoard").addEventListener("click", () => perform(() => core.shuffleBoard(), "已重新排列，格子資料完整保留"));
+        $("shuffleBoard").addEventListener("click", () => perform(() => core.shuffleBoard()));
         $("exportCard").addEventListener("click", () => perform(() => core.exportCurrentBoardPng(), "展示卡 PNG 已輸出"));
     }
 
@@ -428,7 +390,6 @@
         try {
             if (!core) throw new Error("構思賓果功能核心未載入。");
             buildCustomOptions();
-            drawCategoryLegend();
             registerEvents();
             core.subscribe(event => {
                 render();
@@ -441,8 +402,6 @@
             render();
         } catch (error) {
             showError(error);
-            $("emptyTitle").textContent = "尚未能啟動構思賓果。";
-            $("emptyDescription").textContent = "請確認網路連線及軍火庫 HTTPS 零件能正常載入。為了保護資料，載入失敗時不會改寫本機紀錄。";
             $("emptyAction").disabled = true;
         }
     }
