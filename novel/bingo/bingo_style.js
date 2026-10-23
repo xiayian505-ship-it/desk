@@ -1,5 +1,5 @@
 /*
- * 構思賓果｜介面互動 v2.3.0
+ * 構思賓果｜介面互動 v2.7.0
  * 畫面繪製、視窗、操作事件與訊息回饋。遊戲資料與規則由 bingo.js 管理。
  * 共用視窗／Toast／效果直接使用慢慢軍火庫，不複製共用函式碼。
  */
@@ -118,7 +118,7 @@
 
         snapshot.cells.forEach((cell, position) => {
             const topic = core.topicById(cell.topic_id);
-            const group = core.groups.find(item => item.id === topic?.group_id);
+            const group = core.displayGroups.find(item => item.id === topic?.group_id);
             const button = document.createElement("button");
             button.type = "button";
             button.className = "bingo-cell";
@@ -155,7 +155,7 @@
         if (!ui.initialized) return;
         const snapshot = core.snapshot();
         updateSelect($("novelSelect"), snapshot.novels, snapshot.novel?.novel_uid, "novel_uid", "尚未建立小說");
-        updateSelect($("boardSelect"), snapshot.boards, snapshot.board?.board_uid, "board_uid", "尚未建立賓果牌");
+        updateSelect($("boardSelect"), snapshot.boards, snapshot.board?.board_uid, "board_uid", "尚未建立賓果");
 
         setUnavailable($("createNovel"), false);
         setUnavailable($("renameNovel"), !snapshot.novel);
@@ -368,7 +368,7 @@
         $("deleteNovel").addEventListener("click", async () => {
             const snapshot = core.snapshot();
             if (!snapshot.novel) return;
-            const agreed = await confirmDelete("刪除整部小說？", `「${snapshot.novel.name}」及所有賓果牌資料將刪除，無法復原。`);
+            const agreed = await confirmDelete("刪除整部小說？", `「${snapshot.novel.name}」及所有賓果資料將刪除，無法復原。`);
             if (agreed) await perform(() => core.deleteNovel(snapshot.novel.novel_uid), "小說已刪除");
         });
         $("novelSelect").addEventListener("change", event => perform(() => core.setActiveNovel(event.target.value)));
@@ -377,13 +377,13 @@
         $("anotherBoard").addEventListener("click", openBoardDialog);
         $("renameBoard").addEventListener("click", () => {
             const board = core.snapshot().board;
-            if (board) openNameDialog("board-rename", "重新命名賓果牌", "賓果牌名稱（選填）", board.name);
+            if (board) openNameDialog("board-rename", "重新命名賓果", "賓果名稱（選填）", board.name);
         });
         $("deleteBoard").addEventListener("click", async () => {
             const board = core.snapshot().board;
             if (!board) return;
-            const agreed = await confirmDelete("刪除這張賓果牌？", `「${board.name}」將刪除，無法復原。`);
-            if (agreed) await perform(() => core.deleteBoard(board.board_uid), "賓果牌已刪除");
+            const agreed = await confirmDelete("刪除這個賓果？", `「${board.name}」將刪除，無法復原。`);
+            if (agreed) await perform(() => core.deleteBoard(board.board_uid), "賓果已刪除");
         });
         $("boardSelect").addEventListener("change", event => perform(() => core.setActiveBoard(event.target.value)));
 

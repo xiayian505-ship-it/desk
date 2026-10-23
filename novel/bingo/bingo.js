@@ -1,6 +1,6 @@
 /*
- * 構思賓果｜功能核心 v2.3.0
- * 負責題庫、小說／賓果牌／格子 UID、抽題、完成狀態、賓果判定、本機保存與 PNG 資料繪製。
+ * 構思賓果｜功能核心 v2.7.0
+ * 負責題庫、小說／賓果／格子 UID、抽題、完成狀態、賓果判定、本機保存與 PNG 資料繪製。
  * 網頁介面與事件由 bingo_style.js 負責；共用功能只呼叫慢慢軍火庫的 HTTPS 零件。
  */
 (function (global) {
@@ -9,7 +9,7 @@
     const BOARD_SIZE = 4;
     const CELL_COUNT = BOARD_SIZE * BOARD_SIZE;
     const STORAGE_NAMESPACE = "sbs_story_bingo";
-    const VERSION = "2.3.0";
+    const VERSION = "2.7.0";
     const STORAGE_SCHEMA_VERSION = 2;
 
     const TOPIC_GROUPS = Object.freeze([
@@ -100,8 +100,40 @@
         })))
     })));
 
+    // 一般題庫維持原本的 36 題，特殊賓果另有 16 題，彼此不混抽。
+    // 作品資料仍沿用原本的 UID／schemaVersion，避免部署後清除既有進度。
+    const SPECIAL_TOPIC_GROUP = Object.freeze({
+        id: "special",
+        label: "特殊構思",
+        shortLabel: "特殊",
+        topics: Object.freeze([
+            ["prd", "交付PRD"],
+            ["kernel", "確立Kernel"],
+            ["gui", "使用的GUI"],
+            ["private_key", "設計Private key"],
+            ["primary_key", "設計Primary Key"],
+            ["oulipo", "Oulipo限制"],
+            ["dialogue_logic", "對話邏輯"],
+            ["rhetoric_ratio", "修辭佔比"],
+            ["brd", "寫BRD"],
+            ["mrd", "寫MRD"],
+            ["swot", "完稿SWOT"],
+            ["qa", "完稿QA驗收"],
+            ["illegal", "Illegal處理"],
+            ["modularization", "Modularization處理"],
+            ["high_coupling", "High Coupling類別"],
+            ["character_rebellion", "角色反噬"]
+        ].map(([key, label]) => Object.freeze({
+            topic_id: `special.${key}`,
+            group_id: "special",
+            label
+        })))
+    });
+
     const ALL_TOPICS = Object.freeze(TOPIC_GROUPS.flatMap(group => group.topics));
-    const TOPIC_BY_ID = new Map(ALL_TOPICS.map(topic => [topic.topic_id, topic]));
+    const SPECIAL_TOPICS = SPECIAL_TOPIC_GROUP.topics;
+    const DISPLAY_GROUPS = Object.freeze([...TOPIC_GROUPS, SPECIAL_TOPIC_GROUP]);
+    const TOPIC_BY_ID = new Map([...ALL_TOPICS, ...SPECIAL_TOPICS].map(topic => [topic.topic_id, topic]));
 
     const state = {
         store: null,
@@ -253,7 +285,7 @@
 
     function fixedTopics() {
         // 4×4 版：每類先取前 2 種 (共 12 格)，剩下 4 格補「配角人設」。
-        // 延續固定牌的原則：先涵蓋六類，空位優先配角。
+        // 延續固定賓果的原則：先涵蓋六類，空位優先配角。
         const topics = TOPIC_GROUPS.flatMap(group => group.topics.slice(0, 2));
         for (let i = topics.length; i < CELL_COUNT; i += 1) {
             topics.push(TOPIC_BY_ID.get("character.supporting"));
@@ -285,7 +317,7 @@
             throw new Error("請先勾選至少一種構思項目。");
         }
         if (selections.length > CELL_COUNT) {
-            throw new Error(`一張牌只有${CELL_COUNT}格，最多能勾選${CELL_COUNT}種不同題目。`);
+            throw new Error(`一個賓果只有${CELL_COUNT}格，最多能勾選${CELL_COUNT}種不同題目。`);
         }
 
         const seen = new Set();
@@ -329,7 +361,8 @@
         if (mode === "fixed") return fixedTopics();
         if (mode === "random") return randomTopics();
         if (mode === "custom") return customTopics(selections);
-        throw new Error("未知的賓果牌類型。");
+        if (mode === "special") return shuffled(SPECIAL_TOPICS);
+        throw new Error("未知的賓果類型。");
     }
 
     async function storeSelections() {
@@ -491,7 +524,7 @@
     }
 
     function defaultBoardName(mode, excludeBoardUid = null) {
-        const names = { fixed: "固定賓果", random: "隨機賓果", custom: "自訂賓果" };
+        const names = { fixed: "固定賓果", random: "隨機賓果", custom: "自訂賓果", special: "特殊賓果" };
         const title = names[mode] || "構思賓果";
         const existingNames = new Set(
             listBoardsForNovel(state.activeNovelUid)
@@ -509,9 +542,9 @@
     async function createBoard({ name, mode, selections = [] } = {}) {
         ready();
         const topicInstances = generateTopicInstances(mode, selections);
-        if (topicInstances.length !== CELL_COUNT) throw new Error(`賓果牌沒有產生完整${CELL_COUNT}格。`);
+        if (topicInstances.length !== CELL_COUNT) throw new Error(`賓果沒有產生完整${CELL_COUNT}格。`);
 
-        // 不需預先輸入作品名稱；第一次直接建牌時，自動建立日期命名的小說。
+        // 不需預先輸入作品名稱；第一次直接建立賓果時，自動建立日期命名的小說。
         if (!findCurrentNovel()) {
             await createNovel("");
         }
@@ -552,7 +585,7 @@
             if (boardSaved) {
                 try { await state.collections.boards.remove(boardUid); } catch (cleanupError) { console.error(cleanupError); }
             }
-            throw new Error(`建立賓果牌失敗，已嘗試復原：${error.message}`);
+            throw new Error(`建立賓果失敗，已嘗試復原：${error.message}`);
         }
 
         state.boards.push(board);
@@ -566,8 +599,8 @@
     async function renameBoard(uid, name) {
         ready();
         const board = state.boards.find(item => item.board_uid === uid);
-        if (!board) throw new Error("找不到要重新命名的賓果牌。");
-        // 建牌及改名均可留白；由系統產生名稱，UID 不變。
+        if (!board) throw new Error("找不到要重新命名的賓果。");
+        // 建立賓果及改名均可留白；由系統產生名稱，UID 不變。
         const title = normalizeName(name, defaultBoardName(board.mode, uid));
         const record = await state.collections.boards.update(uid, { name: title });
         state.boards = state.boards.map(board => board.board_uid === uid ? record : board);
@@ -577,7 +610,7 @@
     async function deleteBoard(uid) {
         ready();
         const board = state.boards.find(item => item.board_uid === uid);
-        if (!board) throw new Error("找不到要刪除的賓果牌。");
+        if (!board) throw new Error("找不到要刪除的賓果。");
         const cells = state.cells.filter(cell => cell.board_uid === uid);
 
         for (const cell of cells) {
@@ -597,7 +630,7 @@
     async function setActiveBoard(uid) {
         ready();
         if (!listBoardsForNovel(state.activeNovelUid).some(board => board.board_uid === uid)) {
-            throw new Error("這張賓果牌不屬於目前小說。");
+            throw new Error("這個賓果不屬於目前小說。");
         }
         state.activeBoardUid = uid;
         await storeSelections();
@@ -624,7 +657,7 @@
     async function shuffleBoard() {
         ready();
         const board = findCurrentBoard();
-        if (!board) throw new Error("請先選擇賓果牌。");
+        if (!board) throw new Error("請先選擇賓果。");
         let next = shuffled(board.cell_uids);
         if (next.every((id, index) => id === board.cell_uids[index])) {
             next = shuffled(board.cell_uids);
@@ -638,7 +671,7 @@
         ready();
         const board = findCurrentBoard();
         if (!board || !board.cell_uids.includes(uid)) {
-            throw new Error("找不到這張賓果牌的構思格子。");
+            throw new Error("找不到這個賓果的構思格子。");
         }
         if (typeof content !== "string") {
             throw new TypeError("構思內容必須是文字。");
@@ -665,7 +698,7 @@
     }
 
     function modeLabel(mode) {
-        return { fixed: "固定牌", random: "隨機牌", custom: "自訂牌" }[mode] || "賓果牌";
+        return { fixed: "固定賓果", random: "隨機賓果", custom: "自訂賓果", special: "特殊賓果" }[mode] || "賓果";
     }
 
     function roundedRectangle(context, x, y, w, h, radius) {
@@ -678,7 +711,7 @@
         requireExportWarehouse();
         const { novel, board, cells, completed, total, lines } = currentSnapshot();
         if (!novel || !board || cells.length !== total) {
-            throw new Error("請先選擇一張完整的賓果牌。");
+            throw new Error("請先選擇一張完整的賓果。");
         }
         if (document.fonts?.ready) {
             await document.fonts.ready;
@@ -723,6 +756,7 @@
         const originX = 125;
         const originY = 560;
         const groupColor = {
+            special: "#7b6a8a",
             foundation: "#665968",
             world: "#48666b",
             character: "#79604c",
@@ -747,7 +781,7 @@
 
             context.fillStyle = cell.completed ? "#b8d4cb" : (groupColor[topic?.group_id] || "#747474");
             context.font = '500 22px "Noto Sans TC", sans-serif';
-            const groupLabel = TOPIC_GROUPS.find(group => group.id === topic?.group_id)?.shortLabel || "構思";
+            const groupLabel = DISPLAY_GROUPS.find(group => group.id === topic?.group_id)?.shortLabel || "構思";
             context.fillText(groupLabel, x + 20, y + 34);
 
             context.fillStyle = cell.completed ? "#f7fff9" : "#202d31";
@@ -828,7 +862,9 @@
         version: VERSION,
         storageNamespace: STORAGE_NAMESPACE,
         groups: TOPIC_GROUPS,
+        displayGroups: DISPLAY_GROUPS,
         topics: ALL_TOPICS,
+        specialTopics: SPECIAL_TOPICS,
         topicById(topicId) { return TOPIC_BY_ID.get(topicId) || null; },
         subscribe(listener) {
             if (typeof listener !== "function") throw new TypeError("listener 必須是函式。");

@@ -104,6 +104,6 @@
         saveDraft,
         discardDraft,
         topicById: bingo.topicById,
-        groups: bingo.groups
+        groups: bingo.displayGroups
     });
 })(window);

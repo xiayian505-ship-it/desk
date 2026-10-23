@@ -1178,7 +1178,7 @@ summary:focus-visible {
     --slowly-line-speed: .25s;
 }
 
-/* 僅改操作元件，4×4 賓果格仍維持牌面本來的外觀與點選狀態。 */
+/* 僅改操作元件，4×4 賓果格仍維持賓果內容本來的外觀與點選狀態。 */
 .icon-button,
 .primary-button,
 .secondary-button,
@@ -1239,7 +1239,7 @@ summary:focus-visible {
     text-decoration: none;
 }
 
-/* 深色工具列、無牌狀態需使用淺色文字。 */
+/* 深色工具列、尚無賓果狀態需使用淺色文字。 */
 .workbar .icon-button { color: #e5ecdf; }
 .workbar .icon-button-danger { color: #edb5ac; }
 .empty-state .primary-button { color: #e9cfa6; }
@@ -1343,7 +1343,7 @@ summary:focus-visible {
 }
 
 
-/* v2.1｜非賓果牌區域改為無卡片外框的排版。
+/* v2.1｜非賓果區域改為無卡片外框的排版。
    4×4 棋盤（.board-panel / .bingo-cell）外觀不變。 */
 .workbar,
 .empty-state {
@@ -1574,5 +1574,19 @@ summary:focus-visible {
     .site-header .header-inner {
         padding: 6px 0;
         min-height: 0;
+    }
+}
+
+
+/* v2.7｜四種賓果類型：大螢幕並排，手機兩欄；維持純文字底線選擇。 */
+.mode-options {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+.bingo-cell[data-group="special"] {
+    --accent: #846f93;
+}
+@media (max-width: 640px) {
+    .mode-options {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 }

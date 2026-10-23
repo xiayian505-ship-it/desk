@@ -273,7 +273,7 @@
     function render() {
         const state = record.snapshot();
         fillSelect($("recordNovelSelect"), state.novels, "novel_uid", state.novel?.novel_uid, "尚無小說");
-        fillSelect($("recordBoardSelect"), state.boards, "board_uid", state.board?.board_uid, "尚無賓果牌");
+        fillSelect($("recordBoardSelect"), state.boards, "board_uid", state.board?.board_uid, "尚無賓果");
         const canEdit = Boolean(state.board && state.cells.length === 16);
         $("recordWorkspace").hidden = !canEdit;
         $("recordEmpty").hidden = canEdit;

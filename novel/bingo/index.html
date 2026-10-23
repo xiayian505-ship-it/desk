@@ -5,7 +5,7 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1, viewport-fit=cover" name="viewport"/>
 <meta content="#18242c" name="theme-color"/>
-<meta content="構思賓果｜小說寫作構思工具。4×4賓果、36種題目、固定／隨機／自訂牌面與本機儲存。" name="description"/>
+<meta content="構思賓果｜小說寫作構思工具。4×4賓果、36種題目、固定／隨機／自訂賓果面與本機儲存。" name="description"/>
 <meta content="website" property="og:type"/>
 <meta content="構思賓果｜Stillness by Slowly" property="og:title"/>
 <meta content="讓故事慢慢成形。小說構思進度、自由抽題與自訂賓果。" property="og:description"/>
@@ -66,7 +66,7 @@
 <main class="site-main">
 <div class="error-banner" hidden="" id="errorBanner" role="alert">
 </div>
-<section aria-label="小說與賓果牌管理" class="workbar">
+<section aria-label="小說與賓果管理" class="workbar">
 <div class="workbar-group">
 <label class="control-title" for="novelSelect">
        小說
@@ -83,14 +83,14 @@
 </div>
 <div class="workbar-group">
 <label class="control-title" for="boardSelect">
-       賓果牌
+       賓果
       </label>
 <div class="select-row">
-<select aria-label="選擇賓果牌" id="boardSelect">
+<select aria-label="選擇賓果" id="boardSelect">
 </select>
-<button aria-label="新增賓果牌" class="icon-button slowly-underline" id="createBoard" title="新增賓果牌" type="button">新增</button>
-<button aria-label="重新命名賓果牌" class="icon-button slowly-underline" id="renameBoard" title="重新命名賓果牌" type="button">改名</button>
-<button aria-label="刪除賓果牌" class="icon-button icon-button-danger slowly-underline" id="deleteBoard" title="刪除賓果牌" type="button">刪除</button>
+<button aria-label="新增賓果" class="icon-button slowly-underline" id="createBoard" title="新增賓果" type="button">新增</button>
+<button aria-label="重新命名賓果" class="icon-button slowly-underline" id="renameBoard" title="重新命名賓果" type="button">改名</button>
+<button aria-label="刪除賓果" class="icon-button icon-button-danger slowly-underline" id="deleteBoard" title="刪除賓果" type="button">刪除</button>
 </div>
 </div>
 </section>
@@ -134,7 +134,7 @@
 <button aria-pressed="false" class="completion-style-choice slowly-underline" data-completion-style="electric" id="completionStyleElectric" type="button">流光</button>
 </div>
 <div class="board-stage" id="boardStage">
-<div aria-label="構思賓果牌" class="bingo-grid" id="bingoGrid" role="group">
+<div aria-label="構思賓果" class="bingo-grid" id="bingoGrid" role="group">
 </div>
 </div>
 <div class="board-actions">
@@ -185,19 +185,19 @@
 <button aria-label="關閉" class="dialog-close slowly-underline" id="boardCancelIcon" type="button">關閉</button>
 </div>
 <label class="field-label" for="newBoardName">
-     賓果牌名稱（選填）
+     賓果名稱（選填）
     </label>
 <input autocomplete="off" id="newBoardName" maxlength="90" name="boardName" placeholder="選填" type="text"/>
 <fieldset class="mode-fieldset">
 <legend class="field-label">
-      牌面
+      賓果類型
      </legend>
 <div class="mode-options">
 <label class="mode-option">
 <input checked="" name="boardMode" type="radio" value="fixed"/>
 <span class="mode-option-body slowly-underline">
 <strong>
-         固定
+         固定賓果
         </strong>
 </span>
 </label>
@@ -205,7 +205,7 @@
 <input name="boardMode" type="radio" value="random"/>
 <span class="mode-option-body slowly-underline">
 <strong>
-         隨機
+         隨機賓果
         </strong>
 </span>
 </label>
@@ -213,7 +213,15 @@
 <input name="boardMode" type="radio" value="custom"/>
 <span class="mode-option-body slowly-underline">
 <strong>
-         自訂
+         自訂賓果
+        </strong>
+</span>
+</label>
+<label class="mode-option">
+<input name="boardMode" type="radio" value="special"/>
+<span class="mode-option-body slowly-underline">
+<strong>
+         特殊賓果
         </strong>
 </span>
 </label>
