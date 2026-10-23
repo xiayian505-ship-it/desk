@@ -1,5 +1,5 @@
 /*
- * 構思賓果｜功能核心 v2.0.0
+ * 構思賓果｜功能核心 v2.3.0
  * 負責題庫、小說／賓果牌／格子 UID、抽題、完成狀態、賓果判定、本機保存與 PNG 資料繪製。
  * 網頁介面與事件由 bingo_style.js 負責；共用功能只呼叫慢慢軍火庫的 HTTPS 零件。
  */
@@ -9,7 +9,7 @@
     const BOARD_SIZE = 4;
     const CELL_COUNT = BOARD_SIZE * BOARD_SIZE;
     const STORAGE_NAMESPACE = "sbs_story_bingo";
-    const VERSION = "2.0.0";
+    const VERSION = "2.3.0";
     const STORAGE_SCHEMA_VERSION = 2;
 
     const TOPIC_GROUPS = Object.freeze([
@@ -111,6 +111,7 @@
         cells: [],
         activeNovelUid: null,
         activeBoardUid: null,
+        completionStyle: "normal",
         initialized: false
     };
 
@@ -208,7 +209,8 @@
             completed,
             total: expectedCount,
             lines,
-            percent: Math.round(completed / expectedCount * 100)
+            percent: Math.round(completed / expectedCount * 100),
+            completionStyle: state.completionStyle
         };
     }
 
@@ -335,7 +337,8 @@
             id: "app",
             schemaVersion: STORAGE_SCHEMA_VERSION,
             activeNovelUid: state.activeNovelUid,
-            activeBoardUid: state.activeBoardUid
+            activeBoardUid: state.activeBoardUid,
+            completionStyle: state.completionStyle
         };
         await state.collections.settings.upsert(record);
     }
@@ -392,6 +395,7 @@
         state.cells = cells;
         state.activeNovelUid = settings?.activeNovelUid || null;
         state.activeBoardUid = settings?.activeBoardUid || null;
+        state.completionStyle = settings?.completionStyle === "electric" ? "electric" : "normal";
         restoreSelection();
         state.initialized = true;
         emit("initialized");
@@ -402,6 +406,25 @@
         if (!state.initialized) {
             throw new Error("構思賓果尚未完成初始化。");
         }
+    }
+
+    async function setCompletionStyle(style) {
+        ready();
+        if (style !== "normal" && style !== "electric") {
+            throw new Error("未知的賓果完成格樣式。");
+        }
+        if (state.completionStyle === style) return;
+        // 樣式是站內顯示偏好，不修改任何格子的 completed 或 UID。
+        // 儲存成功後才更新畫面，以免切換失敗卻顯示成已套用。
+        await state.collections.settings.upsert({
+            id: "app",
+            schemaVersion: STORAGE_SCHEMA_VERSION,
+            activeNovelUid: state.activeNovelUid,
+            activeBoardUid: state.activeBoardUid,
+            completionStyle: style
+        });
+        state.completionStyle = style;
+        emit("completion-style-changed");
     }
 
     async function createNovel(name) {
@@ -829,6 +852,7 @@
         setActiveBoard,
         toggleCell,
         shuffleBoard,
+        setCompletionStyle,
         updateCellContent,
         prepareCurrentBoardExport,
         downloadPreparedExport,

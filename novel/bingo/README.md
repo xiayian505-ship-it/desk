@@ -63,3 +63,29 @@
 - `record/` 的 16 個構思題目改為兩欄、每欄八格，包含手機版。
 - 點開任一題後，編輯器橫跨兩欄以保留書寫寬度。其餘題目仍維持兩欄。
 - 保留 `SlowlyAccordion` 互斥開合、原本草稿暫存和取消／確認；未更動資料結構或 JavaScript。
+
+
+### v2.3 完成格流光切換
+
+- 完成格外觀可選 **一般** 或 **流光**，預設一般；選擇會使用 `FictionStorage` 的 `sbs_story_bingo:settings` 保存，重開仍採用上次選擇。
+- 流光是已完成格持續流動邊框與光暈；取消勾選立即停止。切回一般模式只改外觀，保留每格完成狀態與 UID。
+- 直接引用 `https://lib.stillnessbyslowly.com/effects/light/electric_border.css`；沿用軍火庫 `slowly-electric-border with-glow is-active`，以子層避開既有賓果格偽元素衝突。不複製軍火庫零件。
+- `prefers-reduced-motion` 時依軍火庫規則停止持續動畫。
+- 流光是網頁互動外觀，PNG 展示卡沿用原有的靜態完成格呈現。
+
+
+### v2.4 流光外框與 SVG 標題
+
+- 流光模式保留軍火庫 Electric Border 原生 `::before` 邊框動畫；`with-glow::after` 僅以宿主 CSS 補上中空遮罩，避免彩光充滿格子中央。一般模式完全不變。
+- 主頁藝術字改載入現成的 `./bingo_icon.svg`，不再把社群預覽 PNG 當作畫面標題；`og:image` 仍使用既有 PNG。
+- 格子完成值、模式切換、UID、資料儲存與構思紀錄頁全部不變。本版不考慮舊資料相容。
+
+
+### v2.5 視覺調整
+
+- 流光模式下，已完成格不再套用一般完成態的深色底與勾選色塊，只保留外框電光。
+
+
+### v2.6｜SVG 標題尺寸
+
+- SVG 原檔未變更，主頁依 2.5:1 的呈現框裁切上下畫布留白，採響應式置中顯示；不再沿用 PNG 的負邊距。

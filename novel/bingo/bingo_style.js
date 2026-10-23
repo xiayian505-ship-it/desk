@@ -1,5 +1,5 @@
 /*
- * 構思賓果｜介面互動 v2.0.0
+ * 構思賓果｜介面互動 v2.3.0
  * 畫面繪製、視窗、操作事件與訊息回饋。遊戲資料與規則由 bingo.js 管理。
  * 共用視窗／Toast／效果直接使用慢慢軍火庫，不複製共用函式碼。
  */
@@ -52,6 +52,9 @@
         $("nameSubmit").disabled = ui.busy;
         $("boardSubmit").disabled = ui.busy;
         $("bingoGrid").querySelectorAll("button").forEach(button => {
+            button.disabled = ui.busy;
+        });
+        document.querySelectorAll(".completion-style-choice").forEach(button => {
             button.disabled = ui.busy;
         });
         ui.selects.forEach(select => select.sync());
@@ -130,6 +133,14 @@
                 button.classList.add("is-winning");
             }
 
+            // 電光使用獨立子層的 ::before / ::after，避免與格子的分類色條、
+            // 以及 BINGO 完成連線標記共用偽元素而互相覆蓋。
+            if (snapshot.completionStyle === "electric" && cell.completed) {
+                const electricLayer = document.createElement("span");
+                electricLayer.className = "cell-electric-frame slowly-electric-border with-glow is-active";
+                electricLayer.setAttribute("aria-hidden", "true");
+                button.append(electricLayer);
+            }
             button.append(
                 createTextElement("span", "cell-category", group?.shortLabel || "構思"),
                 createTextElement("span", "cell-topic", topic?.label || "未知題目"),
@@ -176,6 +187,12 @@
         $("boardTitle").textContent = snapshot.board.name;
         $("lineCount").textContent = String(snapshot.lines.length);
         $("progressLabel").textContent = `${snapshot.completed} / ${snapshot.total}`;
+        $("bingoGrid").dataset.completionStyle = snapshot.completionStyle;
+        for (const button of document.querySelectorAll(".completion-style-choice")) {
+            const selected = button.dataset.completionStyle === snapshot.completionStyle;
+            button.setAttribute("aria-pressed", String(selected));
+            button.classList.toggle("is-active", selected);
+        }
         $("bingoGrid").style.setProperty("--board-size", "4");
         $("bingoGrid").setAttribute("aria-label", "4乘4構思賓果");
         $("lineCount").nextElementSibling.textContent = `／${Math.sqrt(snapshot.total) * 2 + 2} BINGO`;
@@ -419,6 +436,11 @@
             const target = event.target.closest("button[data-cell-uid]");
             if (!target || ui.busy) return;
             perform(() => core.toggleCell(target.dataset.cellUid));
+        });
+        document.querySelectorAll(".completion-style-choice").forEach(button => {
+            button.addEventListener("click", () => {
+                perform(() => core.setCompletionStyle(button.dataset.completionStyle));
+            });
         });
         $("shuffleBoard").addEventListener("click", () => perform(() => core.shuffleBoard(), "已重新排列"));
         $("exportCard").addEventListener("click", () => perform(async () => {

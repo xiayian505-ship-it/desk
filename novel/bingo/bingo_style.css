@@ -1423,3 +1423,156 @@ summary:focus-visible {
     margin: 0 !important;
     border: 0 !important;
 }
+
+
+/* v2.3｜賓果完成格可選「一般／流光」；外觀只處理 UI，不改核心完成狀態。 */
+.completion-style-picker {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 13px 2px 0;
+    color: #51625c;
+    font-size: .83rem;
+}
+
+.completion-style-label {
+    color: #7b8781;
+    margin-right: 2px;
+}
+
+.completion-style-choice {
+    appearance: none;
+    border: 0;
+    border-radius: 0;
+    background: none;
+    padding: 6px 3px;
+    color: #77837e;
+    font-weight: 600;
+    cursor: pointer;
+    --slowly-line-color: #3d675e;
+    --slowly-line-origin: center;
+    --slowly-line-size: 70%;
+    --slowly-line-gap: .2em;
+}
+
+.completion-style-choice[aria-pressed="true"] {
+    color: #274e46;
+}
+
+.completion-style-choice:hover:not(:disabled),
+.completion-style-choice:focus-visible {
+    color: #274e46;
+}
+
+.completion-style-choice:disabled {
+    cursor: not-allowed;
+}
+
+.completion-style-divider {
+    color: #a7afa8;
+}
+
+/* 電光的兩個偽元素落在獨立裝飾層，並非 .bingo-cell 上。 */
+.bingo-cell .cell-electric-frame {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    z-index: 1;
+    --slowly-electric-radius: inherit;
+    --slowly-electric-width: 2px;
+    --slowly-electric-speed: 2.4s;
+    --slowly-electric-glow-blur: 4px;
+    --slowly-electric-glow-opacity: .65;
+}
+
+/* 軍火庫的光暈在外框外延伸，必須只對流光的完成格解除 overflow 裁切。 */
+.bingo-grid[data-completion-style="electric"] .bingo-cell[aria-pressed="true"] {
+    overflow: visible;
+}
+
+.bingo-cell .cell-topic,
+.bingo-cell .cell-category,
+.bingo-cell .cell-check {
+    z-index: 2;
+}
+
+/* 原來的 BINGO 金色連線標記保留，流光層放在其下。 */
+.bingo-cell.is-winning::after {
+    z-index: 3;
+}
+
+
+/* v2.4｜完成格流光只能繞外框，不能將彩色光暈填滿格子中央。
+   保留軍火庫 Electric Border 的原生動畫；宿主僅替 glow 補上環形遮罩。
+   ::before 原本就是遮罩描邊；::after 也要挖空中間，才不會將光照入內容。
+*/
+.bingo-grid[data-completion-style="electric"]
+.bingo-cell[aria-pressed="true"] .cell-electric-frame.with-glow::after {
+    padding: calc(var(--slowly-electric-width) + var(--slowly-electric-glow-blur));
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    mask-composite: exclude;
+}
+
+/* 標題改用使用者提供的本機 SVG，畫面保持向量縮放不失真。 */
+.site-header .brand-art {
+    display: block;
+    height: auto;
+    object-fit: contain;
+}
+
+
+/* v2.5｜流光模式關閉一般完成態，只保留外框流光本身。 */
+.bingo-grid[data-completion-style="electric"] .bingo-cell[aria-pressed="true"] {
+    background: #fffefa;
+    color: #263536;
+    border-color: #d1d6d1;
+    box-shadow: 0 2px 0 rgba(22,40,39,.035);
+}
+
+.bingo-grid[data-completion-style="electric"] .bingo-cell[aria-pressed="true"] .cell-category {
+    color: #777b74;
+}
+
+.bingo-grid[data-completion-style="electric"] .bingo-cell[aria-pressed="true"] .cell-check {
+    border-color: #dddcd4;
+    background: #f3f2ed;
+    color: transparent;
+}
+
+
+/* v2.6｜SVG 主標題專用尺寸。原始 SVG 畫布為 1200×760，
+   顯示時以裁切上下透明留白取代 PNG 時代的負 margin。
+   原圖本身與 favicon 均不修改。 */
+.site-header .header-inner {
+    min-height: 0;
+    align-items: center;
+    justify-content: center;
+    padding: 9px 0;
+}
+
+.site-header .brand-lockup {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.site-header .brand-art {
+    display: block;
+    width: min(78vw, 400px);
+    height: min(31.2vw, 160px);
+    max-width: 100%;
+    margin: 0;
+    object-fit: cover;
+    object-position: center;
+}
+
+@media (max-width: 640px) {
+    .site-header .header-inner {
+        padding: 6px 0;
+        min-height: 0;
+    }
+}

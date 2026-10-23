@@ -96,3 +96,8 @@ CSS 依賴另有 `confirm.css`、`toast.css`、`area_burst.css`。賓果十條�
 - 文字操作引用 `https://lib.stillnessbyslowly.com/effects/line/underline.css`，以 CSS 變數控制底線長度 70% 及中心展開。
 - 構思草稿使用 `FictionStorage` 的 `record_drafts` collection，不另建儲存系統。草稿與正式紀錄分離，取消僅刪草稿，確認才更新 `cells.content`。
 - 主頁玩法、PNG 內容、4×4 與各種 UID 規則不變。不處理舊資料相容。
+
+
+### v2.5 視覺調整
+
+- 流光模式下，已完成格不再套用一般完成態的深色底與勾選色塊，只保留外框電光。
