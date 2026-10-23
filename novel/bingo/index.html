@@ -244,5 +244,20 @@
     </div>
    </form>
   </dialog>
+ 
+  <dialog aria-labelledby="previewDialogTitle" class="app-dialog preview-dialog" id="previewDialog">
+   <div class="dialog-head">
+    <h2 id="previewDialogTitle">PNG 預覽</h2>
+    <button aria-label="關閉" class="dialog-close" id="previewCloseIcon" type="button">&times;</button>
+   </div>
+   <div class="preview-stage">
+    <img alt="展示卡預覽" class="preview-image" id="previewImage"/>
+   </div>
+   <div class="dialog-actions">
+    <button class="quiet-button" id="previewCancel" type="button">取消</button>
+    <button class="primary-button" id="previewDownload" type="button">下載 PNG</button>
+   </div>
+  </dialog>
+
  </body>
 </html>

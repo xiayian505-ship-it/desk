@@ -1,5 +1,5 @@
 /*
- * 構思賓果｜功能核心 v1.4.0
+ * 構思賓果｜功能核心 v1.5.0
  * 負責題庫、小說／賓果牌／格子 UID、抽題、完成狀態、賓果判定、本機保存與 PNG 資料繪製。
  * 網頁介面與事件由 bingo_style.js 負責；共用功能只呼叫慢慢軍火庫的 HTTPS 零件。
  */
@@ -9,7 +9,7 @@
     const BOARD_SIZE = 4;
     const CELL_COUNT = BOARD_SIZE * BOARD_SIZE;
     const STORAGE_NAMESPACE = "sbs_story_bingo";
-    const VERSION = "1.4.0";
+    const VERSION = "1.5.0";
     const STORAGE_SCHEMA_VERSION = 2;
 
     const TOPIC_GROUPS = Object.freeze([
@@ -622,7 +622,7 @@
         context.roundRect(x, y, w, h, radius);
     }
 
-    async function exportCurrentBoardPng() {
+    async function buildCurrentBoardExportCanvas() {
         ready();
         const { novel, board, cells, completed, total, lines } = currentSnapshot();
         if (!novel || !board || cells.length !== total) {
@@ -732,7 +732,6 @@
             }
         });
 
-        // 展示卡疊繪所有已完成的賓果線，兩條對角線也包含在內。
         context.strokeStyle = "rgba(218, 168, 82, .88)";
         context.lineWidth = 9;
         context.lineCap = "round";
@@ -751,14 +750,35 @@
 
         context.fillStyle = "#66706c";
         context.font = '400 24px "Noto Sans TC", sans-serif';
-        // 展示卡不顯示任何引導說明或私人筆記。
         context.textAlign = "right";
         context.fillText("STILLNESS BY SLOWLY", 1350, 1770);
         context.textAlign = "left";
 
-        const blob = await global.SlowlyCanvasPNG.toBlob(canvas);
         const filename = `${normalizeName(novel.name, "小說")}_${normalizeName(board.name, "構思賓果")}.png`;
-        return global.SlowlyPNGDownload.fromBlob(blob, filename);
+        return { canvas, filename };
+    }
+
+    async function prepareCurrentBoardExport() {
+        const { canvas, filename } = await buildCurrentBoardExportCanvas();
+        const blob = await global.SlowlyCanvasPNG.toBlob(canvas);
+        const objectUrl = URL.createObjectURL(blob);
+        return { canvas, blob, filename, objectUrl };
+    }
+
+    async function downloadPreparedExport(prepared) {
+        if (!prepared?.blob || !prepared?.filename) {
+            throw new Error("找不到可下載的 PNG 資料。");
+        }
+        return global.SlowlyPNGDownload.fromBlob(prepared.blob, prepared.filename);
+    }
+
+    async function exportCurrentBoardPng() {
+        const prepared = await prepareCurrentBoardExport();
+        try {
+            return await downloadPreparedExport(prepared);
+        } finally {
+            if (prepared.objectUrl) URL.revokeObjectURL(prepared.objectUrl);
+        }
     }
 
     global.StoryBingo = Object.freeze({
@@ -789,6 +809,8 @@
         setActiveBoard,
         toggleCell,
         shuffleBoard,
+        prepareCurrentBoardExport,
+        downloadPreparedExport,
         exportCurrentBoardPng,
         modeLabel
     });

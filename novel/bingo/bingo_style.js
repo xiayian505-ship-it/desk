@@ -1,5 +1,5 @@
 /*
- * 構思賓果｜介面互動 v1.4.0
+ * 構思賓果｜介面互動 v1.5.0
  * 畫面繪製、視窗、操作事件與訊息回饋。遊戲資料與規則由 bingo.js 管理。
  * 共用視窗／Toast／效果直接使用慢慢軍火庫，不複製共用函式碼。
  */
@@ -19,6 +19,7 @@
         toast: null,
         burst: null,
         nameOperation: null,
+        exportPreview: null,
         initialized: false
     };
 
@@ -258,6 +259,29 @@
         counter.style.color = (reserved > 16 || selected.length > 16) ? "#aa4e48" : "";
     }
 
+
+    function cleanupExportPreview() {
+        if (ui.exportPreview?.objectUrl) {
+            URL.revokeObjectURL(ui.exportPreview.objectUrl);
+        }
+        ui.exportPreview = null;
+        $("previewImage").removeAttribute("src");
+    }
+
+    function openPreviewDialog(prepared) {
+        cleanupExportPreview();
+        ui.exportPreview = prepared;
+        $("previewImage").src = prepared.objectUrl;
+        $("previewDialog").showModal();
+    }
+
+    function closePreviewDialog() {
+        if ($("previewDialog").open) {
+            $("previewDialog").close();
+        }
+        cleanupExportPreview();
+    }
+
     function openBoardDialog() {
         $("boardForm").reset();
         $("newBoardName").value = "";
@@ -382,8 +406,18 @@
             if (!target || ui.busy) return;
             perform(() => core.toggleCell(target.dataset.cellUid));
         });
-        $("shuffleBoard").addEventListener("click", () => perform(() => core.shuffleBoard()));
-        $("exportCard").addEventListener("click", () => perform(() => core.exportCurrentBoardPng(), "展示卡 PNG 已輸出"));
+        $("shuffleBoard").addEventListener("click", () => perform(() => core.shuffleBoard(), "已重新排列"));
+        $("exportCard").addEventListener("click", () => perform(async () => {
+            const prepared = await core.prepareCurrentBoardExport();
+            openPreviewDialog(prepared);
+        }, "PNG 預覽已生成"));
+        $("previewCancel").addEventListener("click", closePreviewDialog);
+        $("previewCloseIcon").addEventListener("click", closePreviewDialog);
+        $("previewDialog").addEventListener("close", cleanupExportPreview);
+        $("previewDownload").addEventListener("click", async () => {
+            const successful = await perform(() => core.downloadPreparedExport(ui.exportPreview), "展示卡 PNG 已輸出");
+            if (successful) closePreviewDialog();
+        });
     }
 
     async function initializeUi() {

@@ -1,5 +1,5 @@
 /*
- * 構思賓果｜介面外觀 v1.1.0
+ * 構思賓果｜介面外觀 v1.5.0
  * 只負責頁面布局、字體、顏色、按鈕、面板與響應式視覺，不處理賓果判定。
  */
 :root {
@@ -1132,4 +1132,28 @@ summary:focus-visible {
     .bingo-cell .cell-topic {
         font-size: clamp(.72rem, 3.1vw, 1.02rem);
     }
+}
+
+
+.preview-dialog {
+    width: min(92vw, 760px);
+}
+
+.preview-stage {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    max-height: min(70vh, 760px);
+    padding: 4px 0 10px;
+    overflow: auto;
+}
+
+.preview-image {
+    display: block;
+    width: min(100%, 620px);
+    height: auto;
+    border-radius: 14px;
+    border: 1px solid rgba(255,255,255,.12);
+    background: rgba(255,255,255,.04);
+    box-shadow: 0 20px 40px rgba(0,0,0,.18);
 }
