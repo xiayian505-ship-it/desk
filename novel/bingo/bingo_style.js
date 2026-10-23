@@ -1,5 +1,5 @@
 /*
- * 構思賓果｜介面互動 v1.5.0
+ * 構思賓果｜介面互動 v2.0.0
  * 畫面繪製、視窗、操作事件與訊息回饋。遊戲資料與規則由 bingo.js 管理。
  * 共用視窗／Toast／效果直接使用慢慢軍火庫，不複製共用函式碼。
  */
@@ -20,7 +20,8 @@
         burst: null,
         nameOperation: null,
         exportPreview: null,
-        initialized: false
+        initialized: false,
+        selects: []
     };
 
     function showError(error) {
@@ -53,6 +54,7 @@
         $("bingoGrid").querySelectorAll("button").forEach(button => {
             button.disabled = ui.busy;
         });
+        ui.selects.forEach(select => select.sync());
     }
 
     async function perform(action, successMessage = "") {
@@ -94,6 +96,9 @@
         element.replaceChildren(fragment);
         if (activeUid) element.value = activeUid;
         setUnavailable(element, items.length === 0);
+        ui.selects.forEach(select => {
+            if (select.select === element) select.sync();
+        });
     }
 
     function createTextElement(tag, className, text) {
@@ -154,6 +159,15 @@
 
         setUnavailable($("shuffleBoard"), !hasPlayableBoard);
         setUnavailable($("exportCard"), !hasPlayableBoard);
+        const recordLink = $("recordPageLink");
+        recordLink.hidden = !hasPlayableBoard;
+        if (hasPlayableBoard) {
+            const params = new URLSearchParams({
+                novel_uid: snapshot.novel.novel_uid,
+                board_uid: snapshot.board.board_uid
+            });
+            recordLink.href = `./record/?${params}`;
+        }
         setUnavailable($("anotherBoard"), false);
 
         $("emptyAction").textContent = "新增賓果";
@@ -432,6 +446,12 @@
                 }
             });
             await core.initialize();
+            if (!global.SlowlySelect) {
+                throw new Error("慢慢軍火庫 SlowlySelect 未載入。");
+            }
+            ui.selects = ["novelSelect", "boardSelect"]
+                .map(id => global.SlowlySelect.create($(id)))
+                .filter(Boolean);
             ui.initialized = true;
             render();
         } catch (error) {

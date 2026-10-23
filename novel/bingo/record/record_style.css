@@ -1,0 +1,368 @@
+/* 構思紀錄｜外觀 v2.0：文字操作、互斥折疊與 70% 軍火庫底線。 */
+:root {
+    color-scheme: dark;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    --record-gold: #d2b98f;
+}
+html { background: #101b21; }
+body {
+    margin: 0;
+    min-height: 100vh;
+    color: #ecf0e8;
+    background: radial-gradient(ellipse at 87% 0%, rgba(173,198,188,.1), transparent 55%),
+                linear-gradient(180deg, #17252b 0%, #10191e 100%);
+}
+button, textarea, select { font: inherit; }
+button { cursor: pointer; }
+button:disabled { opacity: .5; cursor: not-allowed; }
+button:focus-visible, textarea:focus-visible, select:focus-visible, a:focus-visible, summary:focus-visible {
+    outline: 2px solid #d7bc86;
+    outline-offset: 3px;
+}
+.record-shell { width: min(1000px, calc(100% - 30px)); margin: 0 auto; padding: 34px 0 60px; }
+.record-header { display: flex; align-items: center; justify-content: space-between; gap: 15px; margin-bottom: 25px; }
+.record-header h1 { margin: 0; font-size: clamp(1.3rem, 3.5vw, 2.1rem); font-weight: 680; letter-spacing: .08em; }
+.back-link, .record-text-action {
+    --slowly-line-origin: center;
+    --slowly-line-size: 70%;
+    --slowly-line-color: currentColor;
+    --slowly-line-gap: .08em;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 42px;
+    padding: 9px 10px;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    color: #e6d7b6;
+    text-decoration: none;
+    font-size: .91rem;
+    font-weight: 630;
+}
+.back-link::after, .record-text-action::after { left: 15%; }
+.record-text-action { color: #385e50; }
+.record-text-action#recordCancel { color: #6b7d78; }
+.record-controls {
+    gap: 18px;
+    margin-bottom: 22px;
+    padding: 22px;
+    border: 1px solid rgba(255,255,255,.12);
+    border-radius: 14px;
+    background: rgba(255,255,255,.045);
+}
+.record-control { gap: 9px; color: #bfcdc8; font-size: .82rem; }
+.record-control .slowly-select {
+    --ss-bg: #213039;
+    --ss-text: #f0f3ed;
+    --ss-border: rgba(214,225,217,.25);
+    --ss-hover: #344950;
+    --ss-selected-bg: #41544e;
+    --ss-selected-text: #edf4ea;
+    --ss-focus: #c4aa7c;
+}
+.record-control .slowly-select-trigger {
+    min-height: 44px;
+    padding: 9px 14px;
+    border-width: 0 0 1px;
+    border-radius: 0;
+}
+.record-control .slowly-select-menu {
+    padding: 4px;
+    border-radius: 7px;
+    box-shadow: 0 18px 32px rgba(0,0,0,.3);
+}
+.record-control .slowly-select-option {
+    padding: 11px 12px;
+    border-bottom-color: rgba(255,255,255,.06);
+}
+.record-error {
+    padding: 12px 15px; margin-bottom: 16px;
+    border: 1px solid #b47865;
+    color: #ffded2; background: #52302d;
+}
+.record-card {
+    padding: clamp(15px, 3vw, 28px);
+    border: 1px solid rgba(255,255,255,.11);
+    border-radius: 14px;
+    background: #f3f2ed;
+    color: #26373a;
+}
+.record-board-title { margin: 0 0 17px; font-size: 1.18rem; font-weight: 680; }
+.record-items { gap: 0; }
+.record-detail { border-bottom: 1px solid #dce0da; }
+.record-detail:first-child { border-top: 1px solid #dce0da; }
+.record-detail[open] { background: #f8f8f4; }
+.record-summary {
+    gap: clamp(8px, 2vw, 22px);
+    padding: 12px clamp(8px, 2.2vw, 24px);
+    color: #273a3a;
+}
+.record-summary:hover, .record-summary:focus-visible { background: rgba(174,200,189,.14); }
+.item-position { flex: 0 0 28px; font-size: .78rem; color: #84918b; font-variant-numeric: tabular-nums; }
+.item-group { flex: 0 0 54px; font-size: .75rem; color: #77847f; }
+.item-topic {
+    --slowly-line-size: 70%;
+    --slowly-line-origin: center;
+    --slowly-line-color: #91ab9e;
+    --slowly-line-gap: .16em;
+    flex: 1 1 auto;
+    width: fit-content;
+    font-size: clamp(.95rem, 2vw, 1.06rem);
+    font-weight: 650;
+    line-height: 1.6;
+}
+.record-summary:hover .item-topic::after,
+.record-summary:focus-visible .item-topic::after,
+.record-detail[open] .item-topic::after { transform: scaleX(1); }
+.item-topic.slowly-underline::after { left: 15%; }
+.item-saved { flex: 0 0 17px; font-size: .67rem; color: #59826f; text-align: right; }
+.record-summary::after {
+    content: "⌄";
+    flex: 0 0 20px;
+    color: #6c8a80;
+    text-align: center;
+    transition: transform .18s ease;
+}
+.record-detail[open] .record-summary::after { transform: rotate(180deg); }
+.record-editor {
+    margin: 4px clamp(8px, 2.2vw, 24px) 17px;
+    padding: 16px clamp(9px, 2.5vw, 23px) 18px;
+    background: #fffefa;
+    color: #26373a;
+    border: 1px solid #e1e4df;
+    border-radius: 8px;
+}
+.editor-header { display: flex; justify-content: space-between; align-items: flex-end; gap: 14px; margin-bottom: 13px; }
+.editor-group { color: #718a7c; font-size: .75rem; }
+.editor-header h2 { margin: 5px 0 0; font-size: 1.05rem; }
+#recordSaveStatus { color: #58776d; text-align: right; font-size: .75rem; white-space: nowrap; }
+#recordSaveStatus[data-state="error"] { color: #b85046; }
+.record-editor textarea {
+    min-height: clamp(240px, 42vh, 410px);
+    padding: 15px;
+    border: 1px solid #d3dcd6;
+    border-radius: 6px;
+    background: #fbfcfa;
+    color: #233238;
+    font-size: 1rem;
+    line-height: 1.8;
+    overflow-wrap: anywhere;
+}
+.record-editor textarea:focus { border-color: #8fb7a7; outline: 2px solid #8fb7a7; }
+.record-editor textarea::placeholder { color: #9eaba3; }
+.record-editor-actions { display: flex; justify-content: flex-end; gap: 22px; margin-top: 14px; }
+.record-empty { padding: 20px 0; }
+@media (max-width: 700px) {
+    .record-shell { width: min(100% - 22px, 600px); padding-top: 16px; }
+    .record-header { margin-bottom: 18px; }
+    .record-controls { gap: 13px; padding: 16px; }
+    .record-card { padding: 12px 8px; }
+    .record-summary { gap: 7px; padding: 14px 7px; }
+    .item-position { flex-basis: 24px; }
+    .item-group { flex-basis: 38px; }
+    .record-editor { margin: 4px 4px 13px; padding: 13px 10px; }
+    .record-editor textarea { min-height: 38vh; }
+}
+
+
+/* v2.1｜構思頁採純文字／分隔線布局，移除所有卡片容器外觀。
+   保留 SlowlyAccordion 的互斥開合與軍火庫 70% 底線效果。 */
+.record-controls,
+.record-card,
+.record-editor {
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+}
+
+.record-controls {
+    padding: 0;
+    gap: 25px;
+    margin-bottom: 34px;
+}
+.record-card {
+    padding: 0;
+    color: #e9efe9;
+}
+.record-board-title {
+    margin: 0 0 13px;
+    color: #eef0e9;
+    letter-spacing: .03em;
+}
+
+/* 題目是一張純文字清單，而非 16 張獨立卡片。 */
+.record-detail {
+    border-bottom: 1px solid rgba(230, 238, 231, .15);
+    background: transparent;
+}
+.record-detail:first-child {
+    border-top: 1px solid rgba(230, 238, 231, .15);
+}
+.record-detail[open] {
+    background: transparent;
+}
+.record-summary {
+    color: #edf0e9;
+    padding-block: 17px;
+}
+.record-summary:hover,
+.record-summary:focus-visible {
+    background: transparent;
+}
+.item-position { color: #8a9f98; }
+.item-group { color: #a0b5ac; }
+.item-topic {
+    --slowly-line-color: #c7b48f;
+    color: #edf0e9;
+}
+.item-saved { color: #a9c4b2; }
+.record-summary::after { color: #9aaea4; }
+
+/* 展開後直接在題目下方書寫：沒有白色編輯卡片、沒有圓角框。 */
+.record-editor {
+    margin: 0 0 23px;
+    padding: 4px 0 16px;
+    color: #edf0e9;
+}
+.editor-header {
+    margin-bottom: 10px;
+}
+.editor-group { color: #afbdaf; }
+.editor-header h2 { color: #f0f2ea; }
+#recordSaveStatus { color: #a5c7b8; }
+#recordSaveStatus[data-state="error"] { color: #f3aca2; }
+.record-editor textarea {
+    display: block;
+    width: 100%;
+    min-height: clamp(220px, 42vh, 410px);
+    padding: 13px 3px 16px;
+    border: 0;
+    border-bottom: 1px solid rgba(230, 238, 231, .33);
+    border-radius: 0;
+    background: transparent;
+    color: #eef1eb;
+    box-shadow: none;
+    line-height: 1.9;
+}
+.record-editor textarea:hover {
+    border-bottom-color: rgba(223, 233, 221, .62);
+}
+.record-editor textarea:focus {
+    border: 0;
+    border-bottom: 1px solid #d7bc86;
+    outline: 0;
+}
+.record-editor textarea::placeholder { color: #859a90; }
+.record-text-action { color: #e4cf9f; }
+.record-text-action#recordCancel { color: #a3b6ad; }
+.record-control .slowly-select-menu {
+    border-radius: 0;
+    box-shadow: 0 12px 26px rgba(0, 0, 0, .22);
+}
+
+/* 小螢幕保留文字可讀性，不讓清單貼住手機邊緣。 */
+@media (max-width: 700px) {
+    .record-controls {
+        padding: 0 4px;
+        margin-bottom: 26px;
+        gap: 16px;
+    }
+    .record-card {
+        padding: 0 3px;
+    }
+    .record-summary {
+        padding: 15px 3px;
+        gap: 7px;
+    }
+    .record-editor {
+        padding: 5px 3px 17px;
+        margin: 0 0 16px;
+    }
+    .record-editor textarea {
+        min-height: 35vh;
+    }
+}
+
+
+/* v2.2｜構思列表以兩欄八列展示，保留純文字無卡片設計。 */
+.record-items {
+    column-gap: clamp(12px, 3vw, 28px);
+}
+.record-detail {
+    min-width: 0;
+    align-self: stretch;
+}
+.record-detail:nth-child(-n + 2) {
+    border-top: 1px solid rgba(230, 238, 231, .15);
+}
+.record-summary {
+    min-height: 65px;
+}
+.record-detail[open] {
+    grid-column: 1 / -1;
+}
+/* 小螢幕仍維持兩欄，以兩行安放分類與題目，避免擠壓長文字。 */
+@media (max-width: 620px) {
+    .record-items {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        column-gap: 12px;
+    }
+    .record-summary {
+        display: grid;
+        grid-template-columns: 22px minmax(0, 1fr) 16px;
+        grid-template-rows: auto auto;
+        column-gap: 5px;
+        row-gap: 0;
+        min-height: 74px;
+        padding: 11px 0;
+    }
+    .item-position {
+        grid-column: 1;
+        grid-row: 1 / 3;
+        align-self: center;
+        min-width: 0;
+        font-size: .72rem;
+    }
+    .item-topic {
+        grid-column: 2;
+        grid-row: 1;
+        align-self: end;
+        width: fit-content;
+        font-size: clamp(.81rem, 3.35vw, .95rem);
+        line-height: 1.45;
+        overflow-wrap: anywhere;
+    }
+    .item-group {
+        grid-column: 2;
+        grid-row: 2;
+        align-self: start;
+        min-width: 0;
+        font-size: .66rem;
+        line-height: 1.5;
+        margin-top: 3px;
+    }
+    .item-saved {
+        grid-column: 3;
+        grid-row: 1;
+        align-self: end;
+        justify-self: center;
+        font-size: .6rem;
+    }
+    .record-summary::after {
+        grid-column: 3;
+        grid-row: 2;
+        align-self: start;
+        justify-self: center;
+        min-width: 0;
+        margin-top: 2px;
+        font-size: .82rem;
+    }
+    .record-detail[open] > .record-summary {
+        grid-template-columns: 25px minmax(0, 1fr) 20px;
+    }
+    .record-detail[open] > .record-summary .item-topic {
+        font-size: .95rem;
+    }
+}

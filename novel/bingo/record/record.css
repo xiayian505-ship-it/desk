@@ -1,0 +1,26 @@
+/* 構思紀錄｜功能結構與鍵盤可操作性 */
+[hidden] { display: none !important; }
+*, *::before, *::after { box-sizing: border-box; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+.record-controls { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); }
+.record-control { display: flex; flex-direction: column; min-width: 0; }
+.record-control .slowly-select { width: 100%; min-width: 0; }
+.record-workspace { display: block; }
+.record-items {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-auto-flow: row;
+    column-gap: clamp(12px, 3vw, 28px);
+    align-items: stretch;
+}
+/* 開啟的構思題目橫跨兩欄，讓文字編輯區維持可閱讀的完整寬度。 */
+.record-detail[open] { grid-column: 1 / -1; }
+.record-detail { min-width: 0; }
+.record-summary { display: flex; align-items: center; cursor: pointer; list-style: none; }
+.record-summary::-webkit-details-marker { display: none; }
+.record-summary::marker { content: ""; }
+.record-summary .item-topic { min-width: 0; overflow-wrap: anywhere; }
+.record-editor { min-width: 0; }
+.record-editor textarea { display: block; width: 100%; resize: vertical; }
+@media (max-width: 700px) { .record-controls { grid-template-columns: minmax(0,1fr); } }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; } }

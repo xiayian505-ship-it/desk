@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760" role="img" aria-label="構思賓果 陰陽相生">
+  <title>構思賓果｜陰陽相生橫式藝術字</title>
+  <desc>黑白互生、鏡像構圖與太極旋流的平衡字面；透明背景，黑白互生，字位帶有鏡像構圖與太極旋流。</desc>
+  <defs>
+    <linearGradient id="faceBase" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f9f7f2"/>
+      <stop offset="48%" stop-color="#b7bcc4"/>
+      <stop offset="100%" stop-color="#11161c"/>
+    </linearGradient>
+    <linearGradient id="strokeGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="52%" stop-color="#666f78"/>
+      <stop offset="100%" stop-color="#1b2128"/>
+    </linearGradient>
+    <linearGradient id="sheenGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity=".8"/>
+      <stop offset="52%" stop-color="#f7fbff" stop-opacity=".22"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="blurBig" x="-28%" y="-28%" width="156%" height="156%"><feGaussianBlur stdDeviation="5.2"/></filter>
+    <filter id="shadowBlur" x="-28%" y="-28%" width="156%" height="156%"><feGaussianBlur stdDeviation="8.2"/></filter>
+    <text id="glyph-0" x="0" y="0" text-anchor="middle" dominant-baseline="central" font-family='&quot;Noto Serif CJK TC&quot;, &quot;Source Han Serif TC&quot;, &quot;Songti TC&quot;, &quot;PMingLiU&quot;, serif' font-size="250" font-weight="840">構</text><text id="glyph-1" x="0" y="0" text-anchor="middle" dominant-baseline="central" font-family='&quot;Noto Serif CJK TC&quot;, &quot;Source Han Serif TC&quot;, &quot;Songti TC&quot;, &quot;PMingLiU&quot;, serif' font-size="250" font-weight="840">思</text><text id="glyph-2" x="0" y="0" text-anchor="middle" dominant-baseline="central" font-family='&quot;Noto Serif CJK TC&quot;, &quot;Source Han Serif TC&quot;, &quot;Songti TC&quot;, &quot;PMingLiU&quot;, serif' font-size="250" font-weight="840">賓</text><text id="glyph-3" x="0" y="0" text-anchor="middle" dominant-baseline="central" font-family='&quot;Noto Serif CJK TC&quot;, &quot;Source Han Serif TC&quot;, &quot;Songti TC&quot;, &quot;PMingLiU&quot;, serif' font-size="250" font-weight="840">果</text>
+    <clipPath id="lettersClip"><use href="#glyph-0" transform="translate(178 392) rotate(-2) scale(1.01 1.01)"/><use href="#glyph-1" transform="translate(456 392) rotate(2) scale(-1.01 1.01)"/><use href="#glyph-2" transform="translate(744 392) rotate(-2) scale(1.01 -1.01)"/><use href="#glyph-3" transform="translate(1024 392) rotate(2) scale(1.01 1.01)"/></clipPath>
+  </defs>
+  
+      <g id="outer-ribbons" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M -12.96 369.7 C 137.04 187.04, 439 283.04, 587 363.7 S 1160.96 574.36, 1220.96 409.7" stroke="#3c4751" stroke-width="8" opacity=".2" filter="url(#blurBig)"><animateTransform attributeName="transform" type="translate" values="0 0;0 -4;0 0" dur="6.2s" repeatCount="indefinite"/></path>
+        <path d="M -12.96 369.7 C 137.04 187.04, 439 283.04, 587 363.7 S 1160.96 574.36, 1220.96 409.7" stroke="#1a2027" stroke-width="3" opacity=".92"><animate attributeName="opacity" values=".82;.98;.82" dur="5.4s" repeatCount="indefinite"/></path>
+        <path d="M 5.04 457.7 C 175.04 544.36, 549 409.7, 651 443.7 S 1126.96 241.04, 1200.96 361.04" stroke="#d8dce2" stroke-width="8" opacity=".2" filter="url(#blurBig)"><animateTransform attributeName="transform" type="translate" values="0 0;0 5;0 0" dur="6.8s" repeatCount="indefinite"/></path>
+        <path d="M 5.04 457.7 C 175.04 544.36, 549 409.7, 651 443.7 S 1126.96 241.04, 1200.96 361.04" stroke="#f6f6f1" stroke-width="3" opacity=".95"><animate attributeName="opacity" values=".86;1;.86" dur="5.1s" repeatCount="indefinite"/></path>
+      </g>
+  <g id="shadow" transform="translate(9 10)" fill="#0d1116" opacity=".22" filter="url(#shadowBlur)"><use href="#glyph-0" transform="translate(178 392) rotate(-2) scale(1.01 1.01)"/><use href="#glyph-1" transform="translate(456 392) rotate(2) scale(-1.01 1.01)"/><use href="#glyph-2" transform="translate(744 392) rotate(-2) scale(1.01 -1.01)"/><use href="#glyph-3" transform="translate(1024 392) rotate(2) scale(1.01 1.01)"/></g>
+  <g id="back-glow" transform="translate(-3 -5)" fill="#c8d0d8" opacity=".18" filter="url(#blurBig)"><use href="#glyph-0" transform="translate(178 392) rotate(-2) scale(1.01 1.01)"/><use href="#glyph-1" transform="translate(456 392) rotate(2) scale(-1.01 1.01)"/><use href="#glyph-2" transform="translate(744 392) rotate(-2) scale(1.01 -1.01)"/><use href="#glyph-3" transform="translate(1024 392) rotate(2) scale(1.01 1.01)"/></g>
+  <g id="face" fill="url(#faceBase)" stroke="url(#strokeGrad)" stroke-width="5.8" stroke-linejoin="round" paint-order="stroke fill"><use href="#glyph-0" transform="translate(178 392) rotate(-2) scale(1.01 1.01)"/><use href="#glyph-1" transform="translate(456 392) rotate(2) scale(-1.01 1.01)"/><use href="#glyph-2" transform="translate(744 392) rotate(-2) scale(1.01 -1.01)"/><use href="#glyph-3" transform="translate(1024 392) rotate(2) scale(1.01 1.01)"/></g>
+  
+    <g id="inner-flow" clip-path="url(#lettersClip)">
+      <rect x="0" y="0" width="100%" height="100%" fill="url(#faceBase)" opacity="1"/>
+      <g opacity=".96"> 
+        <path d="M -62.96 191.04 C 451 281.04, 471 351.7, 77.04 560.36 L -62.96 640.36 Z" fill="#10151b" opacity=".9"><animateTransform attributeName="transform" type="translate" values="0 0;18 -8;0 0" dur="9s" repeatCount="indefinite"/></path>
+        <path d="M 1264.96 580.36 C 759 492.36, 727 415.7, 1126.96 223.04 L 1264.96 131.04 Z" fill="#f5f4ef" opacity=".92"><animateTransform attributeName="transform" type="translate" values="0 0;-18 8;0 0" dur="9.6s" repeatCount="indefinite"/></path>
+      </g>
+      <path d="M 71.04 427.7 C 551 452.36, 515 401.7, 589 343.04 C 637 381.04, 627 393.7, 71.04 427.7 Z" fill="#2f363d" opacity=".42"><animate attributeName="opacity" values=".3;.5;.3" dur="5.2s" repeatCount="indefinite"/></path>
+      <path d="M 1130.96 347.7 C 651 323.04, 689 375.7, 611 426.36 C 567 394.36, 581 369.7, 1130.96 347.7 Z" fill="#ffffff" opacity=".56"><animate attributeName="opacity" values=".42;.62;.42" dur="5.8s" repeatCount="indefinite"/></path>
+      <path d="M 29.04 277.7 C 501 251.7, 683 301.7, 1174.96 267.7" fill="none" stroke="#f1f0eb" stroke-width="6" opacity=".18" stroke-linecap="round"/><path d="M 29.04 313.7 C 501 287.7, 683 337.7, 1174.96 303.7" fill="none" stroke="#303841" stroke-width="4" opacity=".16" stroke-linecap="round"/><path d="M 29.04 349.7 C 501 323.7, 683 373.7, 1174.96 339.7" fill="none" stroke="#f1f0eb" stroke-width="6" opacity=".18" stroke-linecap="round"/><path d="M 29.04 385.7 C 501 359.7, 683 409.7, 1174.96 375.7" fill="none" stroke="#303841" stroke-width="4" opacity=".16" stroke-linecap="round"/><path d="M 29.04 421.7 C 501 395.7, 683 445.7, 1174.96 411.7" fill="none" stroke="#f1f0eb" stroke-width="6" opacity=".18" stroke-linecap="round"/><path d="M 29.04 457.7 C 501 431.7, 683 481.7, 1174.96 447.7" fill="none" stroke="#303841" stroke-width="4" opacity=".16" stroke-linecap="round"/><path d="M 29.04 493.7 C 501 467.7, 683 517.7, 1174.96 483.7" fill="none" stroke="#f1f0eb" stroke-width="6" opacity=".18" stroke-linecap="round"/>
+      <circle cx="448.69" cy="355.89" r="48.96" fill="#ffffff" opacity=".94"><animateTransform attributeName="transform" type="translate" values="0 0;4 -2;0 0" dur="5.4s" repeatCount="indefinite"/></circle>
+      <circle cx="775.07" cy="413.22" r="48.96" fill="#10151a" opacity=".94"><animateTransform attributeName="transform" type="translate" values="0 0;-4 2;0 0" dur="5.4s" repeatCount="indefinite"/></circle>
+      <rect x="0" y="0" width="100%" height="100%" fill="url(#sheenGrad)" opacity=".34"><animateTransform attributeName="transform" type="translate" values="-18 0;18 -14;-18 0" dur="6.4s" repeatCount="indefinite"/></rect>
+    </g>
+  <g id="inner-stroke" fill="none" stroke="#e5e8eb" stroke-width="1.35" opacity=".5"><use href="#glyph-0" transform="translate(178 392) rotate(-2) scale(1.01 1.01)"/><use href="#glyph-1" transform="translate(456 392) rotate(2) scale(-1.01 1.01)"/><use href="#glyph-2" transform="translate(744 392) rotate(-2) scale(1.01 -1.01)"/><use href="#glyph-3" transform="translate(1024 392) rotate(2) scale(1.01 1.01)"/></g>
+  
+      <g id="inner-trails" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M 63.04 297.7 C 491 377.7, 615 397.7, 1138.96 477.7" stroke="#232a31" stroke-width="2.2" opacity=".48" stroke-dasharray="8 12"><animate attributeName="stroke-dashoffset" values="0;-36" dur="4.8s" repeatCount="indefinite"/></path>
+        <path d="M 73.04 473.7 C 583 403.7, 711 369.7, 1130.96 293.7" stroke="#f7f7f3" stroke-width="2.2" opacity=".56" stroke-dasharray="8 12"><animate attributeName="stroke-dashoffset" values="0;36" dur="4.8s" repeatCount="indefinite"/></path>
+      </g>
+  <g id="outer-dots"><circle cx="37.04" cy="327.7" r="11" fill="#10151a" opacity=".82"><animate attributeName="opacity" values=".58;.9;.58" dur="4.2s" repeatCount="indefinite"/></circle><circle cx="1164.96" cy="443.7" r="11" fill="#ffffff" opacity=".82"><animate attributeName="opacity" values=".58;.9;.58" dur="4.9s" repeatCount="indefinite"/></circle><circle cx="601" cy="253.04" r="7" fill="#ffffff" opacity=".82"><animate attributeName="opacity" values=".58;.9;.58" dur="5.6s" repeatCount="indefinite"/></circle></g>
+</svg>

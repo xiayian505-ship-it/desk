@@ -1157,3 +1157,269 @@ summary:focus-visible {
     background: rgba(255,255,255,.04);
     box-shadow: 0 20px 40px rgba(0,0,0,.18);
 }
+
+
+/* 新頁面的入口保持與原有操作按鈕一致。 */
+.board-actions .record-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+}
+
+
+/* v1.9｜純文字操作：線條由慢慢軍火庫 Minimal Underline 提供。 */
+:where(.icon-button, .primary-button, .secondary-button, .quiet-button, .dialog-close, .record-link) {
+    --slowly-line-origin: center;
+    --slowly-line-size: 70%;
+    --slowly-line-color: currentColor;
+    --slowly-line-gap: .03em;
+    --slowly-line-thickness: 1px;
+    --slowly-line-speed: .25s;
+}
+
+/* 僅改操作元件，4×4 賓果格仍維持牌面本來的外觀與點選狀態。 */
+.icon-button,
+.primary-button,
+.secondary-button,
+.quiet-button,
+.dialog-close,
+.board-actions .record-link {
+    appearance: none;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    background: transparent;
+    padding: 10px 8px;
+    min-height: 42px;
+    color: inherit;
+    font-weight: 650;
+    line-height: 1.4;
+    text-decoration: none;
+    text-align: center;
+    white-space: nowrap;
+}
+
+.icon-button.slowly-underline,
+.primary-button.slowly-underline,
+.secondary-button.slowly-underline,
+.quiet-button.slowly-underline,
+.dialog-close.slowly-underline,
+.board-actions .record-link.slowly-underline {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.icon-button.slowly-underline::after,
+.primary-button.slowly-underline::after,
+.secondary-button.slowly-underline::after,
+.quiet-button.slowly-underline::after,
+.dialog-close.slowly-underline::after,
+.board-actions .record-link.slowly-underline::after {
+    left: 15%;
+}
+
+.icon-button,
+.icon-button:hover:not(:disabled) {
+    flex: 0 0 auto;
+    background: none;
+    font-size: .84rem;
+    color: #e3eadd;
+}
+.icon-button-danger { color: #e9bbb6; }
+.primary-button { color: #9a7042; }
+.secondary-button { color: #456259; }
+.quiet-button { color: #6a8179; }
+.primary-button:hover:not(:disabled),
+.secondary-button:hover:not(:disabled),
+.quiet-button:hover:not(:disabled),
+.dialog-close:hover {
+    background: transparent;
+    text-decoration: none;
+}
+
+/* 深色工具列、無牌狀態需使用淺色文字。 */
+.workbar .icon-button { color: #e5ecdf; }
+.workbar .icon-button-danger { color: #edb5ac; }
+.empty-state .primary-button { color: #e9cfa6; }
+
+.board-actions {
+    align-items: center;
+    justify-content: center;
+    gap: 8px 20px;
+}
+.board-actions .record-link { color: #456259; }
+
+.dialog-close {
+    width: auto;
+    height: auto;
+    min-height: 40px;
+    padding: 8px 5px;
+    top: 0;
+    right: 0;
+    color: #63746c;
+    font-size: .81rem;
+}
+.dialog-head { padding-right: 65px; }
+.app-dialog .primary-button { color: #946632; }
+.app-dialog .secondary-button { color: #456259; }
+.app-dialog .quiet-button { color: #677972; }
+
+/* 模式選擇也從圓角卡片改成文字，選中時長駐底線。 */
+.mode-option-body.slowly-underline {
+    --slowly-line-origin: center;
+    --slowly-line-size: 70%;
+    --slowly-line-gap: .04em;
+    min-height: 50px;
+    width: 100%;
+    display: flex;
+    padding: 10px 8px;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    background: transparent;
+    color: #496057;
+}
+.mode-option-body.slowly-underline::after { left: 15%; }
+.mode-option input:checked + .mode-option-body {
+    border: 0;
+    box-shadow: none;
+    background: transparent;
+    color: #9b7348;
+}
+.mode-option input:checked + .mode-option-body::after { transform: scaleX(1); }
+.mode-option:hover .mode-option-body::after { transform: scaleX(1); }
+
+/* 小螢幕操作列換行，不讓文字按鈕擠壓下拉欄位。 */
+@media (max-width: 640px) {
+    .select-row { flex-wrap: wrap; align-items: center; gap: 2px 12px; }
+    .select-row select { flex: 1 1 100%; width: 100%; }
+    .select-row .icon-button { flex: 0 0 auto; padding: 8px 5px; }
+    .board-actions { display: flex; gap: 4px 18px; justify-content: center; }
+    .board-actions .primary-button,
+    .board-actions .secondary-button,
+    .board-actions .quiet-button,
+    .board-actions .record-link { padding: 10px 5px; font-size: .83rem; }
+    .mode-options { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+/* v2.0｜慢慢軍火庫 SlowlySelect；宿主只設定外觀，仍以原生 select 當資料欄位。 */
+.select-row .slowly-select {
+    flex: 1 1 0;
+    width: 0;
+    min-width: 0;
+    --ss-bg: #213039;
+    --ss-text: #edf0e8;
+    --ss-border: rgba(214, 225, 217, .24);
+    --ss-hover: #334750;
+    --ss-selected-bg: #3c534f;
+    --ss-selected-text: #eff4e8;
+    --ss-focus: #c4aa7c;
+}
+.select-row .slowly-select-trigger {
+    min-height: 44px;
+    padding: 9px 10px 9px 14px;
+    border-width: 0 0 1px;
+    border-radius: 0;
+    letter-spacing: .02em;
+}
+.select-row .slowly-select-menu {
+    border-radius: 7px;
+    padding: 4px;
+    box-shadow: 0 18px 32px rgba(0,0,0,.28);
+    scrollbar-width: thin;
+}
+.select-row .slowly-select-option {
+    padding: 11px 12px;
+    border-bottom-color: rgba(255,255,255,.06);
+    font-size: .91rem;
+}
+@media (max-width: 640px) {
+    .select-row .slowly-select {
+        flex: 1 1 100%;
+        width: 100%;
+    }
+}
+
+
+/* v2.1｜非賓果牌區域改為無卡片外框的排版。
+   4×4 棋盤（.board-panel / .bingo-cell）外觀不變。 */
+.workbar,
+.empty-state {
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+}
+.workbar {
+    padding: 7px 2px 14px;
+    gap: 24px;
+    align-items: end;
+    margin-bottom: 22px;
+}
+.workbar-divider {
+    width: 0;
+    border: 0;
+    background: transparent;
+}
+.empty-state {
+    padding: 36px 10px 24px;
+}
+.select-row .slowly-select-menu {
+    border-radius: 0;
+    box-shadow: 0 12px 26px rgba(0, 0, 0, .20);
+}
+
+/* 模式選擇和自訂題目用乾淨的文字清單，不要一格一個卡片。 */
+.custom-topic-group {
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    overflow: visible;
+}
+.custom-topic-group summary {
+    background: transparent;
+    border: 0;
+    border-bottom: 1px solid #d0d9d0;
+    padding: 12px 5px;
+}
+.custom-topic-group[open] summary {
+    border-bottom: 1px solid #b8c8bb;
+}
+.custom-topic-list {
+    padding: 17px 5px 13px;
+}
+
+/* 對話框是必要的操作浮層，不再使用圓角卡片邊框。 */
+.app-dialog {
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+}
+.app-toast {
+    border: 0;
+    border-radius: 0;
+}
+@media (max-width: 640px) {
+    .workbar {
+        padding: 4px 5px 12px;
+        margin-bottom: 17px;
+    }
+    .empty-state {
+        padding: 31px 8px;
+    }
+}
+
+/* SlowlySelect 內的原生 select 僅作為資料欄位，不佔據可視布局或超出手機寬度。 */
+.select-row select.slowly-select-native {
+    position: absolute !important;
+    top: 0;
+    left: 0;
+    width: 1px !important;
+    height: 1px !important;
+    min-height: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: 0 !important;
+}

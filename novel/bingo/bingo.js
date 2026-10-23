@@ -1,5 +1,5 @@
 /*
- * 構思賓果｜功能核心 v1.7.0
+ * 構思賓果｜功能核心 v2.0.0
  * 負責題庫、小說／賓果牌／格子 UID、抽題、完成狀態、賓果判定、本機保存與 PNG 資料繪製。
  * 網頁介面與事件由 bingo_style.js 負責；共用功能只呼叫慢慢軍火庫的 HTTPS 零件。
  */
@@ -9,7 +9,7 @@
     const BOARD_SIZE = 4;
     const CELL_COUNT = BOARD_SIZE * BOARD_SIZE;
     const STORAGE_NAMESPACE = "sbs_story_bingo";
-    const VERSION = "1.7.0";
+    const VERSION = "2.0.0";
     const STORAGE_SCHEMA_VERSION = 2;
 
     const TOPIC_GROUPS = Object.freeze([
@@ -121,10 +121,7 @@
             "FictionStorage",
             "RandomId",
             "FictionShuffle",
-            "SlowlyRandom",
-            "SlowlyCanvasPNG",
-            "SlowlyPNGDownload",
-            "SlowlyCanvasWrappedText"
+            "SlowlyRandom"
         ];
         const missing = required.filter(name => !global[name]);
 
@@ -367,6 +364,7 @@
             novels: state.store.collection("novels", { idField: "novel_uid" }),
             boards: state.store.collection("boards", { idField: "board_uid" }),
             cells: state.store.collection("cells", { idField: "cell_uid" }),
+            recordDrafts: state.store.collection("record_drafts", { idField: "cell_uid" }),
             settings: state.store.collection("settings", { idField: "id" })
         };
 
@@ -443,6 +441,8 @@
         for (const board of boards) {
             for (const cell of state.cells.filter(item => item.board_uid === board.board_uid)) {
                 await state.collections.cells.remove(cell.cell_uid);
+                const draft = await state.collections.recordDrafts.get(cell.cell_uid);
+                if (draft) await state.collections.recordDrafts.remove(cell.cell_uid);
             }
             await state.collections.boards.remove(board.board_uid);
         }
@@ -559,6 +559,8 @@
 
         for (const cell of cells) {
             await state.collections.cells.remove(cell.cell_uid);
+            const draft = await state.collections.recordDrafts.get(cell.cell_uid);
+            if (draft) await state.collections.recordDrafts.remove(cell.cell_uid);
         }
         await state.collections.boards.remove(uid);
 
@@ -609,6 +611,32 @@
         emit("board-shuffled");
     }
 
+    async function updateCellContent(uid, content) {
+        ready();
+        const board = findCurrentBoard();
+        if (!board || !board.cell_uids.includes(uid)) {
+            throw new Error("找不到這張賓果牌的構思格子。");
+        }
+        if (typeof content !== "string") {
+            throw new TypeError("構思內容必須是文字。");
+        }
+
+        const record = await state.collections.cells.update(uid, { content });
+        state.cells = state.cells.map(cell =>
+            cell.cell_uid === uid ? record : cell
+        );
+        emit("cell-content-changed", { cell_uid: uid });
+        return record;
+    }
+
+    function requireExportWarehouse() {
+        const required = ["SlowlyCanvasPNG", "SlowlyPNGDownload", "SlowlyCanvasWrappedText"];
+        const missing = required.filter(name => !global[name]);
+        if (missing.length) {
+            throw new Error(`PNG 軍火庫載入失敗：${missing.join("、")}。`);
+        }
+    }
+
     function sizeForLines() {
         return BOARD_SIZE * 2 + 2;
     }
@@ -624,6 +652,7 @@
 
     async function buildCurrentBoardExportCanvas() {
         ready();
+        requireExportWarehouse();
         const { novel, board, cells, completed, total, lines } = currentSnapshot();
         if (!novel || !board || cells.length !== total) {
             throw new Error("請先選擇一張完整的賓果牌。");
@@ -800,6 +829,7 @@
         setActiveBoard,
         toggleCell,
         shuffleBoard,
+        updateCellContent,
         prepareCurrentBoardExport,
         downloadPreparedExport,
         exportCurrentBoardPng,
