@@ -11,7 +11,7 @@
 - 本機儲存採軍火庫 `FictionStorage.create({ namespace: "sbs_story_bingo" })`；依原生規則產生 `sbs_story_bingo:novels`、`sbs_story_bingo:boards`、`sbs_story_bingo:cells`、`sbs_story_bingo:settings`。
 - 軍火庫所有模組透過 HTTPS 絕對路徑載入，不在本專案複製共用函式。
 
-### 名稱均可選填（v1.5）
+### 名稱均可選填（v1.6）
 
 - 進入空白專案可以直接按「新增賓果」，不必先建立小說。
 - 按「產生賓果」時，若沒有目前小說，系統先建立一個名稱為 `構思賓果 YYYY-MM-DD` 的小說（日期取作者裝置的當地日期），然後建立賓果牌。

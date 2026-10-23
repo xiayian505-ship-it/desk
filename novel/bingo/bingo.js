@@ -1,5 +1,5 @@
 /*
- * 構思賓果｜功能核心 v1.5.0
+ * 構思賓果｜功能核心 v1.6.0
  * 負責題庫、小說／賓果牌／格子 UID、抽題、完成狀態、賓果判定、本機保存與 PNG 資料繪製。
  * 網頁介面與事件由 bingo_style.js 負責；共用功能只呼叫慢慢軍火庫的 HTTPS 零件。
  */
@@ -9,7 +9,7 @@
     const BOARD_SIZE = 4;
     const CELL_COUNT = BOARD_SIZE * BOARD_SIZE;
     const STORAGE_NAMESPACE = "sbs_story_bingo";
-    const VERSION = "1.5.0";
+    const VERSION = "1.6.0";
     const STORAGE_SCHEMA_VERSION = 2;
 
     const TOPIC_GROUPS = Object.freeze([
@@ -652,15 +652,9 @@
             context.fill();
         }
 
-        context.fillStyle = "#d6c4a3";
-        context.font = "500 27px system-ui, sans-serif";
-        context.fillText("STILLNESS BY SLOWLY  /  STORY BINGO", 125, 78);
-        context.fillStyle = "#fffefa";
-        context.font = '700 79px "Noto Sans TC", "Microsoft JhengHei", sans-serif';
-        context.fillText("構 思 賓 果", 120, 184);
         context.fillStyle = "#cfcbc2";
         context.font = '400 32px "Noto Sans TC", sans-serif';
-        context.fillText(novel.name.slice(0, 36), 124, 265);
+        context.fillText(novel.name.slice(0, 36), 124, 158);
 
         roundedRectangle(context, 113, 376, 1274, 1443, 30);
         context.fillStyle = "#fffefa";
@@ -751,7 +745,7 @@
         context.fillStyle = "#66706c";
         context.font = '400 24px "Noto Sans TC", sans-serif';
         context.textAlign = "right";
-        context.fillText("STILLNESS BY SLOWLY", 1350, 1770);
+        context.fillText("慢 慢 | Stillness by Slowly", 1350, 1770);
         context.textAlign = "left";
 
         const filename = `${normalizeName(novel.name, "小說")}_${normalizeName(board.name, "構思賓果")}.png`;
