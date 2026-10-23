@@ -1,5 +1,5 @@
 /*
- * 構思賓果｜功能核心 v1.6.0
+ * 構思賓果｜功能核心 v1.7.0
  * 負責題庫、小說／賓果牌／格子 UID、抽題、完成狀態、賓果判定、本機保存與 PNG 資料繪製。
  * 網頁介面與事件由 bingo_style.js 負責；共用功能只呼叫慢慢軍火庫的 HTTPS 零件。
  */
@@ -9,7 +9,7 @@
     const BOARD_SIZE = 4;
     const CELL_COUNT = BOARD_SIZE * BOARD_SIZE;
     const STORAGE_NAMESPACE = "sbs_story_bingo";
-    const VERSION = "1.6.0";
+    const VERSION = "1.7.0";
     const STORAGE_SCHEMA_VERSION = 2;
 
     const TOPIC_GROUPS = Object.freeze([
@@ -663,9 +663,6 @@
         context.fillStyle = "#2c343a";
         context.font = '700 40px "Noto Sans TC", sans-serif';
         context.fillText(board.name.slice(0, 38), 143, 443);
-        context.fillStyle = "#7b807e";
-        context.font = "500 27px system-ui, sans-serif";
-        context.fillText(`${modeLabel(board.mode)}  ·  ${completed}/${total} 完成  ·  ${lines.length}/${sizeForLines()} 連線`, 143, 493);
 
         const size = BOARD_SIZE;
         const cellWidth = 302;
