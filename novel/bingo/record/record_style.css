@@ -192,7 +192,7 @@ button:focus-visible, textarea:focus-visible, select:focus-visible, a:focus-visi
     letter-spacing: .03em;
 }
 
-/* 題目是一張純文字清單，而非 16 張獨立卡片。 */
+/* 構思是一張純文字清單，而非 16 張獨立卡片。 */
 .record-detail {
     border-bottom: 1px solid rgba(230, 238, 231, .15);
     background: transparent;
@@ -220,7 +220,7 @@ button:focus-visible, textarea:focus-visible, select:focus-visible, a:focus-visi
 .item-saved { color: #a9c4b2; }
 .record-summary::after { color: #9aaea4; }
 
-/* 展開後直接在題目下方書寫：沒有白色編輯卡片、沒有圓角框。 */
+/* 展開後直接在構思下方書寫：沒有白色編輯卡片、沒有圓角框。 */
 .record-editor {
     margin: 0 0 23px;
     padding: 4px 0 16px;
@@ -303,7 +303,7 @@ button:focus-visible, textarea:focus-visible, select:focus-visible, a:focus-visi
 .record-detail[open] {
     grid-column: 1 / -1;
 }
-/* 小螢幕仍維持兩欄，以兩行安放分類與題目，避免擠壓長文字。 */
+/* 小螢幕仍維持兩欄，以兩行安放分類與構思，避免擠壓長文字。 */
 @media (max-width: 620px) {
     .record-items {
         grid-template-columns: repeat(2, minmax(0, 1fr));

@@ -1371,7 +1371,7 @@ summary:focus-visible {
     box-shadow: 0 12px 26px rgba(0, 0, 0, .20);
 }
 
-/* 模式選擇和自訂題目用乾淨的文字清單，不要一格一個卡片。 */
+/* 模式選擇和自訂構思用乾淨的文字清單，不要一格一個卡片。 */
 .custom-topic-group {
     border: 0;
     border-radius: 0;

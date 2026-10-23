@@ -1,5 +1,5 @@
 /*
- * 構思賓果｜介面互動 v2.7.0
+ * 構思賓果｜介面互動 v2.8.0
  * 畫面繪製、視窗、操作事件與訊息回饋。遊戲資料與規則由 bingo.js 管理。
  * 共用視窗／Toast／效果直接使用慢慢軍火庫，不複製共用函式碼。
  */
@@ -125,8 +125,8 @@
             button.dataset.cellUid = cell.cell_uid;
             button.dataset.group = topic?.group_id || "unknown";
             button.setAttribute("aria-pressed", String(cell.completed === true));
-            button.setAttribute("aria-label", `${topic?.label || "未知題目"}，${cell.completed ? "已完成，點擊取消" : "未完成，點擊標記"}`);
-            button.title = `${group?.label || "構思項目"}｜${topic?.label || "未知題目"}`;
+            button.setAttribute("aria-label", `${topic?.label || "未知構思"}，${snapshot.cellClickMode === "record" ? "點擊開啟構思紀錄" : (cell.completed ? "已完成，點擊取消" : "未完成，點擊標記")}`);
+            button.title = `${group?.label || "構思項目"}｜${topic?.label || "未知構思"}`;
             button.disabled = ui.busy;
 
             if (winningPositions.has(position)) {
@@ -143,7 +143,7 @@
             }
             button.append(
                 createTextElement("span", "cell-category", group?.shortLabel || "構思"),
-                createTextElement("span", "cell-topic", topic?.label || "未知題目"),
+                createTextElement("span", "cell-topic", topic?.label || "未知構思"),
                 createTextElement("span", "cell-check", "")
             );
             fragment.append(button);
@@ -188,8 +188,9 @@
         $("lineCount").textContent = String(snapshot.lines.length);
         $("progressLabel").textContent = `${snapshot.completed} / ${snapshot.total}`;
         $("bingoGrid").dataset.completionStyle = snapshot.completionStyle;
+        $("bingoGrid").dataset.clickMode = snapshot.cellClickMode;
         for (const button of document.querySelectorAll(".completion-style-choice")) {
-            const selected = button.dataset.completionStyle === snapshot.completionStyle;
+            const selected = button.dataset.completionStyle === (snapshot.cellClickMode === "record" ? "record" : snapshot.completionStyle);
             button.setAttribute("aria-pressed", String(selected));
             button.classList.toggle("is-active", selected);
         }
@@ -217,7 +218,8 @@
 
     function buildCustomOptions() {
         const fragment = document.createDocumentFragment();
-        for (const group of core.groups) {
+        // 自訂賓果可以跨一般 36 項＋特殊 16 項混搭，固定／隨機抽題範圍不變。
+        for (const group of core.displayGroups) {
             const details = document.createElement("details");
             details.className = "custom-topic-group";
             details.open = group.id === "character";
@@ -435,11 +437,22 @@
         $("bingoGrid").addEventListener("click", event => {
             const target = event.target.closest("button[data-cell-uid]");
             if (!target || ui.busy) return;
+            const snapshot = core.snapshot();
+            if (snapshot.cellClickMode === "record") {
+                // 使用 UID 定位同名格子，交由 record/ 自動展開對應的構思。
+                const destination = new URL($("recordPageLink").href);
+                destination.searchParams.set("cell_uid", target.dataset.cellUid);
+                global.location.assign(destination.href);
+                return;
+            }
             perform(() => core.toggleCell(target.dataset.cellUid));
         });
         document.querySelectorAll(".completion-style-choice").forEach(button => {
             button.addEventListener("click", () => {
-                perform(() => core.setCompletionStyle(button.dataset.completionStyle));
+                const style = button.dataset.completionStyle;
+                perform(() => style === "record"
+                    ? core.setCellClickMode("record")
+                    : core.setCompletionStyle(style));
             });
         });
         $("shuffleBoard").addEventListener("click", () => perform(() => core.shuffleBoard(), "已重新排列"));

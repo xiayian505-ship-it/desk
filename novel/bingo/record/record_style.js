@@ -158,7 +158,7 @@
         category.textContent = group?.shortLabel || "構思";
         const title = document.createElement("span");
         title.className = "item-topic slowly-underline";
-        title.textContent = topic?.label || "未知題目";
+        title.textContent = topic?.label || "未知構思";
         const mark = document.createElement("span");
         mark.className = "item-saved";
         mark.textContent = cell.content ? "●" : "";
@@ -173,7 +173,7 @@
             ui.accordion = null;
         }
         ui.activeUid = null;
-        // 編輯器是唯一實例。重建題目清單前先移回容器，避免隨舊 details 被刪除。
+        // 編輯器是唯一實例。重建構思清單前先移回容器，避免隨舊 details 被刪除。
         const editor = $("recordEditor");
         if (editor) $("recordWorkspace").append(editor);
         const fragment = document.createDocumentFragment();
@@ -339,6 +339,14 @@
                 .map(id => global.SlowlySelect.create($(id)))
                 .filter(Boolean);
             render();
+            // 從主頁按格子進來時，只自動展開明確指定且屬於本賓果的格子。
+            const requestedUid = new URLSearchParams(global.location.search).get("cell_uid");
+            if (requestedUid && record.selectedCellUid() === requestedUid) {
+                await openEditor(requestedUid);
+                const detail = Array.from($("recordItems").querySelectorAll(".record-detail"))
+                    .find(item => item.dataset.accordionId === requestedUid);
+                detail?.scrollIntoView({ block: "start" });
+            }
         } catch (error) {
             showError(error);
         }

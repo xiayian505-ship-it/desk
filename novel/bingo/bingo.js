@@ -1,5 +1,5 @@
 /*
- * 構思賓果｜功能核心 v2.7.0
+ * 構思賓果｜功能核心 v2.8.0
  * 負責題庫、小說／賓果／格子 UID、抽題、完成狀態、賓果判定、本機保存與 PNG 資料繪製。
  * 網頁介面與事件由 bingo_style.js 負責；共用功能只呼叫慢慢軍火庫的 HTTPS 零件。
  */
@@ -9,7 +9,7 @@
     const BOARD_SIZE = 4;
     const CELL_COUNT = BOARD_SIZE * BOARD_SIZE;
     const STORAGE_NAMESPACE = "sbs_story_bingo";
-    const VERSION = "2.7.0";
+    const VERSION = "2.8.0";
     const STORAGE_SCHEMA_VERSION = 2;
 
     const TOPIC_GROUPS = Object.freeze([
@@ -144,6 +144,7 @@
         activeNovelUid: null,
         activeBoardUid: null,
         completionStyle: "normal",
+        cellClickMode: "complete",
         initialized: false
     };
 
@@ -242,7 +243,8 @@
             total: expectedCount,
             lines,
             percent: Math.round(completed / expectedCount * 100),
-            completionStyle: state.completionStyle
+            completionStyle: state.completionStyle,
+            cellClickMode: state.cellClickMode
         };
     }
 
@@ -274,7 +276,7 @@
 
     function randomArrayItem(items) {
         if (!items.length) {
-            throw new Error("找不到可供抽取的構思題目。");
+            throw new Error("找不到可供抽取的構思項目。");
         }
         return items[global.SlowlyRandom.int(0, items.length - 1)];
     }
@@ -317,7 +319,7 @@
             throw new Error("請先勾選至少一種構思項目。");
         }
         if (selections.length > CELL_COUNT) {
-            throw new Error(`一個賓果只有${CELL_COUNT}格，最多能勾選${CELL_COUNT}種不同題目。`);
+            throw new Error(`一個賓果只有${CELL_COUNT}格，最多能勾選${CELL_COUNT}種不同構思。`);
         }
 
         const seen = new Set();
@@ -327,7 +329,7 @@
         for (const selection of selections) {
             const topic = TOPIC_BY_ID.get(selection.topic_id);
             if (!topic || seen.has(selection.topic_id)) {
-                throw new Error("自訂題目有重複或不在36種題庫內。");
+                throw new Error("自訂構思重複，或不在一般及特殊構思清單內。");
             }
             seen.add(selection.topic_id);
 
@@ -349,7 +351,7 @@
             throw new Error(`目前已指定${result.length}格，超過${CELL_COUNT}格。`);
         }
         if (result.length < CELL_COUNT && automatic.length === 0) {
-            throw new Error(`目前只有${result.length}格；請把次數加到${CELL_COUNT}，或留一些題目次數空白交給系統補齊。`);
+            throw new Error(`目前只有${result.length}格；請把次數加到${CELL_COUNT}，或留一些構思的次數空白交給系統補齊。`);
         }
         while (result.length < CELL_COUNT) {
             result.push(randomArrayItem(automatic));
@@ -371,7 +373,8 @@
             schemaVersion: STORAGE_SCHEMA_VERSION,
             activeNovelUid: state.activeNovelUid,
             activeBoardUid: state.activeBoardUid,
-            completionStyle: state.completionStyle
+            completionStyle: state.completionStyle,
+            cellClickMode: state.cellClickMode
         };
         await state.collections.settings.upsert(record);
     }
@@ -429,6 +432,7 @@
         state.activeNovelUid = settings?.activeNovelUid || null;
         state.activeBoardUid = settings?.activeBoardUid || null;
         state.completionStyle = settings?.completionStyle === "electric" ? "electric" : "normal";
+        state.cellClickMode = settings?.cellClickMode === "record" ? "record" : "complete";
         restoreSelection();
         state.initialized = true;
         emit("initialized");
@@ -446,18 +450,39 @@
         if (style !== "normal" && style !== "electric") {
             throw new Error("未知的賓果完成格樣式。");
         }
-        if (state.completionStyle === style) return;
-        // 樣式是站內顯示偏好，不修改任何格子的 completed 或 UID。
-        // 儲存成功後才更新畫面，以免切換失敗卻顯示成已套用。
+        // 選「一般／流光」同時恢復勾選模式；從構思切回原本樣式也有效。
+        if (state.completionStyle === style && state.cellClickMode === "complete") return;
+        const previousStyle = state.completionStyle;
         await state.collections.settings.upsert({
             id: "app",
             schemaVersion: STORAGE_SCHEMA_VERSION,
             activeNovelUid: state.activeNovelUid,
             activeBoardUid: state.activeBoardUid,
-            completionStyle: style
+            completionStyle: style,
+            cellClickMode: "complete"
         });
         state.completionStyle = style;
-        emit("completion-style-changed");
+        state.cellClickMode = "complete";
+        emit(previousStyle === style ? "cell-click-mode-changed" : "completion-style-changed");
+    }
+
+    async function setCellClickMode(mode) {
+        ready();
+        if (mode !== "complete" && mode !== "record") {
+            throw new Error("未知的賓果操作模式。");
+        }
+        if (state.cellClickMode === mode) return;
+        // 構思模式只接管格子的點擊行為，不修改完成狀態或上次一般／流光外觀。
+        await state.collections.settings.upsert({
+            id: "app",
+            schemaVersion: STORAGE_SCHEMA_VERSION,
+            activeNovelUid: state.activeNovelUid,
+            activeBoardUid: state.activeBoardUid,
+            completionStyle: state.completionStyle,
+            cellClickMode: mode
+        });
+        state.cellClickMode = mode;
+        emit("cell-click-mode-changed");
     }
 
     async function createNovel(name) {
@@ -786,7 +811,7 @@
 
             context.fillStyle = cell.completed ? "#f7fff9" : "#202d31";
             context.font = '700 39px "Noto Sans TC", "Microsoft JhengHei", sans-serif';
-            const textLines = global.SlowlyCanvasWrappedText.buildLines(context, topic?.label || "未知題目", cellWidth - 34, 3);
+            const textLines = global.SlowlyCanvasWrappedText.buildLines(context, topic?.label || "未知構思", cellWidth - 34, 3);
             const lineHeight = 47;
             const top = y + cellHeight * .55 - (textLines.length - 1) * lineHeight / 2;
             textLines.forEach((line, lineIndex) => {
@@ -889,6 +914,7 @@
         toggleCell,
         shuffleBoard,
         setCompletionStyle,
+        setCellClickMode,
         updateCellContent,
         prepareCurrentBoardExport,
         downloadPreparedExport,

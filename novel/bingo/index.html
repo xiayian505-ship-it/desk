@@ -5,7 +5,7 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1, viewport-fit=cover" name="viewport"/>
 <meta content="#18242c" name="theme-color"/>
-<meta content="構思賓果｜小說寫作構思工具。4×4賓果、36種題目、固定／隨機／自訂賓果面與本機儲存。" name="description"/>
+<meta content="構思賓果｜小說寫作構思工具。4×4賓果、36項一般構思＋16項特殊構思、固定／隨機／自訂／特殊賓果與本機儲存。" name="description"/>
 <meta content="website" property="og:type"/>
 <meta content="構思賓果｜Stillness by Slowly" property="og:title"/>
 <meta content="讓故事慢慢成形。小說構思進度、自由抽題與自訂賓果。" property="og:description"/>
@@ -127,11 +127,12 @@
 <div class="progress-fill" id="progressFill">
 </div>
 </div>
-<div aria-label="已完成格外觀" class="completion-style-picker" role="group">
-<span class="completion-style-label">完成格</span>
+<div aria-label="賓果操作模式" class="completion-style-picker" role="group">
 <button aria-pressed="true" class="completion-style-choice slowly-underline is-active" data-completion-style="normal" id="completionStyleNormal" type="button">一般</button>
 <span aria-hidden="true" class="completion-style-divider">／</span>
 <button aria-pressed="false" class="completion-style-choice slowly-underline" data-completion-style="electric" id="completionStyleElectric" type="button">流光</button>
+<span aria-hidden="true" class="completion-style-divider">／</span>
+<button aria-pressed="false" class="completion-style-choice slowly-underline" data-completion-style="record" id="completionStyleRecord" type="button">構思</button>
 </div>
 <div class="board-stage" id="boardStage">
 <div aria-label="構思賓果" class="bingo-grid" id="bingoGrid" role="group">
@@ -230,7 +231,7 @@
 <div class="custom-editor" hidden="" id="customEditor">
 <div class="custom-head">
 <strong>
-       題目
+       構思
       </strong>
 <span id="customCounter" role="status">
        尚未選擇

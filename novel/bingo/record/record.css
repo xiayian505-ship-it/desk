@@ -13,7 +13,7 @@
     column-gap: clamp(12px, 3vw, 28px);
     align-items: stretch;
 }
-/* 開啟的構思題目橫跨兩欄，讓文字編輯區維持可閱讀的完整寬度。 */
+/* 開啟的構思構思橫跨兩欄，讓文字編輯區維持可閱讀的完整寬度。 */
 .record-detail[open] { grid-column: 1 / -1; }
 .record-detail { min-width: 0; }
 .record-summary { display: flex; align-items: center; cursor: pointer; list-style: none; }
