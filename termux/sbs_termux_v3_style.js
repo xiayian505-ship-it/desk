@@ -46,19 +46,38 @@
     const commandOutput = $("commandOutput");
     const singleCopies = $("singleCopies");
     const resultNote = $("resultNote");
-    const resultHint = document.querySelector(".result-hint");
+    const resultHint = document.querySelector("#resultArea .result-hint");
+    const downloadFolderWrap = $("downloadFolderWrap");
+    const downloadFolderName = $("downloadFolderName");
+    const downloadResultArea = $("downloadResultArea");
+    const downloadCommandOutput = $("downloadCommandOutput");
+    const downloadSingleCopies = $("downloadSingleCopies");
+    const downloadResultNote = $("downloadResultNote");
+    const downloadResultHint = $("downloadResultHint");
 
     let activeRepo = null;
     let scope = "whole";
+    let downloadScope = "whole";
     let latestCommands = [];
+    let latestDownloadCommands = [];
 
-    function clearResult() {
-      latestCommands = [];
-      commandOutput.value = "";
-      singleCopies.replaceChildren();
-      resultNote.hidden = true;
-      resultNote.textContent = "";
-      resultArea.hidden = true;
+    function clearResult(target = "both") {
+      if (target === "both" || target === "upload") {
+        latestCommands = [];
+        commandOutput.value = "";
+        singleCopies.replaceChildren();
+        resultNote.hidden = true;
+        resultNote.textContent = "";
+        resultArea.hidden = true;
+      }
+      if (target === "both" || target === "download") {
+        latestDownloadCommands = [];
+        downloadCommandOutput.value = "";
+        downloadSingleCopies.replaceChildren();
+        downloadResultNote.hidden = true;
+        downloadResultNote.textContent = "";
+        downloadResultArea.hidden = true;
+      }
     }
 
     function clearCurrentInput() {
@@ -76,6 +95,12 @@
       });
       folderWrap.hidden = true;
       folderName.value = "";
+      downloadScope = "whole";
+      document.querySelectorAll("[data-download-scope]").forEach(button => {
+        button.setAttribute("aria-pressed", String(button.dataset.downloadScope === "whole"));
+      });
+      downloadFolderWrap.hidden = true;
+      downloadFolderName.value = "";
       commitMessage.value = commitMessage.defaultValue;
       clearResult();
       clearFeedback();
@@ -169,21 +194,40 @@
           item.setAttribute("aria-pressed", String(item === button));
         });
         folderWrap.hidden = scope !== "folder";
-        clearResult();
+        clearResult("upload");
         clearFeedback();
       });
     });
-    folderName.addEventListener("input", clearResult);
-    commitMessage.addEventListener("input", clearResult);
+    document.querySelectorAll("[data-download-scope]").forEach(button => {
+      button.addEventListener("click", () => {
+        downloadScope = button.dataset.downloadScope;
+        document.querySelectorAll("[data-download-scope]").forEach(item => {
+          item.setAttribute("aria-pressed", String(item === button));
+        });
+        downloadFolderWrap.hidden = downloadScope !== "folder";
+        clearResult("download");
+        clearFeedback();
+      });
+    });
+    folderName.addEventListener("input", () => clearResult("upload"));
+    commitMessage.addEventListener("input", () => clearResult("upload"));
+    downloadFolderName.addEventListener("input", () => clearResult("download"));
 
-    function renderCommands(commands, isPartial = false) {
-      latestCommands = commands;
-      commandOutput.value = core.copyAllText(commands);
-      commandOutput.rows = Math.min(11, Math.max(4, commands.length * 2));
-      resultHint.textContent = commands.length === 1
+    function renderCommands(commands, isPartial = false, target = "upload") {
+      const isDownload = target === "download";
+      const output = isDownload ? downloadCommandOutput : commandOutput;
+      const copies = isDownload ? downloadSingleCopies : singleCopies;
+      const note = isDownload ? downloadResultNote : resultNote;
+      const hint = isDownload ? downloadResultHint : resultHint;
+      const area = isDownload ? downloadResultArea : resultArea;
+      if (isDownload) latestDownloadCommands = commands;
+      else latestCommands = commands;
+      output.value = core.copyAllText(commands);
+      output.rows = Math.min(13, Math.max(4, commands.length * 2));
+      hint.textContent = commands.length === 1
         ? "先確認上方指令，再按複製。"
         : "複製內容就是上方顯示的整段指令；使用 && 串接，前一步失敗就不繼續。";
-      singleCopies.replaceChildren();
+      copies.replaceChildren();
       for (const [index, item] of commands.entries()) {
         const card = document.createElement("div");
         card.className = "command-item";
@@ -202,17 +246,21 @@
         button.setAttribute("aria-label", `單獨複製：${item.label}`);
         button.addEventListener("click", () => copyText(command.textContent));
         header.append(label);
-        // 先顯示實際指令，再顯示複製按鈕。
         card.append(header, command, button);
-        singleCopies.appendChild(card);
+        copies.appendChild(card);
       }
-      resultNote.hidden = !isPartial;
-      resultNote.textContent = isPartial
-        ? "注意：指定資料夾只限制 git add 的範圍；若之前已暫存其他檔案，git commit 仍可能一併提交。執行前請看 git status。"
-        : "";
-      resultArea.hidden = false;
+      const noteText = isDownload
+        ? (isPartial
+          ? "注意：指定資料夾會以 GitHub main 的版本更新該路徑內檔案（可能包含刪除），但不會更新本機 HEAD。git status 可能顯示未提交變更，請確認後再執行其他 Git 操作。"
+          : "注意：只在手機工作區乾淨、目前分支是 main 時才繼續；以 --ff-only 更新，不會強制覆蓋或自動合併。")
+        : (isPartial
+          ? "注意：指定資料夾只限制 git add 的範圍；若之前已暫存其他檔案，git commit 仍可能一併提交。執行前請看 git status。"
+          : "");
+      note.hidden = !noteText;
+      note.textContent = noteText;
+      area.hidden = false;
       clearFeedback();
-      resultArea.scrollIntoView({ behavior: "smooth", block: "start" });
+      area.scrollIntoView({ behavior: "smooth", block: "start" });
     }
 
     $("generateUpload").addEventListener("click", () => {
@@ -227,6 +275,20 @@
         }), scope === "folder");
       } catch (error) {
         clearResult();
+        showFeedback(error.message, true);
+      }
+    });
+    $("generateDownload").addEventListener("click", () => {
+      try {
+        if (!activeRepo) throw new Error("請先選擇 Repo。");
+        renderCommands(core.makeCommands({
+          repo: activeRepo,
+          mode: "download",
+          scope: downloadScope,
+          folder: downloadFolderName.value
+        }), downloadScope === "folder", "download");
+      } catch (error) {
+        clearResult("download");
         showFeedback(error.message, true);
       }
     });
@@ -261,6 +323,10 @@
     $("copyAll").addEventListener("click", () => {
       if (!latestCommands.length) return;
       copyText(commandOutput.value);
+    });
+    $("copyAllDownload").addEventListener("click", () => {
+      if (!latestDownloadCommands.length) return;
+      copyText(downloadCommandOutput.value);
     });
   }
 

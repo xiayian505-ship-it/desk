@@ -16,7 +16,7 @@
 
   function normalizeFolder(value) {
     const path = String(value ?? "").trim();
-    if (!path) throw new Error("請輸入要上傳的資料夾，例如 資料夾/子資料夾/。");
+    if (!path) throw new Error("請輸入資料夾，例如 資料夾/子資料夾/。");
     if (path.startsWith("/") || path.startsWith("~") || path.includes("\\") || /[\x00-\x1f\x7f]/.test(path)) {
       throw new Error("請輸入 Repo 內的相對資料夾路徑，不要輸入手機完整路徑。");
     }
@@ -57,7 +57,36 @@
       return commands;
     }
 
-    if (mode !== "upload") throw new Error("目前只支援手機上傳到 GitHub。");
+    if (mode === "download") {
+      if (scope !== "whole" && scope !== "folder") throw new Error("下載範圍無效。");
+      // 全 Repo 使用安全快轉；指定資料夾只取回遠端檔案，不偷改其他資料夾或本機 HEAD。
+      commands.push(
+        {
+          label: "確認 main 分支",
+          command: `(test "$(git branch --show-current)" = main || { echo '目前不是 main 分支，已停止下載。' >&2; false; })`
+        },
+        {
+          label: "確認沒有未提交修改",
+          command: `(test -z "$(git status --porcelain)" || { git status --short; echo '手機 Repo 有尚未提交或未追蹤的檔案，已停止下載。' >&2; false; })`
+        }
+      );
+      if (scope === "whole") {
+        commands.push(
+          { label: "下載並快轉 main", command: "git pull --ff-only origin main" },
+          { label: "檢查下載結果", command: "git status" }
+        );
+      } else {
+        const target = shellQuote(normalizeFolder(folder));
+        commands.push(
+          { label: "取得 GitHub 最新 main", command: "git fetch origin main" },
+          { label: "只取回指定資料夾", command: `git restore --source=FETCH_HEAD --worktree -- ${target}` },
+          { label: "檢查取回的變更", command: "git status --short" }
+        );
+      }
+      return commands;
+    }
+
+    if (mode !== "upload") throw new Error("不支援的操作模式。");
 
     let add = "git add -A";
     if (scope === "folder") {
@@ -77,14 +106,14 @@
   }
 
   function copyAllText(commands) {
-    if (!Array.isArray(commands) || commands.length < 1 || commands.length > 5) {
-      throw new Error("每次最多產生五條指令。");
+    if (!Array.isArray(commands) || commands.length < 1 || commands.length > 6) {
+      throw new Error("每次最多產生六條指令。");
     }
     return commands.map(item => item.command).join(" && \\\n");
   }
 
   global.SbsTermuxV3 = Object.freeze({
-    version: "3.0.0",
+    version: "3.1.0",
     normalizeRepo,
     normalizeFolder,
     makeCommands,

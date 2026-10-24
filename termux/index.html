@@ -93,7 +93,40 @@
           </section>
         </section>
 
-        <section class="view-panel" data-view-panel="download" hidden aria-label="GitHub 上傳到手機"></section>
+        <section class="view-panel" data-view-panel="download" hidden aria-label="GitHub 上傳到手機">
+          <div class="upload-form">
+            <h2>下載範圍</h2>
+            <div class="scope-switch" role="group" aria-label="下載範圍">
+              <button type="button" data-download-scope="whole" aria-pressed="true">整個 Repo</button>
+              <button type="button" data-download-scope="folder" aria-pressed="false">指定資料夾</button>
+            </div>
+
+            <div id="downloadFolderWrap" class="field-row" hidden>
+              <label for="downloadFolderName">資料夾路徑（相對於 Repo）</label>
+              <input id="downloadFolderName" type="text" spellcheck="false" autocapitalize="off"
+                     autocomplete="off" placeholder="資料夾/子資料夾/">
+              <p class="form-help">與手機上傳使用同一種 Repo 相對路徑；不用填手機的完整路徑。</p>
+            </div>
+
+            <p class="form-help">適用於已在手機建立 Git 副本的 Repo，沿用 origin 的 SSH 連線與 main 分支；不修改 SSH 設定。</p>
+            <div class="action-row">
+              <button id="generateDownload" type="button" class="action-primary">產生下載指令</button>
+            </div>
+          </div>
+
+          <section id="downloadResultArea" class="result-area" aria-labelledby="downloadResultTitle" hidden>
+            <h2 id="downloadResultTitle">產生的指令</h2>
+            <p id="downloadResultNote" class="result-note" hidden></p>
+            <div id="downloadSingleCopies" class="command-list" aria-label="逐條下載指令預覽"></div>
+            <h3 class="combined-title">整段指令</h3>
+            <label class="sr-only" for="downloadCommandOutput">指令全文</label>
+            <textarea id="downloadCommandOutput" class="command-output" readonly spellcheck="false" rows="9"></textarea>
+            <div class="result-actions">
+              <button id="copyAllDownload" type="button" class="action-primary">複製全部</button>
+              <span id="downloadResultHint" class="result-hint">複製內容就是上方顯示的整段指令；使用 &amp;&amp; 串接，前一步失敗就不繼續。</span>
+            </div>
+          </section>
+        </section>
         <section class="view-panel" data-view-panel="reserve" hidden aria-label="備用"></section>
       </div>
     </div>
