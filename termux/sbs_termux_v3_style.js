@@ -54,12 +54,19 @@
     const downloadSingleCopies = $("downloadSingleCopies");
     const downloadResultNote = $("downloadResultNote");
     const downloadResultHint = $("downloadResultHint");
+    const githubOwner = $("githubOwner");
+    const cloneResultArea = $("cloneResultArea");
+    const cloneCommandOutput = $("cloneCommandOutput");
+    const cloneSingleCopies = $("cloneSingleCopies");
+    const cloneResultNote = $("cloneResultNote");
+    const cloneResultHint = $("cloneResultHint");
 
     let activeRepo = null;
     let scope = "whole";
     let downloadScope = "whole";
     let latestCommands = [];
     let latestDownloadCommands = [];
+    let latestCloneCommands = [];
 
     function clearResult(target = "both") {
       if (target === "both" || target === "upload") {
@@ -77,6 +84,14 @@
         downloadResultNote.hidden = true;
         downloadResultNote.textContent = "";
         downloadResultArea.hidden = true;
+      }
+      if (target === "both" || target === "clone") {
+        latestCloneCommands = [];
+        cloneCommandOutput.value = "";
+        cloneSingleCopies.replaceChildren();
+        cloneResultNote.hidden = true;
+        cloneResultNote.textContent = "";
+        cloneResultArea.hidden = true;
       }
     }
 
@@ -101,6 +116,7 @@
       });
       downloadFolderWrap.hidden = true;
       downloadFolderName.value = "";
+      githubOwner.value = "";
       commitMessage.value = commitMessage.defaultValue;
       clearResult();
       clearFeedback();
@@ -212,15 +228,18 @@
     folderName.addEventListener("input", () => clearResult("upload"));
     commitMessage.addEventListener("input", () => clearResult("upload"));
     downloadFolderName.addEventListener("input", () => clearResult("download"));
+    githubOwner.addEventListener("input", () => clearResult("clone"));
 
     function renderCommands(commands, isPartial = false, target = "upload") {
       const isDownload = target === "download";
-      const output = isDownload ? downloadCommandOutput : commandOutput;
-      const copies = isDownload ? downloadSingleCopies : singleCopies;
-      const note = isDownload ? downloadResultNote : resultNote;
-      const hint = isDownload ? downloadResultHint : resultHint;
-      const area = isDownload ? downloadResultArea : resultArea;
-      if (isDownload) latestDownloadCommands = commands;
+      const isClone = target === "clone";
+      const output = isClone ? cloneCommandOutput : (isDownload ? downloadCommandOutput : commandOutput);
+      const copies = isClone ? cloneSingleCopies : (isDownload ? downloadSingleCopies : singleCopies);
+      const note = isClone ? cloneResultNote : (isDownload ? downloadResultNote : resultNote);
+      const hint = isClone ? cloneResultHint : (isDownload ? downloadResultHint : resultHint);
+      const area = isClone ? cloneResultArea : (isDownload ? downloadResultArea : resultArea);
+      if (isClone) latestCloneCommands = commands;
+      else if (isDownload) latestDownloadCommands = commands;
       else latestCommands = commands;
       output.value = core.copyAllText(commands);
       output.rows = Math.min(13, Math.max(4, commands.length * 2));
@@ -249,7 +268,9 @@
         card.append(header, command, button);
         copies.appendChild(card);
       }
-      const noteText = isDownload
+      const noteText = isClone
+        ? "注意：若手機已有同名資料夾，指令會停止，不會覆蓋。clone 會使用 GitHub 預設分支；其他上傳／更新指令使用 main，請確認 Repo 預設分支為 main。"
+        : isDownload
         ? (isPartial
           ? "注意：指定資料夾會以 GitHub main 的版本更新該路徑內檔案（可能包含刪除），但不會更新本機 HEAD。git status 可能顯示未提交變更，請確認後再執行其他 Git 操作。"
           : "注意：只在手機工作區乾淨、目前分支是 main 時才繼續；以 --ff-only 更新，不會強制覆蓋或自動合併。")
@@ -292,6 +313,19 @@
         showFeedback(error.message, true);
       }
     });
+    $("generateClone").addEventListener("click", () => {
+      try {
+        if (!activeRepo) throw new Error("請先選擇 Repo。");
+        renderCommands(core.makeCommands({
+          repo: activeRepo,
+          mode: "clone",
+          owner: githubOwner.value
+        }), false, "clone");
+      } catch (error) {
+        clearResult("clone");
+        showFeedback(error.message, true);
+      }
+    });
     $("generateStatus").addEventListener("click", () => {
       try {
         if (!activeRepo) throw new Error("請先選擇 Repo。");
@@ -327,6 +361,10 @@
     $("copyAllDownload").addEventListener("click", () => {
       if (!latestDownloadCommands.length) return;
       copyText(downloadCommandOutput.value);
+    });
+    $("copyAllClone").addEventListener("click", () => {
+      if (!latestCloneCommands.length) return;
+      copyText(cloneCommandOutput.value);
     });
   }
 

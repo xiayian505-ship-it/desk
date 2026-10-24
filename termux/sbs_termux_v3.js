@@ -14,6 +14,14 @@
     return name;
   }
 
+  function normalizeOwner(value) {
+    const owner = String(value ?? "").trim();
+    if (!/^[A-Za-z0-9](?:[A-Za-z0-9-]{0,37}[A-Za-z0-9])?$/.test(owner)) {
+      throw new Error("請輸入 GitHub 帳號／組織名稱（英數字、連字號，不能包含網址或路徑）。");
+    }
+    return owner;
+  }
+
   function normalizeFolder(value) {
     const path = String(value ?? "").trim();
     if (!path) throw new Error("請輸入資料夾，例如 資料夾/子資料夾/。");
@@ -40,8 +48,27 @@
     return "'" + String(value).replace(/'/g, "'\\''") + "'";
   }
 
-  function makeCommands({ repo, mode = "upload", scope = "whole", folder = "", message = DEFAULT_COMMIT_MESSAGE }) {
+  function makeCommands({ repo, mode = "upload", scope = "whole", folder = "", message = DEFAULT_COMMIT_MESSAGE, owner = "" }) {
     const name = normalizeRepo(repo);
+    if (mode === "clone") {
+      const githubOwner = normalizeOwner(owner);
+      const directory = shellQuote(name);
+      const sshUrl = shellQuote(`git@github.com:${githubOwner}/${name}.git`);
+      return [
+        {
+          label: "確認手機儲存空間並建立專案目錄",
+          command: `(test -d ~/storage/shared || { echo '請先執行 termux-setup-storage 並授權儲存空間。' >&2; false; }) && mkdir -p ${REPO_ROOT}`
+        },
+        { label: "切換到專案目錄", command: `cd ${REPO_ROOT}` },
+        {
+          label: "確認手機沒有同名資料夾",
+          command: `(test ! -e ${directory} && test ! -L ${directory} || { echo '手機已有同名資料夾，已停止首次下載，避免覆蓋。' >&2; false; })`
+        },
+        { label: "透過 SSH 首次下載 Repo", command: `git clone -- ${sshUrl} ${directory}` },
+        { label: "信任手機 Repo 目錄", command: `git config --global --add safe.directory ${shellQuote(`${SAFE_REPO_ROOT}/${name}`)}` },
+        { label: "檢查下載完成的 Repo", command: `git -C ${directory} status` }
+      ];
+    }
     if (mode === "trust") {
       return [{
         label: "設定信任目錄",
@@ -113,8 +140,9 @@
   }
 
   global.SbsTermuxV3 = Object.freeze({
-    version: "3.1.0",
+    version: "3.2.0",
     normalizeRepo,
+    normalizeOwner,
     normalizeFolder,
     makeCommands,
     copyAllText

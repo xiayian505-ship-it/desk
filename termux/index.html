@@ -46,6 +46,7 @@
           <button type="button" role="tab" data-view-target="before" aria-selected="false">開始之前</button>
           <button type="button" role="tab" data-view-target="upload" aria-selected="true">手機上傳到 GitHub</button>
           <button type="button" role="tab" data-view-target="download" aria-selected="false">GitHub 上傳到手機</button>
+          <button type="button" role="tab" data-view-target="clone" aria-selected="false">首次下載 Repo</button>
           <button type="button" role="tab" data-view-target="reserve" aria-selected="false">備用</button>
         </nav>
 
@@ -124,6 +125,34 @@
             <div class="result-actions">
               <button id="copyAllDownload" type="button" class="action-primary">複製全部</button>
               <span id="downloadResultHint" class="result-hint">複製內容就是上方顯示的整段指令；使用 &amp;&amp; 串接，前一步失敗就不繼續。</span>
+            </div>
+          </section>
+        </section>
+        <section class="view-panel" data-view-panel="clone" hidden aria-label="首次下載 Repo">
+          <div class="upload-form">
+            <h2>手機還沒有 Repo／第一次下載</h2>
+            <div class="field-row">
+              <label for="githubOwner">GitHub Repo 擁有者（帳號或組織名稱）</label>
+              <input id="githubOwner" type="text" spellcheck="false" autocapitalize="off"
+                     autocomplete="off" placeholder="例如：your-github-account">
+              <p class="form-help">填寫 GitHub 上的帳號或組織名稱；Repo 名稱使用頁面上方選擇的名稱。</p>
+            </div>
+            <p class="form-help">使用 SSH（git@github.com），下載整個 Repo 到手機的 github_projects 資料夾；首次使用前請先在 Termux 設定 SSH 金鑰與儲存空間權限。</p>
+            <div class="action-row">
+              <button id="generateClone" type="button" class="action-primary">產生首次下載指令</button>
+            </div>
+          </div>
+
+          <section id="cloneResultArea" class="result-area" aria-labelledby="cloneResultTitle" hidden>
+            <h2 id="cloneResultTitle">產生的指令</h2>
+            <p id="cloneResultNote" class="result-note" hidden></p>
+            <div id="cloneSingleCopies" class="command-list" aria-label="逐條首次下載指令預覽"></div>
+            <h3 class="combined-title">整段指令</h3>
+            <label class="sr-only" for="cloneCommandOutput">指令全文</label>
+            <textarea id="cloneCommandOutput" class="command-output" readonly spellcheck="false" rows="9"></textarea>
+            <div class="result-actions">
+              <button id="copyAllClone" type="button" class="action-primary">複製全部</button>
+              <span id="cloneResultHint" class="result-hint">複製內容就是上方顯示的整段指令；使用 &amp;&amp; 串接，前一步失敗就不繼續。</span>
             </div>
           </section>
         </section>
