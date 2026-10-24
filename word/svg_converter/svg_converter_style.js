@@ -35,6 +35,11 @@
     element.dataset.error = String(isError);
   }
 
+  function selectedIcoSizes() {
+    return Array.from(document.querySelectorAll("#ico-size-box input:checked"))
+      .map(input => Number(input.value));
+  }
+
   function settings() {
     return {
       width: byId("export-width").value,
@@ -42,7 +47,8 @@
       fps: byId("animation-fps").value,
       stillTime: byId("still-time").value,
       transparent: byId("transparent-background").checked,
-      background: byId("background-color").value
+      background: byId("background-color").value,
+      icoSizes: selectedIcoSizes()
     };
   }
 
@@ -65,11 +71,24 @@
       `MP4：${mime.mp4 ? "此瀏覽器支援" : "此瀏覽器不支援"}`,
       `WebM：${mime.webm ? "此瀏覽器支援" : "此瀏覽器不支援"}`
     ].join("　｜　");
+
+    const hasIcoSize = selectedIcoSizes().length > 0;
+
     for (const button of document.querySelectorAll("[data-download-format]")) {
       const format = button.dataset.downloadFormat;
-      const supported = format === "mp4" ? !!mime.mp4 : format === "webm" ? !!mime.webm : true;
+      const supported = format === "mp4"
+        ? !!mime.mp4
+        : format === "webm"
+          ? !!mime.webm
+          : format === "ico"
+            ? hasIcoSize
+            : true;
       button.disabled = exporting || !loaded || !supported;
-      button.title = supported ? "" : `目前瀏覽器無法錄製 ${format.toUpperCase()}`;
+      if (format === "ico" && !hasIcoSize) {
+        button.title = "請至少勾選一個 ICO 尺寸";
+      } else {
+        button.title = supported ? "" : `目前瀏覽器無法錄製 ${format.toUpperCase()}`;
+      }
     }
   }
 
@@ -130,6 +149,8 @@
       let result;
       if (format === "png") {
         result = await global.SlowlySVGConverter.exportPNG(settings(), progress);
+      } else if (format === "ico") {
+        result = await global.SlowlySVGConverter.exportICO(settings(), progress);
       } else if (format === "gif") {
         result = await global.SlowlySVGConverter.exportGIF(settings(), progress);
       } else {
@@ -162,6 +183,9 @@
       if (loaded && !exporting) global.SlowlySVGConverter.replay();
     });
     byId("export-width").addEventListener("input", refreshSize);
+    for (const checkbox of document.querySelectorAll("#ico-size-box input")) {
+      checkbox.addEventListener("change", updateAvailableFormats);
+    }
     for (const button of document.querySelectorAll("[data-download-format]")) {
       button.addEventListener("click", () => download(button.dataset.downloadFormat));
     }

@@ -464,6 +464,85 @@
     });
   }
 
+  function normalizeIcoSizes(rawSizes) {
+    if (!Array.isArray(rawSizes) || rawSizes.length === 0) {
+      throw new Error("請至少勾選一個 ICO 尺寸。");
+    }
+
+    const validSizes = new Set([16, 24, 32, 48, 64, 128, 256]);
+    const uniqueSizes = [];
+
+    for (const value of rawSizes) {
+      const size = Number(value);
+      if (!Number.isInteger(size) || !validSizes.has(size)) {
+        throw new Error("ICO 尺寸只支援 16、24、32、48、64、128、256。");
+      }
+      if (!uniqueSizes.includes(size)) {
+        uniqueSizes.push(size);
+      }
+    }
+
+    return uniqueSizes.sort((left, right) => left - right);
+  }
+
+  async function exportICO(settings, updateProgress = () => {}) {
+    if (!global.SlowlyCanvasPNG?.toBlob) {
+      throw new Error("PNG 軍火庫零件尚未載入，請確認網路是否正常。");
+    }
+    if (!global.SlowlyICOEncoder?.encode) {
+      throw new Error("ICO Encoder 軍火庫零件尚未載入，請確認網路是否正常。");
+    }
+
+    const config = normalizeSettings(settings);
+    const iconSizes = normalizeIcoSizes(settings.icoSizes);
+
+    return withinExport(async animations => {
+      const pngEntries = [];
+
+      for (let index = 0; index < iconSizes.length; index++) {
+        const size = iconSizes[index];
+        const iconConfig = {
+          ...config,
+          width: size,
+          height: size
+        };
+        const { canvas, context } = createCanvas(iconConfig);
+        seek(config.stillTime, animations);
+        const snapshot = freezeCurrentFrame();
+        const image = await imageFromSVG(snapshot);
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        if (!config.transparent) {
+          context.fillStyle = config.background;
+          context.fillRect(0, 0, canvas.width, canvas.height);
+        }
+        const scale = Math.min(size / sourceWidth, size / sourceHeight);
+        const drawWidth = sourceWidth * scale;
+        const drawHeight = sourceHeight * scale;
+        const drawX = (size - drawWidth) / 2;
+        const drawY = (size - drawHeight) / 2;
+        context.drawImage(image, drawX, drawY, drawWidth, drawHeight);
+        const pngBlob = await global.SlowlyCanvasPNG.toBlob(canvas);
+        if (!pngBlob.size) {
+          throw new Error(`ICO 尺寸 ${size}×${size} 的 PNG 輸出檔案為空。`);
+        }
+        const pngData = new Uint8Array(await pngBlob.arrayBuffer());
+        pngEntries.push({ size, data: pngData });
+        canvas.width = canvas.height = 0;
+        updateProgress((index + 1) / Math.max(1, iconSizes.length));
+        await sleep(0);
+      }
+
+      const blob = global.SlowlyICOEncoder.encode(pngEntries);
+      if (!blob.size) {
+        throw new Error("ICO 輸出檔案為空。");
+      }
+      const filename = `${fileBase}_${config.transparent ? "透明" : "實色"}_${iconSizes.join('-')}.ico`;
+      saveBlob(blob, filename);
+      updateProgress(1);
+      return { filename, bytes: blob.size };
+    });
+  }
+
   async function exportGIF(settings, updateProgress = () => {}) {
     if (!global.SlowlySVGConverterGIF?.encode) {
       throw new Error("找不到本專案的 GIF 編碼器。");
@@ -599,6 +678,7 @@
     getSize,
     getSupportedFormats,
     exportPNG,
+    exportICO,
     exportGIF,
     exportVideo
   });

@@ -14,23 +14,23 @@
 
 - `index.html`：頁面語意結構及軍火庫 HTTPS 引用。
 - `svg_converter.css`：預覽舞台／進度／拖曳狀態等功能樣式。
-- `svg_converter.js`：SVG 解析、動畫影格擷取及圖片／影片匯出；**未更動**。
+- `svg_converter.js`：SVG 解析、動畫影格擷取及圖片／影片／ICO 匯出。
 - `svg_converter_style.css`：轉檔器 UI 視覺、手機排版。
-- `svg_converter_style.js`：選檔、範例、設定及操作互動；**未更動**。
+- `svg_converter_style.js`：選檔、範例、設定及操作互動，包含下載按鈕與 ICO 尺寸勾選。
 - `svg_gif_encoder.js`：專用 GIF 編碼器；**未更動，尚未進軍火庫**。
 
-其他樣式直接使用上層 `../word_style.css`，不複製軍火庫也不修改其他 36 款藝術字的樣式。
+其他樣式直接使用上層 `../word_style.css`，不複製軍火庫也不修改其他藝術字作品的樣式。
 
 ## 軍火庫引用
 
 直接引用 `https://lib.stillnessbyslowly.com/`：
 
-- `Image/png/canvas_png.js`、`Image/png/png_download.js`
+- `Image/png/canvas_png.js`、`Image/png/png_download.js`、`Image/ico/ico_encoder.js`
 - `data/blob/blob_url.js`、`data/file/filename_sanitize.js`
 - `video/recording/mime_type.js`、`video/recording/media_recorder.js`、`video/recording/recorded_chunks.js`
 
 ## 功能與限制
 
-支援本機載入／拖曳／貼上 SVG；預覽後可選擇 PNG、GIF、WebM、MP4。GIF 對半透明的保留有限，MP4／WebM 使用實色背景；影片輸出取決於瀏覽器支援的錄影格式。轉檔期間請保持分頁開啟及前景。SVG 的特殊動畫、外部字型與濾鏡可能無法完整保留。
+支援本機載入／拖曳／貼上 SVG；預覽後可選擇 PNG、ICO、GIF、WebM、MP4。GIF 對半透明的保留有限，MP4／WebM 使用實色背景；影片輸出取決於瀏覽器支援的錄影格式。轉檔期間請保持分頁開啟及前景。SVG 的特殊動畫、外部字型與濾鏡可能無法完整保留。
 
-PNG／GIF／影片能否在你的三星手機上順利下載與播放，仍以實際部署操作為驗收準則；本次沒有修改任何轉檔演算法。
+PNG／ICO／GIF／影片能否在你的三星手機上順利下載與播放，仍以實際部署操作為驗收準則；本次新增 ICO 輸出，沿用既有 SVG→Canvas 的畫格擷取流程，再把多尺寸 PNG 封裝成單一 ICO。

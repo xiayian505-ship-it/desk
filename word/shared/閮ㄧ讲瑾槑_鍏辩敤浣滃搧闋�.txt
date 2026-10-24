@@ -1,0 +1,35 @@
+慢慢藝術字｜作品頁共用 UI｜GitHub Pages 目錄修正版 v1.1
+
+【故障原因】
+上一包把共用腳本放到 word/_shared/word_page.js。
+GitHub Pages 的預設 Jekyll 發布流程會忽略底線（_）開頭的資料夾。
+33 個作品頁引用不到共用腳本，因為 HTML 只保留不可見的 template，造成整頁空白。
+本版已把目錄改成 word/shared/，並同步更新全部 33 款 index.html 的引用網址。
+不變更 33 款藝術字繪圖規則、特效、下載函式與版型。
+
+【手機全覆蓋方法】
+1. 解壓本 ZIP。這包仍是完整 word/ 資料夾，直接覆蓋到 desk/word/。
+2. 在手機檔案管理器手動刪除原有的 desk/word/_shared/ 整個舊目錄（3 個檔案）。
+   ※這是清除舊檔用；不刪也不會妨礙新版 shared/ 運作，但 Git 會留下無用資料夾。
+3. 用原本的 Termux 同步 Git，推送後等 GitHub Pages 部署完成。
+4. 用新的瀏覽器或無痕模式打開作品頁；確認標題、輸入、預覽和下載按鈕已出現。
+
+【需手動刪除：1 個目錄】
+  word/_shared/
+  ├── README.md
+  ├── word_page.js
+  └── 部署說明_共用作品頁.txt
+※不要刪除 word/shared/（這是新的共用 UI）。
+
+【更改範圍】
+全部 33 個 word/<款式>/index.html：只將 ../_shared/word_page.js 更正為 ../shared/word_page.js。
+全部作品 _style.js：注釋內的引用路徑一併更新（沒有更動作品設定或特效）。
+word/shared/ ：由舊 _shared/ 原封轉移，更正註解和說明文件。
+所有其他作品繪圖、模板、HTML 結構與原下載規則沿用前包。
+
+【驗證】
+已靜態核對 33 款引用 ../shared/word_page.js 且新檔存在；
+用本地測試檢查共用 UI 生成、輸入與切換，正式 GitHub Pages CDN 的完整下載仍需部署後測試。
+
+【發現其餘問題時】
+提供有問題的作品網址、畫面或錯誤訊息；下一步逐款修，不會擅自改動藝術字。

@@ -376,3 +376,22 @@
     flex: 1 1 140px;
   }
 }
+
+
+.ico-size-field {
+  margin-top: 20px;
+}
+
+.ico-size-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 16px;
+  margin-top: 8px;
+}
+
+.ico-size-options label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.84rem;
+}
