@@ -168,8 +168,8 @@
           <circle cx="0" cy="-106" r="5.5" fill="#13232e" stroke="#b5bcb4" stroke-width="1.7"/>
           <path d="M-22 -101 L20 -103 L25 12 L5 4 L-10 21 L-21 8 Z"
             fill="url(#ill-fate-seal-paper)" stroke="#27343b" stroke-width="3"/>
-          <path d="M-12 -86 L12 -86 M-8 -75 L9 -68 L-10 -59 L8 -50 L-6 -40
-            M0 -27 V-4 M-11 -13 H12" fill="none" stroke="#39454b" stroke-width="2.2" opacity=".87"/>
+          <path d="M-12 -88 H12 M-12 -72 H12 M-12 -56 H12
+            M0 -34 V-10 M-12 -22 H12" fill="none" stroke="#39454b" stroke-width="2.2" opacity=".87"/>
           <path d="M-14 -94 L-14 -30 M15 -30 L16 -4" stroke="#e7eee3" stroke-width="1" opacity=".62"/>
           <path d="M-9 15 L-7 36 M8 7 L12 28" stroke="#72858b" stroke-width="1.4"/>
         </g>
