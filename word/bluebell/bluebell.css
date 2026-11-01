@@ -1,0 +1,44 @@
+/* 靜默餘響：僅限定作品展示舞台；下載作品由 bluebell_template.js 完整繪製。 */
+.bluebell-presentation {
+  min-width: 0;
+  padding: 20px;
+  border: 1px solid rgba(102, 123, 151, .26);
+  background: linear-gradient(130deg, #f3f6fa 0%, #e8eff4 100%);
+}
+.bluebell-stage {
+  display: grid;
+  position: relative;
+  isolation: isolate;
+  place-items: center;
+  min-height: 490px;
+  margin: 0;
+  overflow: hidden;
+  border: 1px solid rgba(110, 134, 158, .25);
+  background: #eaf0f4;
+}
+.bluebell-grid {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-conic-gradient(
+    rgba(147, 164, 183, .13) 0% 25%,
+    transparent 0% 50%
+  ) 0 0 / 22px 22px;
+}
+.bluebell-stage .art-image {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: min(100%, 550px);
+  height: auto;
+  max-height: min(73vh, 780px);
+  padding: 8px;
+  object-fit: contain;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+@media (max-width: 650px) {
+  .bluebell-presentation { padding: 12px; }
+  .bluebell-stage { min-height: 410px; }
+  .bluebell-stage .art-image { max-height: 610px; }
+}

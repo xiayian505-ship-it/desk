@@ -5,6 +5,16 @@
  */
 window.SlowlyWordIndex = [
   {
+    "code": "bluebell",
+    "title": "靜默餘響",
+    "subtitle": "Bluebell Lettering",
+    "phrase": "靜默餘響",
+    "desc": "藍紫色鈴花沿霧藍字影低垂，灰綠花枝與銀白微光相映。細線在字間漸隱，留下安靜而悠長的餘響。",
+    "keywords": ["靜默餘響", "Bluebell", "Bluebell Lettering", "藍鈴花", "英國藍鈴花", "鈴花", "花枝", "霧藍", "餘響", "回聲", "消散", "銀白", "直式", "橫式", "動態 SVG"],
+    "href": "https://desk.stillnessbyslowly.com/word/bluebell/index.html",
+    "visual": "bluebell"
+  },
+  {
     "code": "asterism",
     "title": "星象萬千",
     "subtitle": "Asterism Lettering",
