@@ -4,6 +4,32 @@
  * 路徑 word/shared/，屬宿主共用 UI，不是軍火庫複製品。
  */
 (function (global) {
+  // defer 腳本執行期間 document.currentScript 才有值；先記下路徑，
+  // 之後才能從任一款作品頁可靠地載入相鄰的共用匯出模組。
+  const backgroundModuleURL = document.currentScript?.src
+    ? new URL('word_background.js', document.currentScript.src).href
+    : null;
+  let backgroundLoadPromise = null;
+  function loadBackgroundModule() {
+    if (global.SlowlyWordBackground) return Promise.resolve(global.SlowlyWordBackground);
+    if (!backgroundLoadPromise) {
+      backgroundLoadPromise = new Promise((resolve, reject) => {
+        if (!backgroundModuleURL) {
+          reject(new Error('無法定位背景 PNG 共用模組。'));
+          return;
+        }
+        const script = document.createElement('script');
+        script.src = backgroundModuleURL;
+        script.onload = () => global.SlowlyWordBackground
+          ? resolve(global.SlowlyWordBackground)
+          : reject(new Error('背景 PNG 模組沒有完成初始化。'));
+        script.onerror = () => reject(new Error('背景 PNG 模組載入失敗，請檢查 shared/word_background.js 是否已部署。'));
+        document.head.appendChild(script);
+      });
+    }
+    return backgroundLoadPromise;
+  }
+
   const htmlEscape = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
 
   function initialize() {
@@ -32,13 +58,45 @@
           <h2 id="word-preview-title" class="word-section-title">作品預覽</h2>
           <div id="word-art-stage-slot"></div>
         </section>
+        <section class="word-background-settings" aria-labelledby="word-background-title">
+          <h2 id="word-background-title" class="word-section-title">背景設定</h2>
+          <div class="word-background-modes" role="group" aria-label="預覽背景模式">
+            <button type="button" class="word-text-button" data-background-mode="transparent" aria-pressed="true">透明</button>
+            <button type="button" class="word-text-button" data-background-mode="solid" aria-pressed="false">單色</button>
+            <button type="button" class="word-text-button" data-background-mode="contrast" aria-pressed="false">撞色</button>
+            <button type="button" class="word-text-button" data-background-mode="gradient" aria-pressed="false">漸層</button>
+          </div>
+          <div class="word-background-options">
+            <label class="word-background-option" id="word-background-color-a-label" hidden>顏色 A
+              <input id="word-background-color-a" type="color" value="#e56c72" aria-label="背景顏色 A">
+            </label>
+            <label class="word-background-option" id="word-background-color-b-label" hidden>顏色 B
+              <input id="word-background-color-b" type="color" value="#4678a8" aria-label="背景顏色 B">
+            </label>
+            <label class="word-background-option" id="word-background-direction-label" hidden>方向
+              <select id="word-background-direction" aria-label="背景方向">
+                <option value="horizontal">左右（0°）</option>
+                <option value="diagonal">對角（45°）</option>
+                <option value="vertical" selected>上下（90°）</option>
+                <option value="reverseDiagonal">反向對角（135°）</option>
+              </select>
+            </label>
+          </div>
+        </section>
         <section class="word-exports" aria-labelledby="word-exports-title">
           <h2 id="word-exports-title" class="word-section-title">下載作品</h2>
           <div class="word-downloads">
-            <button type="button" id="download-svg" class="word-text-button">SVG</button>
-            <button type="button" id="download-png" class="word-text-button">透明 PNG</button>
-            <button type="button" id="download-cover" class="word-text-button">書封 PNG</button>
-            <button type="button" id="download-animated-svg" class="word-text-button" disabled title="本款動態 SVG 尚未製作">動態 SVG</button>
+            <div class="word-download-row word-download-original" role="group" aria-label="原有下載格式">
+              <button type="button" id="download-svg" class="word-text-button">SVG</button>
+              <button type="button" id="download-png" class="word-text-button">透明 PNG</button>
+              <button type="button" id="download-cover" class="word-text-button">書封 PNG</button>
+              <button type="button" id="download-animated-svg" class="word-text-button" disabled title="本款動態 SVG 尚未製作">動態 SVG</button>
+            </div>
+            <div class="word-download-row word-download-background" role="group" aria-label="背景 PNG 格式">
+              <button type="button" id="download-solid-png" class="word-text-button" disabled>單色 PNG</button>
+              <button type="button" id="download-contrast-png" class="word-text-button" disabled>撞色 PNG</button>
+              <button type="button" id="download-gradient-png" class="word-text-button" disabled>漸層 PNG</button>
+            </div>
           </div>
           <p id="download-status" class="word-download-status" role="status" aria-live="polite"></p>
           <div class="word-visually-hidden" aria-hidden="true">
@@ -74,7 +132,20 @@
       svg: document.getElementById('download-svg'),
       png: document.getElementById('download-png'),
       cover: document.getElementById('download-cover'),
-      animated: document.getElementById('download-animated-svg')
+      animated: document.getElementById('download-animated-svg'),
+      solid: document.getElementById('download-solid-png'),
+      contrast: document.getElementById('download-contrast-png'),
+      gradient: document.getElementById('download-gradient-png')
+    };
+    const backgroundModeButtons = Array.from(document.querySelectorAll('[data-background-mode]'));
+    const backgroundColorA = document.getElementById('word-background-color-a');
+    const backgroundColorB = document.getElementById('word-background-color-b');
+    const backgroundDirection = document.getElementById('word-background-direction');
+    const backgroundOptionsContainer = document.querySelector('.word-background-options');
+    const backgroundOptions = {
+      colorA: document.getElementById('word-background-color-a-label'),
+      colorB: document.getElementById('word-background-color-b-label'),
+      direction: document.getElementById('word-background-direction-label')
     };
     if (!vertical || !image || !field) {
       status.textContent = '作品產生器尚未載入，請檢查軍火庫 HTTPS 引用與網路連線。';
@@ -88,6 +159,9 @@
     let current = '';
     let busy = false;
     let composing = false;
+    let backgroundMode = 'transparent';
+    let backgroundModule = global.SlowlyWordBackground || null;
+    let backgroundError = null;
     let previewController = typeof art.createPreview === 'function' && settings.previewMode === 'controller'
       ? art.createPreview(image) : null;
     let previewURL = null;
@@ -116,6 +190,65 @@
       buttons.animated.disabled = busy || !current || !hasAnimation;
       buttons.animated.title = hasAnimation ? '' : '本款動態 SVG 尚未製作';
       buttons.animated.setAttribute('aria-label', hasAnimation ? '下載動態 SVG' : '動態 SVG 尚未製作，暫不可下載');
+      for (const kind of ['solid', 'contrast', 'gradient']) {
+        buttons[kind].disabled = busy || !current || !backgroundModule || typeof art.generateSVG !== 'function';
+        buttons[kind].title = backgroundError ? backgroundError.message : '';
+      }
+    }
+
+    const backgroundSettings = mode => ({
+      mode,
+      colorA: backgroundColorA.value,
+      colorB: backgroundColorB.value,
+      direction: backgroundDirection.value
+    });
+    function updateBackgroundPreview() {
+      const colored = backgroundMode !== 'transparent' && !!backgroundModule;
+      image.classList.toggle('word-background-enabled', colored);
+      if (!colored) {
+        image.style.removeProperty('background-image');
+        image.style.removeProperty('background-size');
+        return;
+      }
+      image.style.backgroundImage = backgroundModule.previewCSS(backgroundSettings(backgroundMode));
+      updateBackgroundSize();
+    }
+    function updateBackgroundSize() {
+      if (!image.classList.contains('word-background-enabled')) return;
+      // object-fit: contain 可留下邊帶；背景只鋪 SVG 真正顯示的比例範圍。
+      const style = getComputedStyle(image);
+      const width = image.clientWidth - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight);
+      const height = image.clientHeight - parseFloat(style.paddingTop) - parseFloat(style.paddingBottom);
+      const sourceWidth = image.naturalWidth || Number(image.getAttribute('width')) || 840;
+      const sourceHeight = image.naturalHeight || Number(image.getAttribute('height')) || 1200;
+      if (width <= 0 || height <= 0 || !sourceWidth || !sourceHeight) return;
+      const scale = Math.min(width / sourceWidth, height / sourceHeight);
+      image.style.backgroundSize = `${sourceWidth * scale}px ${sourceHeight * scale}px`;
+    }
+    function chooseBackgroundMode(mode) {
+      if (!['transparent', 'solid', 'contrast', 'gradient'].includes(mode)) return;
+      backgroundMode = mode;
+      backgroundModeButtons.forEach(button => {
+        button.setAttribute('aria-pressed', String(button.dataset.backgroundMode === mode));
+      });
+      backgroundOptionsContainer.hidden = mode === 'transparent';
+      backgroundOptions.colorA.hidden = mode === 'transparent';
+      backgroundOptions.colorB.hidden = mode === 'transparent' || mode === 'solid';
+      backgroundOptions.direction.hidden = mode === 'transparent' || mode === 'solid';
+      updateBackgroundPreview();
+      if (current) image.alt = `${current}${orientation === 'horizontal' ? '橫式' : '直式'}${settings.title}藝術字（${{transparent:'透明',solid:'單色',contrast:'撞色',gradient:'漸層'}[mode]}背景預覽）`;
+    }
+    backgroundModeButtons.forEach(button => button.addEventListener('click', () => chooseBackgroundMode(button.dataset.backgroundMode)));
+    for (const field of [backgroundColorA, backgroundColorB, backgroundDirection]) {
+      field.addEventListener('input', updateBackgroundPreview);
+      field.addEventListener('change', updateBackgroundPreview);
+    }
+    image.addEventListener('load', updateBackgroundSize);
+    let cleanResizeObserver = null;
+    if (typeof ResizeObserver === 'function') {
+      const resizeObserver = new ResizeObserver(updateBackgroundSize);
+      resizeObserver.observe(image);
+      cleanResizeObserver = () => resizeObserver.disconnect();
     }
     function releaseURL() {
       if (previewURL) URL.revokeObjectURL(previewURL);
@@ -160,7 +293,7 @@
           };
           image.src = nextURL;
         }
-        image.alt = `${current}${orientation === 'horizontal' ? '橫式' : '直式'}${settings.title}藝術字（透明背景）`;
+        image.alt = `${current}${orientation === 'horizontal' ? '橫式' : '直式'}${settings.title}藝術字（${{transparent:'透明',solid:'單色',contrast:'撞色',gradient:'漸層'}[backgroundMode]}背景預覽）`;
         status.textContent = rawCount > maxChars(art) ? '最多四個字，已保留前四個字。' : '';
         settings.onPreview?.({ text: current, orientation, image, url: previewURL });
         if (settings.kind === 'star' && typeof art.outputSize === 'function') {
@@ -189,6 +322,8 @@
         ? art.createPreview(image) : null;
       const isHorizontal = orientation === 'horizontal';
       image.classList.toggle('is-horizontal', isHorizontal);
+      // 橫式畫布由共用層同步調整預覽框比例，避免舊版最小高度留下上下棋盤格。
+      image.closest('.word-preview-frame')?.classList.toggle('word-preview-horizontal', isHorizontal);
       image.setAttribute('width', isHorizontal ? '1200' : (settings.verticalWidth || '840'));
       image.setAttribute('height', isHorizontal ? '760' : (settings.verticalHeight || '1200'));
       pngSpec.textContent = isHorizontal ? '2400 × 1520' : '1680 × 2400';
@@ -197,6 +332,7 @@
       orientationButtons.forEach(button => button.setAttribute('aria-pressed', String(button.dataset.orientation === next)));
       settings.onOrientation?.({ orientation, image });
       render(field.value);
+      updateBackgroundPreview();
     }
     orientationButtons.forEach(button => button.addEventListener('click', () => chooseOrientation(button.dataset.orientation)));
     field.addEventListener('compositionstart', () => { composing = true; });
@@ -208,20 +344,30 @@
       render(field.value);
       field.focus();
     }));
+    async function downloadBackground(mode) {
+      const svg = art.generateSVG(current); // 使用靜態 SVG，不擾動原本的 SVG 下載函式。
+      return backgroundModule.downloadPNG(svg, {
+        ...backgroundSettings(mode), text: current, orientation
+      });
+    }
     async function download(kind) {
       if (!current || busy) return;
       const action = {
         svg: () => art.downloadSVG(current),
         png: () => art.downloadPNG(current, ...(settings.kind === 'star' ? [2] : [])),
         cover: () => (art.downloadCover || art.downloadKadokadoCover)(current),
-        animated: () => animatedAction()?.(current)
+        animated: () => animatedAction()?.(current),
+        solid: () => downloadBackground('solid'),
+        contrast: () => downloadBackground('contrast'),
+        gradient: () => downloadBackground('gradient')
       }[kind];
       if (!action || buttons[kind].disabled) return;
       busy = true;
       updateButtons();
       status.textContent = {
         svg: '正在準備透明 SVG……', png: '正在生成高清透明 PNG……',
-        cover: '正在生成 700 × 1000 書封……', animated: '正在準備動態 SVG……'
+        cover: '正在生成 700 × 1000 書封……', animated: '正在準備動態 SVG……',
+        solid: '正在生成單色 PNG……', contrast: '正在生成撞色 PNG……', gradient: '正在生成漸層 PNG……'
       }[kind];
       try {
         const result = await action();
@@ -242,8 +388,20 @@
         if (typeof dispose === 'function') cleanups.push(dispose);
       } catch (error) { console.warn(settings.title + '預覽特效無法啟動', error); }
     }
+    chooseBackgroundMode('transparent');
     render(field.value);
+    loadBackgroundModule().then(module => {
+      backgroundModule = module;
+      updateBackgroundPreview();
+      updateButtons();
+    }).catch(error => {
+      backgroundError = error;
+      console.error(settings.title + '背景 PNG 功能載入失敗', error);
+      status.textContent = error.message;
+      updateButtons();
+    });
     window.addEventListener('pagehide', () => {
+      cleanResizeObserver?.();
       if (previewController) previewController.destroy();
       else releaseURL();
       cleanups.forEach(fn => { try { fn(); } catch (error) { console.warn(error); } });
