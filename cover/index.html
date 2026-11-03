@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f8f7f5">
+  <meta name="description" content="故事的模樣，稀世珍藏。">
+
+  <!-- 分享連結的預覽資訊；首頁標題與跑馬燈仍由原本的元素處理。 -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="慢慢封面">
+  <meta property="og:title" content="慢慢封面">
+  <meta property="og:description" content="故事的模樣，稀世珍藏。">
+  <meta property="og:url" content="https://desk.stillnessbyslowly.com/cover/index.html">
+  <meta property="og:image" content="https://img.stillnessbyslowly.com/i/d86md1yb9-20261103182224.png">
+  <meta property="og:image:secure_url" content="https://img.stillnessbyslowly.com/i/d86md1yb9-20261103182224.png">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="慢慢封面｜故事的模樣，稀世珍藏。">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="慢慢封面">
+  <meta name="twitter:description" content="故事的模樣，稀世珍藏。">
+  <meta name="twitter:image" content="https://img.stillnessbyslowly.com/i/d86md1yb9-20261103182224.png">
+  <title>慢慢封面</title>
+
+  <!-- 與慢慢藝術字同樣使用軍火庫視覺與互動零件；CSS 按實際生效順序載入。 -->
+  <link rel="stylesheet" href="https://lib.stillnessbyslowly.com/ui/responsive.css">
+  <link rel="stylesheet" href="https://framework.stillnessbyslowly.com/line/outline/outline.css">
+  <link rel="stylesheet" href="https://lib.stillnessbyslowly.com/ui/tabs/tabs.css">
+  <link rel="stylesheet" href="https://lib.stillnessbyslowly.com/effects/typography/shine_text.css">
+  <link rel="stylesheet" href="https://lib.stillnessbyslowly.com/effects/typography/marquee.css">
+  <link rel="stylesheet" href="./index.css">
+  <link rel="stylesheet" href="./index_style.css">
+  <link rel="stylesheet" href="./shared/cover_card.css">
+  <link rel="stylesheet" href="./shared/footer.css">
+
+  <script defer src="https://lib.stillnessbyslowly.com/fiction/Fiction_search.js"></script>
+  <script defer src="https://lib.stillnessbyslowly.com/fiction/Fiction_paginate.js"></script>
+  <script defer src="https://lib.stillnessbyslowly.com/ui/tabs/tabs.js"></script>
+  <script defer src="https://lib.stillnessbyslowly.com/state/tree_selection.js"></script>
+  <script defer src="./index_data.js"></script>
+  <script defer src="./index.js"></script>
+  <script defer src="./shared/cover_card.js"></script>
+  <script defer src="./index_style.js"></script>
+  <script defer src="./index_content.js"></script>
+</head>
+<body>
+  <main class="outline-page cover-page">
+    <header class="page-heading">
+      <div class="heading-copy">
+        <h1 class="slowly-shine-text">慢慢封面</h1>
+        <p class="tagline slowly-marquee" id="coverTagline"></p>
+      </div>
+    </header>
+
+    <div class="outline-tabs-shell" id="coverTabs" data-slowly-tabs>
+      <nav class="view-tabs alphabet-nav" id="coverTabList" role="tablist" aria-label="封面版型英文系列分頁">
+        <button type="button" role="tab" data-view-target="directory" aria-selected="true">慢慢看</button>
+      </nav>
+      <section class="view-panel" data-view-panel="directory" aria-label="慢慢看">
+        <div class="directory-count">
+          <p class="section-side-note" id="collectionCount"></p>
+        </div>
+        <div class="search-area">
+          <input id="coverSearch" type="search" aria-label="搜尋封面版型"
+            placeholder="搜尋名稱或英文代號…" autocomplete="off" spellcheck="false" enterkeyhint="search">
+          <p class="search-hint" id="searchHint"></p>
+          <p class="search-status" id="searchStatus" role="status" aria-live="polite"></p>
+          <div class="search-results" id="searchResults"></div>
+        </div>
+        <div id="viewerEntries"></div>
+        <section class="notes" id="notesSection" hidden>
+          <div class="section-heading notes-heading"><h2 id="notesTitle" class="visually-hidden">說明</h2></div>
+          <div class="notice-list" id="noticeList"></div>
+        </section>
+      </section>
+      <div id="letterPanels"></div>
+    </div>
+
+    <footer class="sbs-signature sbs-footer" aria-label="品牌與創作者">
+      <a class="sbs-footer-brand" href="https://stillnessbyslowly.com/" aria-label="慢慢｜Stillness by Slowly 主站">
+        <span class="sbs-signature-mark">慢 慢</span>
+        <span class="sbs-signature-separator" aria-hidden="true">|</span>
+        <span class="sbs-signature-name">Stillness by Slowly</span>
+      </a>
+      <a class="sbs-footer-author" href="https://www.threads.com/@xiayian505" target="_blank" rel="noopener noreferrer" aria-label="夏熠安的個人頁">夏熠安</a>
+    </footer>
+    <p class="boot-message" id="bootMessage" role="alert" hidden></p>
+  </main>
+</body>
+</html>

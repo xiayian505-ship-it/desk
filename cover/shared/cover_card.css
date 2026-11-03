@@ -1,0 +1,97 @@
+/* 慢慢封面｜共用首頁名稱卡片 v2（極簡單行版）
+ * 僅保留橢圓與中央單行作品名稱；不加入動畫與文字特效。
+ * 外觀可在此檔調整，無須修改作品資料或各款藝術字。
+ */
+
+.cover-card-art {
+  --cover-paper: #f4f1ef;
+  --cover-ink: #4c414c;
+  --cover-orbit: rgba(143, 122, 138, .23);
+  --cover-type-size: 2.2rem;
+
+  position: relative;
+  display: grid;
+  place-items: center;
+  align-self: stretch;
+  box-sizing: border-box;
+  min-width: 0;
+  min-height: 152px;
+  padding: 22px 20px;
+  overflow: hidden;
+  background: var(--cover-paper);
+  color: var(--cover-ink);
+}
+
+.cover-card-art__stage {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  min-width: 0;
+  min-height: 108px;
+}
+
+.cover-card-art__orbit {
+  position: absolute;
+  width: min(96%, 250px);
+  height: 82%;
+  border: 1px solid var(--cover-orbit);
+  border-radius: 50%;
+  transform: rotate(-29deg);
+  pointer-events: none;
+}
+
+.cover-card-art__name {
+  position: relative;
+  display: block;
+  width: 100%;
+  color: var(--cover-ink);
+  font-family: "Noto Serif TC", "Noto Serif CJK TC", "Songti TC", "PMingLiU", serif;
+  font-size: var(--cover-type-size);
+  font-weight: 800;
+  line-height: 1.25;
+  letter-spacing: .035em;
+  white-space: nowrap;
+  text-align: center;
+}
+
+/* 只微調字級，不新增每款個別設定。 */
+.cover-card-art__name[data-length="1"] {
+  font-size: 3rem;
+}
+
+.cover-card-art__name[data-length="2"] {
+  font-size: 2.65rem;
+}
+
+.cover-card-art__name[data-length="3"] {
+  font-size: 2.35rem;
+}
+
+.cover-card-art__name[data-length="5"],
+.cover-card-art__name[data-length="6"] {
+  font-size: 1.65rem;
+}
+
+@media (max-width: 700px) {
+  .cover-card-art {
+    min-height: 155px;
+  }
+}
+
+@media (max-width: 520px) {
+  .cover-card-art {
+    --cover-type-size: 2.5rem;
+    min-height: 158px;
+    padding: 24px 18px;
+  }
+
+  .cover-card-art__stage {
+    min-height: 110px;
+  }
+
+  .cover-card-art__orbit {
+    width: min(76%, 280px);
+    height: 88%;
+  }
+}

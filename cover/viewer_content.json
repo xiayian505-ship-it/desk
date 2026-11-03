@@ -1,0 +1,25 @@
+{
+  "modes": [
+    {
+      "id": "svg-viewer",
+      "title": "SVG 檢視室",
+      "description": "檢視 SVG 作品與向量細節。",
+      "linkText": "開啟檢視室",
+      "href": "https://desk.stillnessbyslowly.com/word/svg_viewer/index.html"
+    },
+    {
+      "id": "svg-converter",
+      "title": "SVG 動畫轉檔室",
+      "description": "將 SVG 動畫轉換成圖片或影片格式。",
+      "linkText": "開啟轉檔室",
+      "href": "https://desk.stillnessbyslowly.com/word/svg_converter/index.html"
+    },
+    {
+      "id": "word",
+      "title": "慢慢藝術字",
+      "description": "挑選藝術字款式，製作文字作品。",
+      "linkText": "前往慢慢藝術字",
+      "href": "https://desk.stillnessbyslowly.com/word/index.html"
+    }
+  ]
+}

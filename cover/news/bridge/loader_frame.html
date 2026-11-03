@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head><meta charset="utf-8"><title>SVG bridge loader</title></head>
+<body>
+<script>
+"use strict";
+// 隔離式接入容器：避免不同款藝術字的 window 全域變數互相污染。
+// 注意：沙盒 iframe 不可以直接存取父頁，只靠 postMessage 傳回 SVG。
+(() => {
+  const CHANNEL = "slowly-cover-word-bridge-v1";
+  const ALLOWED_HOSTS = new Set(["desk.stillnessbyslowly.com", "lib.stillnessbyslowly.com"]);
+  let token = null;
+  let entry = null;
+  let loaded = false;
+
+  function send(type, payload = {}) {
+    window.parent.postMessage({ channel: CHANNEL, type, token, ...payload }, "*");
+  }
+  function checkURL(raw) {
+    const url = new URL(raw);
+    if (url.protocol !== "https:" || !ALLOWED_HOSTS.has(url.hostname)) {
+      throw new Error("拒絕載入非正式 HTTPS 絕對網址：" + raw);
+    }
+    return url.href;
+  }
+  function addScript(raw) {
+    const src = checkURL(raw);
+    return new Promise((resolve, reject) => {
+      const script = document.createElement("script");
+      script.src = src;  // 經典 script 可跨來源載入；不使用 fetch 讀取跨網域程式碼。
+      script.async = false;
+      const timer = setTimeout(() => {
+        script.remove();
+        reject(new Error("載入逾時：" + src));
+      }, 20000);
+      script.onload = () => { clearTimeout(timer); resolve(); };
+      script.onerror = () => { clearTimeout(timer); reject(new Error("無法載入：" + src)); };
+      document.head.appendChild(script);
+    });
+  }
+  async function init(data) {
+    if (entry) return;
+    if (!data || typeof data.code !== "string" || !Array.isArray(data.scripts)) return;
+    token = data.token;
+    entry = data;
+    try {
+      for (const script of entry.scripts) await addScript(script);
+      const vertical = window[entry.vertical];
+      const horizontal = window[entry.horizontal];
+      if (typeof vertical?.generateSVG !== "function" || typeof horizontal?.generateSVG !== "function") {
+        throw new Error("已載入程式，但找不到此款直式或橫式 generateSVG。請核對接入清單。");
+      }
+      loaded = true;
+      send("ready");
+    } catch (error) {
+      send("error", { message: String(error?.message || error) });
+    }
+  }
+  async function generate(message) {
+    const requestId = message.requestId;
+    if (!loaded) return send("result-error", { requestId, message: "藝術字生成器尚未就緒" });
+    const art = window[message.orientation === "horizontal" ? entry.horizontal : entry.vertical];
+    try {
+      const normalized = typeof art.normalize === "function" ? art.normalize(message.text) : Array.from(message.text).slice(0,4).join("");
+      if (!normalized || Array.from(normalized).length > 4) throw new Error("請輸入 1～4 字");
+      const svg = await art.generateSVG(normalized);
+      if (typeof svg !== "string" || !/<svg(?:\s|>)/i.test(svg)) throw new Error("生成器沒有回傳有效的 SVG 字串");
+      const parsed = new DOMParser().parseFromString(svg, "image/svg+xml");
+      if (parsed.querySelector("parsererror") || parsed.documentElement.localName !== "svg") throw new Error("生成結果不是完整 SVG");
+      send("result", { requestId, svg, text: normalized });
+    } catch (error) {
+      send("result-error", { requestId, message: String(error?.message || error) });
+    }
+  }
+  window.addEventListener("message", event => {
+    if (event.source !== window.parent || event.data?.channel !== CHANNEL) return;
+    if (event.data.type === "init") { init(event.data.entry); return; }
+    if (event.data.token !== token || !entry) return;
+    if (event.data.type === "generate") generate(event.data);
+  });
+  send("boot");
+})();
+</script>
+</body>
+</html>

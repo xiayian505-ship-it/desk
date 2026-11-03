@@ -1,0 +1,650 @@
+/* 慢慢封面｜首頁外觀（以 word.zip 最後生效版為基準）
+ * 目前是第一版入口視覺，未來可整檔換皮，不影響資料或軍火庫零件。
+ * 所有 CSS 宣告以多行、完整縮排保留，不壓縮。
+ */
+
+:root {
+  --bg: #f8f7f5;
+  --paper: #ffffff;
+  --text: #302f37;
+  --muted: #77747e;
+  --line: #dedbe0;
+  --accent: #7b6682;
+  --soft: #f0ecef;
+  --outline-max-width: 850px;
+  --outline-line: var(--line);
+  --outline-title-top: 55px;
+  --outline-title-bottom: 26px;
+  --outline-tabs-top: 20px;
+  --outline-tab-gap: 0;
+  --outline-tab-gap-mobile: 0;
+  --outline-tab-bottom: 0;
+  --outline-content-top: 34px;
+  --outline-content-bottom: 56px;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+  line-height: 1.7;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+.cover-page {
+  padding-bottom: 24px;
+}
+
+.page-heading {
+  align-items: flex-start;
+}
+
+.heading-copy {
+  position: relative;
+  width: 100%;
+  min-width: 0;
+  isolation: isolate;
+}
+
+.section-number,
+.card-code,
+.card-subtitle,
+.section-side-note {
+  letter-spacing: 0.1em;
+}
+
+/* Shine Text 的流動填色來自軍火庫；本站僅指定色票、字重與陰影。 */
+.page-heading h1 {
+  position: relative;
+  z-index: 1;
+  display: table;
+  margin: 0;
+  color: #8e5675;
+  font-size: clamp(1.9rem, 5vw, 2.55rem);
+  letter-spacing: 0.08em;
+  font-weight: 800;
+  line-height: 1.3;
+  background-image: linear-gradient(110deg, #64374f 0%, #c8638c 22%, #f7d8e4 36%, #945f90 54%, #f1a1c1 73%, #6b3d57 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 3px 10px rgba(120, 70, 105, 0.18), 0 1px 2px rgba(88, 52, 74, 0.18);
+  --sl-shine-gradient: linear-gradient(110deg, #64374f 0%, #c8638c 22%, #f7d8e4 36%, #945f90 54%, #f1a1c1 73%, #6b3d57 100%);
+  --sl-shine-duration: 9s;
+  filter: drop-shadow(0 2px 2px rgba(99, 53, 87, 0.2));
+}
+
+.head-period {
+  color: #aa91ae;
+}
+
+/* Marquee 的循環移動與遮罩由軍火庫提供；不把副標固定文案寫回 HTML。 */
+.tagline {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  min-height: 1.65em;
+  margin: 14px 0 0;
+  overflow: hidden;
+  color: #8a6b82;
+  font-size: 0.91rem;
+  --sl-marquee-duration: 76s;
+}
+
+.cover-tagline-reading {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  white-space: nowrap;
+  clip-path: inset(50%);
+}
+
+.cover-tagline-cycle {
+  flex: 0 0 auto;
+  white-space: nowrap;
+  padding-right: 2rem;
+  letter-spacing: 0.055em;
+}
+
+@media (max-width: 520px) {
+  .tagline {
+    width: 100%;
+    --sl-marquee-duration: 64s;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tagline .slowly-marquee__track {
+    display: none;
+  }
+
+  .cover-tagline-reading {
+    position: static;
+    display: inline;
+    width: auto;
+    height: auto;
+    clip-path: none;
+    overflow: visible;
+    white-space: normal;
+  }
+}
+
+.alphabet-nav {
+  display: grid;
+  grid-template-columns: repeat(14, minmax(0, 1fr));
+  gap: 7px;
+  margin-top: 23px;
+  padding: 0 0 17px;
+}
+
+.alphabet-nav button {
+  min-width: 0;
+  min-height: 35px;
+  padding: 7px 0;
+  border: 1px solid transparent;
+  border-radius: 0;
+  font-size: 0.85rem;
+  line-height: 1.2;
+  text-align: center;
+  color: #8a6b82;
+  font-weight: 550;
+}
+
+.alphabet-nav button:first-child {
+  grid-column: span 2;
+  /* 「慢慢看」獨立放大兩級，其他 A～Z 分頁字級不變。 */
+  font-size: 1.1rem;
+  letter-spacing: 0;
+}
+
+.alphabet-nav button[aria-selected="true"] {
+  background: var(--soft);
+  color: var(--accent);
+  border-color: var(--line);
+  font-weight: 750;
+}
+
+.alphabet-nav button:hover {
+  background: #eeeaf0;
+  color: var(--accent);
+}
+
+.section-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 12px;
+  margin-bottom: 23px;
+}
+
+.section-number {
+  margin: 0 0 5px;
+  font-size: 0.7rem;
+  font-weight: 650;
+  color: var(--accent);
+}
+
+.section-number span {
+  color: #aca2ae;
+}
+
+.section-heading h2 {
+  margin: 0;
+  font-size: 1.35rem;
+  line-height: 1.4;
+  letter-spacing: 0.05em;
+  font-weight: 650;
+}
+
+.section-side-note {
+  margin: 0 0 2px;
+  color: #8a6b82;
+  font-size: 0.72rem;
+  white-space: nowrap;
+}
+
+.search-area {
+  padding: 23px;
+  border: 1px solid var(--line);
+  background: var(--paper);
+}
+
+.search-area label {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.search-area input {
+  display: block;
+  width: 100%;
+  min-height: 48px;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 0;
+  background: var(--bg);
+  color: var(--text);
+  outline: none;
+}
+
+.search-area input:focus {
+  border-color: var(--accent);
+}
+
+.search-hint {
+  margin: 9px 0 0;
+  font-size: 1.17rem;
+  color: #8a6b82;
+}
+
+.search-status {
+  margin: 14px 0 0;
+  color: var(--accent);
+  font-size: 0.87rem;
+}
+
+.search-status:empty {
+  display: none;
+}
+
+.search-results {
+  display: grid;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.search-result {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 11px 13px;
+  border: 1px solid var(--line);
+  background: var(--paper);
+  color: var(--text);
+  text-align: left;
+}
+
+.search-result:hover,
+.search-result:focus-visible {
+  border-color: var(--accent);
+  background: #f9f7fa;
+}
+
+.search-result strong {
+  display: block;
+  font-size: 0.91rem;
+}
+
+.search-result small {
+  display: block;
+  color: #8a6b82;
+  font-size: 0.72rem;
+}
+
+.notes {
+  margin-top: 45px;
+}
+
+/* 大標題文字不顯示，保留原本 1.35rem × 1.4 的標題行高與留白。 */
+.notes-heading {
+  min-height: calc(1.35rem * 1.4);
+  margin-bottom: 17px;
+}
+
+/* 說明 Tree：預設全收合、只展開一項。樣式只屬慢慢封面宿主。 */
+.directory-count {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 14px;
+}
+
+.notice-list {
+  border-top: 1px solid var(--line);
+}
+
+.notice {
+  border-bottom: 1px solid var(--line);
+}
+
+.notice-toggle {
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr);
+  align-items: center;
+  gap: 18px;
+  padding: 19px 2px;
+  cursor: pointer;
+  list-style: none;
+}
+
+.notice-toggle::-webkit-details-marker {
+  display: none;
+}
+
+.notice-toggle::marker {
+  content: "";
+}
+
+.notice-toggle:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+
+.notice-index {
+  color: var(--accent);
+  font-size: 0.75rem;
+}
+
+.notice-title {
+  color: var(--text);
+  font-size: 0.92rem;
+  font-weight: 700;
+}
+
+.notice-body {
+  margin: 0 2px 21px 50px;
+}
+
+.notice-body p {
+  margin: 0 0 13px;
+  color: #8a6b82;
+  font-size: 0.84rem;
+  line-height: 1.85;
+  overflow-wrap: anywhere;
+}
+
+.notice-body p:last-child {
+  margin-bottom: 0;
+}
+
+/* SVG／PNG 說明：只有格式標題能展開，沒有箭頭、按鈕外框。 */
+.notice-format-list {
+  display: grid;
+  gap: 15px;
+}
+
+.notice-format-toggle {
+  display: block;
+  width: fit-content;
+  max-width: 100%;
+  padding: 3px 0;
+  color: var(--text);
+  font-size: 0.89rem;
+  font-weight: 700;
+  cursor: pointer;
+  list-style: none;
+}
+
+.notice-format-toggle::-webkit-details-marker {
+  display: none;
+}
+
+.notice-format-toggle::marker {
+  content: "";
+}
+
+.notice-format-toggle:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.notice-format-body {
+  padding: 12px 0 5px 12px;
+}
+
+.notice-format-body p {
+  margin: 0 0 13px;
+  color: #8a6b82;
+  font-size: 0.84rem;
+  line-height: 1.85;
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+
+.notice-format-variant {
+  margin-top: 19px;
+}
+
+.notice-format-variant-title {
+  margin: 0 0 7px;
+  color: var(--text);
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.notice-format-variant p:last-child,
+.notice-format-body > p:last-child {
+  margin-bottom: 0;
+}
+
+.letter-list {
+  display: grid;
+  gap: 14px;
+}
+
+.cover-card {
+  display: grid;
+  grid-template-columns: 210px minmax(0, 1fr);
+  min-width: 0;
+  border: 1px solid var(--line);
+  background: var(--paper);
+}
+
+/* 只讓作品縮圖成為入口，不增加額外的點擊提示或動態效果。 */
+.card-cover-link {
+  display: grid;
+  min-width: 0;
+  color: inherit;
+  text-decoration: none;
+}
+
+.card-content {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+  padding: 20px 23px;
+}
+
+.card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.card-code {
+  color: var(--accent);
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+.card-subtitle {
+  font-size: 0.67rem;
+  color: #8a6b82;
+}
+
+/* 中文簡介改為原本卡片中文標題的 1.17rem 字級，字色和字重不變。 */
+.card-content p {
+  margin: 0;
+  color: #8a6b82;
+  font-size: 1.17rem;
+  line-height: 1.72;
+}
+
+.empty-letter {
+  display: grid;
+  place-items: center;
+  min-height: 190px;
+  padding: 32px 18px;
+  border: 1px solid var(--line);
+  background: var(--paper);
+  color: #8a6b82;
+  font-size: 0.91rem;
+  text-align: center;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 9px;
+  margin-top: 24px;
+}
+
+.page-button {
+  min-width: 39px;
+  min-height: 39px;
+  padding: 6px 10px;
+  border: 1px solid var(--line);
+  background: var(--paper);
+  color: var(--accent);
+}
+
+.page-button:hover,
+.page-button:focus-visible,
+.page-button[aria-current="page"] {
+  border-color: var(--accent);
+}
+
+.page-button[aria-current="page"] {
+  background: var(--soft);
+  font-weight: 800;
+}
+
+.sbs-signature {
+  gap: 10px;
+  color: #8a6b82;
+  font-size: 0.78rem;
+}
+
+.sbs-signature-mark {
+  letter-spacing: 0.2em;
+  font-weight: 800;
+  color: var(--accent);
+}
+
+.sbs-signature-separator {
+  color: #b9b3be;
+}
+
+.boot-message {
+  padding: 16px;
+  border: 1px solid #bca0a0;
+  color: #7f4949;
+}
+
+@media (max-width: 700px) {
+  :root {
+    --outline-title-top: 36px;
+  }
+
+  .alphabet-nav {
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 5px;
+  }
+
+  .alphabet-nav button {
+    min-height: 38px;
+  }
+
+  .cover-card {
+    grid-template-columns: 165px minmax(0, 1fr);
+  }
+
+  .card-content {
+    padding: 16px;
+  }
+}
+
+@media (max-width: 520px) {
+  :root {
+    --outline-content-top: 25px;
+  }
+
+  .page-heading {
+    display: block;
+  }
+
+  .section-side-note {
+    max-width: 90px;
+    white-space: normal;
+    text-align: right;
+  }
+
+  .search-area {
+    padding: 17px;
+  }
+
+  .cover-card {
+    grid-template-columns: 1fr;
+  }
+
+  .card-content {
+    gap: 8px;
+    padding: 16px 18px 19px;
+  }
+
+}
+
+/* SVG 檢視室入口：與新增作品卡片樣式同時保留。 */
+.svg-viewer-entry {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px 24px;
+  margin-top: 27px;
+  padding: 22px 23px;
+  border: 1px solid var(--line);
+  background: var(--paper);
+}
+
+.svg-viewer-entry-copy {
+  flex: 1 1 260px;
+}
+
+.svg-viewer-entry h2 {
+  margin: 0 0 6px;
+  font-size: 1.06rem;
+  font-weight: 700;
+  letter-spacing: .04em;
+}
+
+.svg-viewer-entry p:not(.section-number) {
+  margin: 0;
+  color: #8a6b82;
+  font-size: 1.17rem;
+  line-height: 1.8;
+}
+
+.svg-viewer-entry-link {
+  flex: 0 0 auto;
+  color: var(--accent);
+  font-size: 1.17rem;
+  font-weight: 700;
+  text-decoration: none;
+  /* 用文字本身做入口，不加底線或箭頭。 */
+}
+
+.svg-viewer-entry-link:hover,
+.svg-viewer-entry-link:focus-visible {
+  color: var(--text);
+}
+
+.svg-viewer-entry-link:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
