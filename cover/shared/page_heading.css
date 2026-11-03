@@ -1,0 +1,13 @@
+/* 慢慢封面｜共用作品頁標題連結。和每款的版型與藝術字生成器無關。 */
+.word-heading h1 > a {
+  color: inherit;
+  text-decoration: none;
+}
+.word-heading h1 > a:hover,
+.word-heading h1 > a:focus-visible {
+  color: var(--accent, #7b6682);
+}
+.word-heading h1 > a:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 4px;
+}
