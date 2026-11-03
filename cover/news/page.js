@@ -445,32 +445,25 @@
     let complete=false;
     try {
       const output=await adapter.generateMany(inputs,({completed,total})=>{
-        loading.update(`正在生成藝術字（${completed}／${total}）……`,total ? completed/total*100 : 0);
+        loading.update(`正在生成並適配藝術字（${completed}／${total}）……`,total ? completed/total*100 : 0);
         setStatus(`藝術字已處理 ${completed}／${total} 槽……`);
-      });
+      },{fitSlots:positions()});
       showResults(output);refreshStats();
       const fails=output.filter(r=>!r.ok);
       if(fails.length){
         setStatus(`${fails.length} 槽失敗：${fails.map(f=>f.error||"未知錯誤").join("；")}`,"error");
         empty.textContent="部分藝術字生成失敗，請查看各槽結果。";return;
       }
-      // 共用量測模組只算「可見 SVG 內容 + 安全邊」；
-      // 一次量測後快取到 slot 結果，背景換色／換圖片不必重新跑生成器或量測。
-      loading.update("正在量測藝術字視覺範圍……");
-      for (let i=0; i<output.length; i++) {
-        try {
-          output[i].fitBox=await window.SlowlyCoverWordFit.measure(output[i].svg);
-        } catch (error) {
-          // 無法測量的特殊 SVG 留用原始 viewBox，避免把筆畫或特效誤裁掉。
-          console.warn(`[SlowlyCover] 第 ${i+1} 槽無法量測，改以原畫布嵌入`,error);
-          output[i].fitBox=null;
-        }
-      }
+      // 可見範圍量測已在共用接入器 generateMany() 內完成。
+      // 作品頁只提供自己的槽位座標，不再逐款重寫縮放迴圈。
+      const fitWarnings=output.filter(item=>item.fitWarning);
       lastResult=output;
       loading.update("正在合成封面……");
       await showComposite();
       complete=true;
-      setStatus("完成","success");
+      if (fitWarnings.length) {
+        setStatus(`封面已完成，但 ${fitWarnings.length} 個藝術字槽的自動縮放未成功（可能偏小）。請檢查瀏覽器主控台。`,"error");
+      } else setStatus("完成","success");
     } catch(err) {setStatus(`合成失敗：${err?.message||err}`,"error");}
     finally {loading.end(complete);disableBusy(false);refreshStats();}
   }
