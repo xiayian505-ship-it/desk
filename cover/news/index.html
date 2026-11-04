@@ -4,10 +4,10 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#f8f7f5">
-  <meta name="description" content="飛鴿傳輸｜慢慢封面的第一款正式封面模板。">
+  <meta name="description" content="飛鴿傳輸｜電視新聞風格封面模板。">
   <title>飛鴿傳輸｜慢慢封面</title>
   <link rel="stylesheet" href="https://lib.stillnessbyslowly.com/ui/loader/loader_progress.css">
-  <link rel="stylesheet" href="./page.css">
+  <link rel="stylesheet" href="../shared/cover_workbench.css">
   <link rel="stylesheet" href="../shared/page_heading.css">
   <script defer src="https://lib.stillnessbyslowly.com/ui/loader/loader_progress.js"></script>
   <script defer src="./catalog/word_catalog_data.js"></script>
@@ -19,122 +19,11 @@
   <script defer src="./news_visual.js"></script>
   <script defer src="../shared/word_fit.js"></script>
   <script defer src="./runtime/cover_composer.js"></script>
+  <script defer src="../shared/cover_workbench_shell.js"></script>
   <script defer src="../shared/page_heading.js"></script>
-  <script defer src="./page.js"></script>
+  <script defer src="../shared/cover_workbench.js"></script>
 </head>
 <body>
-  <main class="word-workbench layout">
-    <header class="word-heading">
-      <h1>飛鴿傳輸</h1>
-    </header>
-    <div class="orientation" role="group" aria-label="封面方向">
-      <button type="button" class="orientation-button is-current" data-cover-orientation="vertical" aria-pressed="true">直式</button>
-      <button type="button" class="orientation-button" data-cover-orientation="horizontal" aria-pressed="false">橫式</button>
-    </div>
-    <section class="settings-switcher" aria-label="封面設定">
-      <div class="settings-tabs" role="tablist" aria-label="封面設定">
-        <button type="button" role="tab" class="settings-tab is-current" id="tab-text" data-settings-tab="text" aria-selected="true" aria-controls="settings-text">輸入文字</button>
-        <button type="button" role="tab" class="settings-tab" id="tab-background" data-settings-tab="background" aria-selected="false" aria-controls="settings-background">背景設定</button>
-        <button type="button" role="tab" class="settings-tab" id="tab-frames" data-settings-tab="frames" aria-selected="false" aria-controls="settings-frames">圖片框</button>
-      </div>
-      <div class="settings-stage" id="settings-stage">
-        <section id="settings-text" class="settings-panel" role="tabpanel" aria-labelledby="tab-text">
-          <div id="area-tabs" class="area-tabs" role="group" aria-label="文字區域"></div>
-          <div class="slot-list" id="slot-list"></div>
-        </section>
-        <section id="settings-background" class="settings-panel" role="tabpanel" aria-labelledby="tab-background" hidden>
-          <div class="background-panel" data-layer="whole">
-            <div class="mode-tabs" id="whole-mode-tabs" role="group" aria-label="整張封面背景模式">
-              <button type="button" data-whole-mode="transparent">透明</button>
-              <button type="button" data-whole-mode="solid">單色</button>
-              <button type="button" data-whole-mode="split">撞色</button>
-              <button type="button" data-whole-mode="gradient">漸層</button>
-              <button type="button" data-whole-mode="image">圖片</button>
-            </div>
-            <label class="sr-only" for="whole-mode">背景類型</label>
-            <select id="whole-mode" data-background="whole" data-key="mode" class="sr-only">
-              <option value="transparent">透明</option>
-              <option value="solid">單色</option>
-              <option value="split">撞色</option>
-              <option value="gradient" selected>漸層</option>
-              <option value="image">圖片</option>
-            </select>
-            <div class="background-fields">
-              <label>顏色 A <input type="color" value="#0c1630" data-background="whole" data-key="a"></label>
-              <label>顏色 B <input type="color" value="#233965" data-background="whole" data-key="b"></label>
-              <label>角度 <select data-background="whole" data-key="angle">
-                <option value="0">左右（0°）</option>
-                <option value="45">對角（45°）</option>
-                <option value="90" selected>上下（90°）</option>
-                <option value="135">反向對角（135°）</option>
-              </select></label>
-            </div>
-            <div class="frame-upload whole-upload">
-              <label class="frame-file-label">選擇底圖
-                <input type="file" id="whole-image-input" accept="image/png,image/jpeg,image/webp" class="frame-file-input">
-              </label>
-              <button type="button" id="whole-image-clear" class="clear-photo">移除底圖</button>
-              <p id="whole-image-label" class="frame-photo-label" aria-live="polite"></p>
-            </div>
-          </div>
-        </section>
-        <section id="settings-frames" class="settings-panel" role="tabpanel" aria-labelledby="tab-frames" hidden>
-          <div id="image-frame-controls" class="image-frame-controls"></div>
-        </section>
-      </div>
-      <div class="editor-actions">
-        <button id="render-button" type="button" disabled>產生封面</button>
-        <button id="reset-button" type="button">恢復預設</button>
-      </div>
-      <p id="status" role="status" aria-live="polite"></p>
-      <p id="load-stats" class="sr-only"></p>
-    </section>
-    <section class="word-preview" aria-labelledby="preview-heading">
-      <h2 id="preview-heading">作品預覽</h2>
-      <p id="preview-size" class="sr-only">直式 · 840 × 1200</p>
-      <div class="preview-border">
-        <div class="preview-frame" id="preview-frame">
-          <img id="composed-preview" alt="飛鴿傳輸封面 SVG 合成預覽" hidden>
-          <p id="preview-empty" aria-live="polite"></p>
-          <div class="slowly-loader is-done" id="cover-loader" role="status" aria-live="polite" aria-hidden="true">
-            <div class="cover-loader-inner">
-              <span class="cover-loader-title">慢慢封面</span>
-              <p id="cover-loading-text">正在載入藝術字……</p>
-              <div class="slowly-loader__bar" aria-hidden="true"><i data-loader-bar></i></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-    <section class="word-download" aria-labelledby="download-heading">
-      <h2 id="download-heading">下載作品</h2>
-      <div class="download-actions">
-        <button type="button" id="download-svg" disabled>SVG</button>
-        <button type="button" id="download-png" disabled>PNG</button>
-        <button type="button" id="download-book" disabled>書封 PNG</button>
-      </div>
-    </section>
-    <div id="slot-results" class="results sr-only" aria-label="藝術字生成狀態"></div>
-    <footer class="footer">慢 慢 <span class="footer-divider">│</span> Stillness by Slowly </footer>
-  </main>
-  <div id="bridge-host" aria-hidden="true"></div>
-  <div id="picker-overlay" class="picker-overlay" hidden>
-    <section class="picker" role="dialog" aria-modal="true" aria-labelledby="picker-title">
-      <header class="picker-head">
-        <h2 id="picker-title">藝術字</h2>
-        <button type="button" id="picker-close" class="picker-close" aria-label="關閉選款視窗">✕</button>
-      </header>
-      <label class="picker-search-label sr-only" for="picker-search">搜尋藝術字</label>
-      <input id="picker-search" type="search" placeholder="搜尋" autocomplete="off">
-      <div class="picker-letters" id="picker-letters" role="group" aria-label="A～Z 分類"></div>
-      <div class="picker-summary"><output id="picker-count" aria-live="polite"></output></div>
-      <div class="picker-results" id="picker-results" aria-label="搜尋結果"></div>
-      <nav class="picker-pagination" aria-label="選款分頁">
-        <button type="button" id="picker-prev">上一頁</button>
-        <span id="picker-page"></span>
-        <button type="button" id="picker-next">下一頁</button>
-      </nav>
-    </section>
-  </div>
+  <div id="cover-app"></div>
 </body>
 </html>

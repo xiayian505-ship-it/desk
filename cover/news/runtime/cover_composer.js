@@ -138,7 +138,7 @@
       imported.setAttribute("y",String(box.y));
       imported.setAttribute("width",String(box.width));
       imported.setAttribute("height",String(box.height));
-      imported.setAttribute("preserveAspectRatio","xMidYMid meet");
+      imported.setAttribute("preserveAspectRatio", box.align || "xMidYMid meet");
       imported.setAttribute("data-demo-slot",String(i+1));
       root.appendChild(imported);
     });

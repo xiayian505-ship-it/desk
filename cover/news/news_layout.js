@@ -71,4 +71,5 @@
   }
 
   global.SlowlyCoverNewsLayout = Object.freeze(layout);
+  global.SlowlyCoverActiveLayout = global.SlowlyCoverNewsLayout;
 })(window);

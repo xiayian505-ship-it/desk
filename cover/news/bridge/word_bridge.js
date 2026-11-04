@@ -5,7 +5,7 @@
  */
 (function (global) {
   const CHANNEL = "slowly-cover-word-bridge-v1";
-  const FRAME_URL = "bridge/loader_frame.html"; // 只有本 Demo 自己的檔案用相對路徑。
+  const FRAME_URL = new URL("./loader_frame.html", document.currentScript.src).href; // 不受目前作品路徑影響。
   class WordBridge {
     constructor(host) {
       this.host = host;

@@ -106,4 +106,5 @@
     }
   }
   global.SlowlyCoverNewsVisual = Object.freeze({ draw: chrome });
+  global.SlowlyCoverActiveVisual = global.SlowlyCoverNewsVisual;
 })(window);
