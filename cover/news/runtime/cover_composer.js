@@ -72,7 +72,11 @@
       defs.appendChild(gradient);
       fill=`url(#slowly_cover_bg_${key})`;
     } else if(mode !== "solid") throw new Error("未知的背景模式");
-    root.appendChild(elem(doc,"rect",{x:box.x,y:box.y,width:box.width,height:box.height,fill}));
+    // 個別模板可要求橢圓肖像框；其他矩形圖片框保持原本行為。
+    const fillShape = box.clipShape === "ellipse"
+      ? elem(doc,"ellipse",{cx:box.x+box.width/2,cy:box.y+box.height/2,rx:box.width/2,ry:box.height/2,fill})
+      : elem(doc,"rect",{x:box.x,y:box.y,width:box.width,height:box.height,fill});
+    root.appendChild(fillShape);
   }
   function drawFrameImage(doc, defs, root, box, dataURL, key) {
     if (!dataURL) return;
@@ -82,7 +86,9 @@
     }
     const clipId = `slowly_cover_frame_clip_${key}`;
     const clip = elem(doc, "clipPath", {id: clipId, clipPathUnits: "userSpaceOnUse"});
-    clip.appendChild(elem(doc, "rect", box));
+    clip.appendChild(box.clipShape === "ellipse"
+      ? elem(doc,"ellipse",{cx:box.x+box.width/2,cy:box.y+box.height/2,rx:box.width/2,ry:box.height/2})
+      : elem(doc, "rect", box));
     defs.appendChild(clip);
     const group = elem(doc, "g", {"clip-path": `url(#${clipId})`});
     const picture = elem(doc, "image", {

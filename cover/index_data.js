@@ -8,6 +8,13 @@ window.SlowlyCoverIndex = [
     keywords: ["billboard", "旗開得勝", "候選人看板", "選舉", "投我一票", "不得不投", "競選", "號次"]
   },
   {
+    code: "dollar",
+    title: "一錢不值",
+    subtitle: "DOLLAR",
+    desc: "美元式綠色印刷與幾何鈔票邊框；中央橢圓肖像，上下兩排緊密銜接的雙藝術字。",
+    keywords: ["dollar", "一錢不值", "嗜財如命", "美金", "美元", "鈔票", "一美元", "紙鈔", "金碧輝煌", "金幣輝煌", "橢圓肖像"]
+  },
+  {
     code: "news",
     title: "飛鴿傳輸",
     subtitle: "NEWS",
