@@ -1,6 +1,13 @@
 /* 慢慢封面｜正式封面目錄資料 */
 window.SlowlyCoverIndex = [
   {
+    code: "billboard",
+    title: "旗開得勝",
+    subtitle: "BILLBOARD",
+    desc: "仿台灣候選人看板：大人物照、巨大號次、雙排主副標與投票戳記。",
+    keywords: ["billboard", "旗開得勝", "候選人看板", "選舉", "投我一票", "不得不投", "競選", "號次"]
+  },
+  {
     code: "news",
     title: "飛鴿傳輸",
     subtitle: "NEWS",
