@@ -15,6 +15,13 @@ window.SlowlyCoverIndex = [
     keywords: ["joker", "poker", "鬼牌", "撲克牌", "跳梁小丑", "譁眾取寵", "紙牌"]
   },
   {
+    code: "social",
+    title: "日新月異",
+    subtitle: "SOCIAL",
+    desc: "仿社群貼文的頭像、兩排文字、雙圖片框與互動圖示封面。",
+    keywords: ["social", "日新月異", "交友不慎", "社群", "社交平台", "貼文", "炎上", "頭像", "星火燎原"]
+  },
+  {
     code: "textbook",
     title: "因材施教",
     subtitle: "TEXTBOOK",
