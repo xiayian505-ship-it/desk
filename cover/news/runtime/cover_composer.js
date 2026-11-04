@@ -119,29 +119,47 @@
       paint(doc,defs,root,box,choice.background,`frame_${index + 1}`);
       drawFrameImage(doc,defs,root,box,choice.imageDataURL,`frame_${index + 1}`);
     }
-    // 固定的新聞視覺由 News 專屬模組繪製；這裡只負責調度。
-    // 圖框、背景與藝術字仍由原 v0.4 的共用合成機制處理。
+    // 各模板固定幾何由其自身 visual 模組繪製；背景、圖片框、藝術字走共用合成。
     if (visual && typeof visual.draw === "function") visual.draw(doc,root,view,layout);
-    slots.forEach((item,i) => {
-      if (!item.svg) throw new Error(`第 ${i+1} 槽沒有 SVG`);
-      const box=boxes[i];
-      const imported=doc.importNode(parseSVG(item.svg),true);
-      prefixIds(imported,i+1);
-      // 只改最外層 viewBox：依可見藝術內容放大，保留原 SVG 裡全部字形與特效。
-      // 不再把原始 1200×760 / 840×1200 的四周空白一起塞進小槽位。
-      if (item.fitBox && [item.fitBox.x, item.fitBox.y, item.fitBox.width, item.fitBox.height].every(Number.isFinite)
-          && item.fitBox.width > 0 && item.fitBox.height > 0) {
-        const v=item.fitBox;
-        imported.setAttribute("viewBox",`${v.x} ${v.y} ${v.width} ${v.height}`);
+    // 區域可選擇「整組旋轉」，用於 Joker 等上下顛倒仍可辨識的版型。
+    // 旋轉軸採整組 A/B 槽位聯集中心；絕不能讓兩個槽各自原地旋轉而失去文字順序。
+    // 無 rotate 的既有版型維持原有 SVG 節點與合成結果。
+    let slotIndex=0;
+    for (const section of view.sections) {
+      const degrees=section.rotate ?? 0;
+      if (![0,90,180,270].includes(degrees)) throw new Error(`文字區域 ${section.id} 的旋轉角度不支援`);
+      let parent=root;
+      if (degrees !== 0) {
+        const left=Math.min(...section.slots.map(box=>box.x));
+        const top=Math.min(...section.slots.map(box=>box.y));
+        const right=Math.max(...section.slots.map(box=>box.x+box.width));
+        const bottom=Math.max(...section.slots.map(box=>box.y+box.height));
+        const cx=(left+right)/2, cy=(top+bottom)/2;
+        parent=elem(doc,"g",{transform:`rotate(${degrees} ${cx} ${cy})`,"data-cover-area":section.id});
+        root.appendChild(parent);
       }
-      imported.setAttribute("x",String(box.x));
-      imported.setAttribute("y",String(box.y));
-      imported.setAttribute("width",String(box.width));
-      imported.setAttribute("height",String(box.height));
-      imported.setAttribute("preserveAspectRatio", box.align || "xMidYMid meet");
-      imported.setAttribute("data-demo-slot",String(i+1));
-      root.appendChild(imported);
-    });
+      for (const box of section.slots) {
+        const i=slotIndex++;
+        const item=slots[i];
+        if (!item.svg) throw new Error(`第 ${i+1} 槽沒有 SVG`);
+        const imported=doc.importNode(parseSVG(item.svg),true);
+        prefixIds(imported,i+1);
+        // 只改最外層 viewBox：依可見藝術內容放大，保留原 SVG 裡全部字形與特效。
+        // 不再把原始 1200×760 / 840×1200 的四周空白一起塞進小槽位。
+        if (item.fitBox && [item.fitBox.x, item.fitBox.y, item.fitBox.width, item.fitBox.height].every(Number.isFinite)
+            && item.fitBox.width > 0 && item.fitBox.height > 0) {
+          const v=item.fitBox;
+          imported.setAttribute("viewBox",`${v.x} ${v.y} ${v.width} ${v.height}`);
+        }
+        imported.setAttribute("x",String(box.x));
+        imported.setAttribute("y",String(box.y));
+        imported.setAttribute("width",String(box.width));
+        imported.setAttribute("height",String(box.height));
+        imported.setAttribute("preserveAspectRatio", box.align || "xMidYMid meet");
+        imported.setAttribute("data-demo-slot",String(i+1));
+        parent.appendChild(imported);
+      }
+    }
     const svg=new XMLSerializer().serializeToString(root);
     const parsed=parseSVG(svg);
     const ids=[...parsed.querySelectorAll("[id]")].map(n=>n.id);
