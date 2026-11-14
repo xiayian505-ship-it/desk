@@ -1,0 +1,1097 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#131629">
+    <title>聽，塔羅的聲音｜給卡稿的寫手專用工具</title>
+    <style>
+        :root {
+            color-scheme: dark;
+            font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
+            --background: #121526;
+            --gold: #e6c98f;
+            --text: #f6f0e6;
+            --soft: #b9bdcc;
+            --pick_width: clamp(73px, 19.5vw, 108px);
+            --pick_height: calc(var(--pick_width) * 1.53);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            margin: 0;
+            color: var(--text);
+            background:
+                radial-gradient(ellipse at 50% -10%, rgba(104, 91, 144, 0.24), transparent 45%),
+                linear-gradient(180deg, #14182c, var(--background) 65%);
+        }
+
+        main {
+            width: min(100% - 24px, 760px);
+            margin: 0 auto;
+            padding: 38px 0 48px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        header p {
+            margin: 0 0 8px;
+            color: var(--soft);
+            font-size: 14px;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: clamp(25px, 5vw, 34px);
+            font-weight: 650;
+            letter-spacing: 0.1em;
+        }
+
+        [hidden] {
+            display: none !important;
+        }
+
+        h2 {
+            margin: 0 0 13px;
+            color: var(--gold);
+            font-size: 17px;
+            font-weight: 600;
+        }
+
+        button {
+            font: inherit;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        button:focus-visible {
+            outline: 3px solid #fff4c9;
+            outline-offset: 4px;
+        }
+
+        .fan_screen {
+            padding: 16px 9px 18px;
+            border: 1px solid #51475c;
+            border-radius: 17px;
+            background: radial-gradient(ellipse at 50% 45%, #34324b 0%, #23243b 56%, #1d2035 100%);
+        }
+
+        .fan_toolbar {
+            text-align: center;
+            color: #d3c5ae;
+            font-size: 13px;
+        }
+
+        .fan_window {
+            position: relative;
+            padding: 65px 29px 18px;
+            touch-action: pan-y;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        .fan_hand {
+            position: relative;
+            width: 100%;
+            height: 145px;
+            margin: 0 auto;
+        }
+
+        /* 慢慢軍火庫 Hand Fan Layout：僅處理扇形位置與選取浮起。 */
+        .slowly-hand-fan-layout {
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            gap: 0;
+            overflow: visible;
+            min-width: 0;
+        }
+
+        .slowly-hand-fan-layout > [data-hand-fan-card] {
+            position: relative;
+            flex: 0 0 auto;
+            margin-left: var(--slowly-hand-overlap, 0px);
+            transform-origin: center 115%;
+            transform: translateY(var(--slowly-hand-rise, 0px)) rotate(var(--slowly-hand-angle, 0deg));
+            transition: transform 180ms ease-out;
+        }
+
+        .slowly-hand-fan-layout > [data-hand-fan-card]:first-child {
+            margin-left: 0;
+        }
+
+        .slowly-hand-fan-layout > [data-hand-fan-card]:hover,
+        .slowly-hand-fan-layout > [data-hand-fan-card]:focus-visible {
+            z-index: 10;
+            transform: translateY(calc(-1 * var(--slowly-hand-hover-lift, 18px))) rotate(0deg);
+        }
+
+        .slowly-hand-fan-layout > [data-hand-fan-card][data-hand-fan-selected="true"] {
+            z-index: 20;
+            transform: translateY(calc(-1 * var(--slowly-hand-selected-lift, 38px))) rotate(0deg);
+        }
+
+        .fan_card {
+            width: var(--pick_width);
+            height: var(--pick_height);
+            padding: 0;
+            border: 0;
+            border-radius: 8px;
+            background: transparent;
+            color: var(--gold);
+            cursor: pointer;
+        }
+
+        .card_back_art {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            width: 100%;
+            height: 100%;
+            border: 2px solid #d8b87e;
+            border-radius: 8px;
+            color: #e8d6b0;
+            background:
+                repeating-linear-gradient(135deg, transparent 0 8px, #d1ad7120 9px 10px, transparent 11px 17px),
+                linear-gradient(135deg, #343451, #23263f 68%, #383752);
+            box-shadow: inset 0 0 0 4px #34334c, inset 0 0 0 5px #8e7d65, 0 6px 14px #0a0a1899;
+        }
+
+        .card_back_art .diamond {
+            display: grid;
+            place-items: center;
+            width: 46%;
+            aspect-ratio: 1;
+            border: 1px solid #bca37a;
+            transform: rotate(45deg);
+        }
+
+        .diamond::after {
+            content: "✦";
+            display: block;
+            transform: rotate(-45deg);
+            font-size: 25px;
+        }
+
+        .small_mark {
+            font: 600 8px/1 system-ui, sans-serif;
+            letter-spacing: 0.2em;
+        }
+
+        .fan_hand > .fan_card[data-hand-fan-selected="true"] .card_back_art {
+            border-color: #fff0c0;
+            box-shadow:
+                inset 0 0 0 4px #34334c,
+                inset 0 0 0 5px #ecd2a1,
+                0 0 0 2px #eed6a7dd,
+                0 12px 24px #070813d9,
+                0 0 24px #e4c78c8c;
+        }
+
+        .fan_hand > .fan_card[data-hand-fan-selected="true"]::after {
+            content: "再點一次抽牌";
+            position: absolute;
+            top: -29px;
+            left: 50%;
+            z-index: 3;
+            padding: 4px 8px;
+            border-radius: 20px;
+            background: #f2d49b;
+            color: #251b20;
+            white-space: nowrap;
+            font: 700 11px/1.4 system-ui, sans-serif;
+            transform: translateX(-50%);
+            pointer-events: none;
+        }
+
+        .fan_navigation {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .arrow {
+            width: 38px;
+            height: 36px;
+            padding: 0 0 3px;
+            border: 1px solid #84705066;
+            border-radius: 10px;
+            background: #26273eaa;
+            color: #f0d5a2;
+            cursor: pointer;
+            font: 300 24px/1 system-ui, sans-serif;
+        }
+
+        .arrow:disabled {
+            opacity: 0.4;
+            cursor: default;
+        }
+
+        .page_meter {
+            min-width: 90px;
+            color: #e7ce9f;
+            text-align: center;
+            font-size: 13px;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .fan_hint {
+            margin: 12px 0 0;
+            color: #d1c5b2;
+            font-size: 12px;
+            line-height: 1.7;
+            text-align: center;
+        }
+
+        .secondary {
+            display: block;
+            margin: 20px auto 0;
+            padding: 9px 16px;
+            border: 1px solid #88785c;
+            border-radius: 8px;
+            background: #25283d;
+            color: var(--text);
+            cursor: pointer;
+        }
+
+        .primary {
+            display: block;
+            margin: 22px auto 0;
+            padding: 12px 22px;
+            border: 1px solid #f4d8a2;
+            border-radius: 8px;
+            background: var(--gold);
+            color: #171629;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .reading_stage {
+            text-align: center;
+        }
+
+        .reading_hint {
+            margin: 0 0 18px;
+            color: #c9c7d2;
+            font-size: 14px;
+        }
+
+        .revealed_card {
+            display: block;
+            position: relative;
+            width: 160px;
+            height: 245px;
+            padding: 0;
+            margin: 0 auto;
+            border: 0;
+            border-radius: 9px;
+            background: transparent;
+            cursor: pointer;
+            perspective: 900px;
+        }
+
+        .revealed_card:disabled {
+            cursor: default;
+        }
+
+        .turn {
+            position: absolute;
+            inset: 0;
+            display: block;
+            border-radius: 9px;
+            transform-style: preserve-3d;
+            transition: transform 540ms cubic-bezier(0.25, 0.7, 0.2, 1);
+        }
+
+        .revealed_card.revealed .turn {
+            transform: rotateY(180deg);
+        }
+
+        .face {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border-radius: 9px;
+            overflow: hidden;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+        }
+
+        .face.back {
+            border: 2px solid var(--gold);
+            background:
+                repeating-linear-gradient(135deg, transparent 0 8px, #d1ad7130 9px 10px, transparent 11px 17px),
+                linear-gradient(130deg, #343451, #242641 66%, #34344d);
+            box-shadow: inset 0 0 0 4px #34334c, inset 0 0 0 5px #8e7d65, 0 5px 18px #07081377;
+            color: #ebd8ae;
+            font-size: 31px;
+        }
+
+        .face.front {
+            gap: 13px;
+            padding: 12px;
+            border: 2px solid #ba9963;
+            background: linear-gradient(150deg, #f8f2e5, #ede0c9);
+            box-shadow: inset 0 0 0 4px #f8f2e5, inset 0 0 0 5px #c1a97d, 0 4px 14px #07081355;
+            color: #342a2a;
+            transform: rotateY(180deg);
+        }
+
+        .card_name {
+            font-size: 23px;
+            font-weight: 700;
+        }
+
+        .card_orientation {
+            color: #765b48;
+            font-size: 17px;
+        }
+
+        .reading_result {
+            max-width: 530px;
+            margin: 26px auto 0;
+            text-align: center;
+        }
+
+        .reading_result strong {
+            display: block;
+            margin-bottom: 15px;
+            color: var(--gold);
+            font-size: clamp(25px, 5vw, 32px);
+        }
+
+        .reading_result p {
+            margin: 0;
+            color: var(--text);
+            font-size: 17px;
+            line-height: 1.85;
+        }
+
+        @media (max-width: 470px) {
+            main {
+                width: calc(100% - 18px);
+                padding-top: 26px;
+            }
+
+            header {
+                margin-bottom: 22px;
+            }
+
+            .fan_screen {
+                padding: 14px 5px 15px;
+            }
+
+            .fan_window {
+                padding: 63px 27px 18px;
+            }
+
+            .fan_hand {
+                height: 126px;
+            }
+        }
+
+        @media (hover: none) {
+            /* 觸控裝置只讓真正選中的卡牌浮起，不保留黏住的 hover。 */
+            .slowly-hand-fan-layout > [data-hand-fan-card]:hover:not([data-hand-fan-selected="true"]) {
+                z-index: auto;
+                transform: translateY(var(--slowly-hand-rise, 0px)) rotate(var(--slowly-hand-angle, 0deg));
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .slowly-hand-fan-layout > [data-hand-fan-card],
+            .turn {
+                transition: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <header>
+            <p>給卡稿的寫手專用工具</p>
+            <h1>聽，塔羅的聲音</h1>
+        </header>
+
+        <section id="pick_stage" class="pick_stage" aria-label="選擇一張塔羅牌">
+            <h2>抽一張牌</h2>
+            <div class="fan_screen">
+                <div class="fan_toolbar">22 張大阿爾克那・已洗牌</div>
+                <div id="fan_window" class="fan_window" aria-label="塔羅牌扇形選牌，可左右滑動切頁">
+                    <div id="fan_hand" class="fan_hand"></div>
+                </div>
+                <div class="fan_navigation">
+                    <button type="button" class="arrow" id="previous_page" aria-label="上一頁">‹</button>
+                    <span id="page_meter" class="page_meter" aria-live="polite">1 / 3</span>
+                    <button type="button" class="arrow" id="next_page" aria-label="下一頁">›</button>
+                </div>
+                <p class="fan_hint">左右滑動切頁 · 點一下浮起 · 再點一次抽牌</p>
+            </div>
+            <button type="button" class="secondary" id="reshuffle">重新洗牌</button>
+        </section>
+
+        <section id="reading_stage" class="reading_stage" aria-label="抽牌結果" hidden>
+            <p id="reading_hint" class="reading_hint">牌已抽出，點擊牌背翻開</p>
+            <button type="button" id="reading_card" class="revealed_card" aria-label="點擊翻牌">
+                <span class="turn">
+                    <span class="face back" aria-hidden="true">✦</span>
+                    <span class="face front" aria-hidden="true">
+                        <span id="card_name" class="card_name"></span>
+                        <span id="card_orientation" class="card_orientation"></span>
+                    </span>
+                </span>
+            </button>
+            <div id="reading_result" class="reading_result" aria-live="polite" hidden>
+                <strong>去寫小說。</strong>
+                <p id="card_reason"></p>
+            </div>
+            <button type="button" id="return_pick" class="secondary">收回重選</button>
+            <button type="button" id="draw_again" class="primary" hidden>再抽一張</button>
+        </section>
+    </main>
+
+    <script>
+/* =========================================================
+   慢慢軍火庫｜Hand Fan Layout v1.0.0
+
+   用途：依實際卡片數量與容器寬度，排列重疊的扇形卡片。
+   - 將角度、上下錯位與重疊間距套用到宿主既有元素。
+   - 支援選取視覺狀態、ResizeObserver、手動 refresh。
+   - 多個扇形容器彼此獨立，destroy 可清除本零件的修改。
+
+   不負責：
+   - 建立卡牌資料、卡面 HTML、卡牌美術或遊戲規則。
+   - 點擊、出牌、費用判斷、拖曳、永久保存。
+   - 改寫軍火庫既有 effects/hover/card_fan.css。
+========================================================= */
+(function (global) {
+  "use strict";
+
+  const VERSION = "1.0.0";
+  const ROOT_CLASS_NAME = "slowly-hand-fan-layout";
+  const CARD_SELECTOR = ":scope > [data-hand-fan-card]";
+  const instances = new WeakMap();
+
+  const CARD_PROPERTIES = [
+    "--slowly-hand-angle",
+    "--slowly-hand-rise",
+    "--slowly-hand-overlap"
+  ];
+
+  function resolveRoot(target) {
+    if (typeof target === "string") {
+      return document.querySelector(target);
+    }
+    return target instanceof global.HTMLElement ? target : null;
+  }
+
+  function readFiniteNumber(value, fallback, name, minimum, maximum) {
+    const number = value === undefined ? fallback : value;
+    if (!Number.isFinite(number) || number < minimum || number > maximum) {
+      throw new RangeError(`HandFanLayout 的 ${name} 必須介於 ${minimum} 與 ${maximum}。`);
+    }
+    return number;
+  }
+
+  function normalizeOptions(options) {
+    return {
+      maxFanAngle: readFiniteNumber(options.maxFanAngle, 30, "maxFanAngle", 0, 120),
+      edgeDrop: readFiniteNumber(options.edgeDrop, 20, "edgeDrop", 0, 300),
+      selectedLift: readFiniteNumber(options.selectedLift, 38, "selectedLift", 0, 300),
+      hoverLift: readFiniteNumber(options.hoverLift, 18, "hoverLift", 0, 300),
+      minimumSpacing: readFiniteNumber(options.minimumSpacing, 24, "minimumSpacing", 0, 500),
+      maximumGap: readFiniteNumber(options.maximumGap, 8, "maximumGap", 0, 500)
+    };
+  }
+
+  function getCards(root) {
+    return Array.from(root.querySelectorAll(CARD_SELECTOR));
+  }
+
+  function rememberProperty(element, propertyName) {
+    return {
+      element,
+      propertyName,
+      originalValue: element.style.getPropertyValue(propertyName),
+      originalPriority: element.style.getPropertyPriority(propertyName)
+    };
+  }
+
+  function restoreProperty(savedProperty) {
+    const { element, propertyName, originalValue, originalPriority } = savedProperty;
+    if (originalValue) {
+      element.style.setProperty(propertyName, originalValue, originalPriority);
+    } else {
+      element.style.removeProperty(propertyName);
+    }
+  }
+
+  function create(target, options = {}) {
+    const root = resolveRoot(target);
+    if (!root) {
+      throw new Error("HandFanLayout 找不到扇形手牌容器。");
+    }
+    if (instances.has(root)) {
+      return instances.get(root);
+    }
+
+    let settings = normalizeOptions(options);
+    let selectedCard = null;
+    let destroyed = false;
+    let resizeObserver = null;
+    const hadRootClass = root.classList.contains(ROOT_CLASS_NAME);
+    const originalCardProperties = new Map();
+    const originalSelectionAttributes = new Map();
+    const rootProperties = [
+      rememberProperty(root, "--slowly-hand-selected-lift"),
+      rememberProperty(root, "--slowly-hand-hover-lift")
+    ];
+
+    root.classList.add(ROOT_CLASS_NAME);
+
+    function saveCardOriginals(card) {
+      if (originalCardProperties.has(card)) {
+        return;
+      }
+
+      originalCardProperties.set(
+        card,
+        CARD_PROPERTIES.map(propertyName => rememberProperty(card, propertyName))
+      );
+      originalSelectionAttributes.set(card, card.getAttribute("data-hand-fan-selected"));
+    }
+
+    function assertActive() {
+      if (destroyed) {
+        throw new Error("HandFanLayout 已 destroy，不能繼續操作。");
+      }
+    }
+
+    function refresh() {
+      assertActive();
+      const cards = getCards(root);
+      const cardCount = cards.length;
+
+      root.style.setProperty("--slowly-hand-selected-lift", `${settings.selectedLift}px`);
+      root.style.setProperty("--slowly-hand-hover-lift", `${settings.hoverLift}px`);
+
+      if (selectedCard && !cards.includes(selectedCard)) {
+        selectedCard = null;
+      }
+
+      if (!cardCount) {
+        return { count: 0, spacing: 0 };
+      }
+
+      // 手機、嵌入區塊或整頁都以「容器可用寬度」計算，不綁定 window 寬度。
+      // 卡牌可由宿主自由設計，但同一組卡片應採用相近寬度。
+      const widestCard = Math.max(...cards.map(card => card.offsetWidth));
+      const availableWidth = root.clientWidth;
+      const idealSpacing = widestCard + settings.maximumGap;
+      const spacePerCard = cardCount > 1
+        ? Math.max(settings.minimumSpacing, (availableWidth - widestCard) / (cardCount - 1))
+        : 0;
+      const spacing = cardCount > 1 ? Math.min(idealSpacing, spacePerCard) : 0;
+      const middleIndex = (cardCount - 1) / 2;
+      const furthestDistance = Math.max(middleIndex, 1);
+
+      cards.forEach((card, index) => {
+        saveCardOriginals(card);
+
+        const relativePosition = cardCount === 1
+          ? 0
+          : (index - middleIndex) / furthestDistance;
+        const angle = relativePosition * (settings.maxFanAngle / 2);
+        const verticalOffset = Math.pow(Math.abs(relativePosition), 2) * settings.edgeDrop;
+        const overlappingMargin = index === 0 ? 0 : spacing - widestCard;
+
+        card.style.setProperty("--slowly-hand-angle", `${angle.toFixed(3)}deg`);
+        card.style.setProperty("--slowly-hand-rise", `${verticalOffset.toFixed(2)}px`);
+        card.style.setProperty("--slowly-hand-overlap", `${overlappingMargin.toFixed(2)}px`);
+        card.setAttribute("data-hand-fan-selected", String(card === selectedCard));
+      });
+
+      return { count: cardCount, spacing };
+    }
+
+    const api = {
+      root,
+      get selectedIndex() {
+        return selectedCard ? getCards(root).indexOf(selectedCard) : -1;
+      },
+      refresh,
+      setSelected(index) {
+        assertActive();
+        const cards = getCards(root);
+        if (index === null) {
+          selectedCard = null;
+        } else if (!Number.isInteger(index) || index < 0 || index >= cards.length) {
+          throw new RangeError("HandFanLayout 的選取索引超出目前卡片範圍。");
+        } else {
+          selectedCard = cards[index];
+        }
+        refresh();
+        return api.selectedIndex;
+      },
+      updateOptions(nextOptions) {
+        assertActive();
+        settings = normalizeOptions({ ...settings, ...nextOptions });
+        refresh();
+      },
+      destroy() {
+        if (destroyed) {
+          return;
+        }
+        destroyed = true;
+        resizeObserver?.disconnect();
+        global.removeEventListener("resize", onWindowResize);
+
+        originalCardProperties.forEach(savedProperties => {
+          savedProperties.forEach(restoreProperty);
+        });
+        originalSelectionAttributes.forEach((originalValue, card) => {
+          if (originalValue === null) {
+            card.removeAttribute("data-hand-fan-selected");
+          } else {
+            card.setAttribute("data-hand-fan-selected", originalValue);
+          }
+        });
+        rootProperties.forEach(restoreProperty);
+        if (!hadRootClass) {
+          root.classList.remove(ROOT_CLASS_NAME);
+        }
+        instances.delete(root);
+      }
+    };
+
+    function onWindowResize() {
+      if (!destroyed) {
+        refresh();
+      }
+    }
+
+    instances.set(root, api);
+    try {
+      refresh();
+      if (typeof global.ResizeObserver === "function") {
+        resizeObserver = new global.ResizeObserver(() => {
+          if (!destroyed) {
+            refresh();
+          }
+        });
+        resizeObserver.observe(root);
+      } else {
+        global.addEventListener("resize", onWindowResize);
+      }
+    } catch (error) {
+      api.destroy();
+      throw error;
+    }
+
+    return api;
+  }
+
+  global.SlowlyHandFanLayout = Object.freeze({ VERSION, create });
+})(window);
+
+
+    (function () {
+        "use strict";
+
+        // 每張牌的正位與逆位都有不同理由；不論哪張，結論都只有「去寫小說。」。
+const major_arcana = [
+            {
+                name: "愚者",
+                upright: "故事的第一步不會自己踏出去。主角都敢出發了，你還不敢開檔？",
+                reversed: "準備不足不是罪，但拿準備當藉口拖到天荒地老，就有點離譜。"
+            },
+            {
+                name: "魔術師",
+                upright: "鍵盤、靈感、角色都在，萬事俱備，只差你真的打字。",
+                reversed: "你又在研究寫作工具？魔法杖不是拿來代替正文的。"
+            },
+            {
+                name: "女祭司",
+                upright: "你知道角色藏著什麼秘密，讀者可不知道。不寫，秘密就只能爛在你腦袋裡。",
+                reversed: "別再等神諭了。你現在需要的不是靈感降臨，是第一句話。"
+            },
+            {
+                name: "皇后",
+                upright: "故事得有人養。你把角色生出來，總不能放著他們自生自滅。",
+                reversed: "草稿不必漂亮才能出生。先把字寫出來，再慢慢養大它。"
+            },
+            {
+                name: "皇帝",
+                upright: "你的世界觀有國有法，唯獨缺少作者親自下令：開工。",
+                reversed: "大綱改到第八版還不動筆？控制欲再強，也控不出一章正文。"
+            },
+            {
+                name: "教皇",
+                upright: "寫作的儀式不是點香祈福，是把游標放進正文。",
+                reversed: "不想照套路寫很好，請先把你的反套路真的寫出來。"
+            },
+            {
+                name: "戀人",
+                upright: "你都讓兩個角色對上眼了，接下來總得讓他們說句話吧？",
+                reversed: "他們誤會都三章了，你不寫，誰替他們把話講清楚？"
+            },
+            {
+                name: "戰車",
+                upright: "劇情已經上車，司機卻躲在休息站滑手機。",
+                reversed: "故事失控沒關係，停在原地才是真的沒有方向。"
+            },
+            {
+                name: "力量",
+                upright: "你連角色最難熬的部分都敢構思，還怕寫下第一段？",
+                reversed: "不用硬擠出完美的一章，先馴服今天的兩百字就好。"
+            },
+            {
+                name: "隱者",
+                upright: "把社群關掉十分鐘，角色的聲音可能比通知還響。",
+                reversed: "躲進資料蒐集的山洞太久，讀者會以為作者失蹤了。"
+            },
+            {
+                name: "命運之輪",
+                upright: "靈感轉到你這一格了，別等它再轉一圈才開檔。",
+                reversed: "等運氣好才寫？輪子不會幫你把字滾進文件。"
+            },
+            {
+                name: "正義",
+                upright: "你答應角色會讓他們有結局，現在該履行契約了。",
+                reversed: "你可以偏心某個角色，但不能偏心到只寫他的設定。"
+            },
+            {
+                name: "倒吊人",
+                upright: "換個視角就有新段落。倒著看世界，不等於可以倒著躺平。",
+                reversed: "卡稿不是永久停職。放下「非想通不可」，先寫下一句。"
+            },
+            {
+                name: "死神",
+                upright: "舊章節該結束了。讓劇情往下走，角色才有機會重生。",
+                reversed: "你捨不得刪那段戲，也不能讓全書陪它原地踏步。"
+            },
+            {
+                name: "節制",
+                upright: "不用一口氣寫完一本。今天添一段，故事就會慢慢成形。",
+                reversed: "修三個字休三小時，這個寫作與休息的比例需要重新調配。"
+            },
+            {
+                name: "惡魔",
+                upright: "你都跟這個坑簽下契約了，別裝作自己只是路過。",
+                reversed: "先從「一定要完美」的枷鎖裡出來，把不完美的正文寫下去。"
+            },
+            {
+                name: "高塔",
+                upright: "設定崩了？恭喜找到轉折，快把瓦礫寫成新劇情。",
+                reversed: "你明知道那段劇情撐不住，拖著不寫也不會自動修復。"
+            },
+            {
+                name: "星星",
+                upright: "你想讓讀者看到的那點光，得先由你把它寫在紙上。",
+                reversed: "沒信心也能寫。星星被雲遮住的時候，稿件還是可以存檔。"
+            },
+            {
+                name: "月亮",
+                upright: "故事裡有迷霧很好，作者自己也迷路就先寫一段探路。",
+                reversed: "別把「我還沒想清楚」當成咒語。寫出來，才看得清。"
+            },
+            {
+                name: "太陽",
+                upright: "天都亮了，角色還困在昨天的場景，你真的忍心？",
+                reversed: "今天狀態不發光也沒關係，陰天照樣可以打字。"
+            },
+            {
+                name: "審判",
+                upright: "未完成的坑正在點名。輪到你回應了。",
+                reversed: "你可以假裝沒聽到催稿聲，但存檔日期會替你作證。"
+            },
+            {
+                name: "世界",
+                upright: "最後一個句點還沒落下，這個世界就不算真正完成。",
+                reversed: "明明只差收尾，你卻開始想下一本？先送這本出場。"
+            }
+        ];
+
+        const page_size = 10;
+        const page_count = Math.ceil(major_arcana.length / page_size);
+        const fan_hand = document.getElementById("fan_hand");
+        const fan_window = document.getElementById("fan_window");
+        const previous_page = document.getElementById("previous_page");
+        const next_page = document.getElementById("next_page");
+        const page_meter = document.getElementById("page_meter");
+        const pick_stage = document.getElementById("pick_stage");
+        const reading_stage = document.getElementById("reading_stage");
+        const reading_card = document.getElementById("reading_card");
+        const reading_hint = document.getElementById("reading_hint");
+        const reading_result = document.getElementById("reading_result");
+        const return_pick = document.getElementById("return_pick");
+        const draw_again = document.getElementById("draw_again");
+
+        let deck = [];
+        let current_page = 0;
+        let focused_index = null;
+        let selected_card = null;
+        let fan_layout = null;
+        let current_phase = "pick";
+        let last_drag_at = -Infinity;
+
+        function shuffle_deck() {
+            const shuffled = major_arcana.map(card => ({
+                ...card,
+                orientation: Math.random() < 0.5 ? "正位" : "逆位"
+            }));
+
+            for (let index = shuffled.length - 1; index > 0; index--) {
+                const other = Math.floor(Math.random() * (index + 1));
+                [shuffled[index], shuffled[other]] = [shuffled[other], shuffled[index]];
+            }
+
+            return shuffled;
+        }
+
+        function card_back_html() {
+            return '<span class="card_back_art" aria-hidden="true"><span class="diamond"></span><span class="small_mark">TAROT</span></span>';
+        }
+
+        function render_fan() {
+            if (fan_layout) {
+                fan_layout.destroy();
+                fan_layout = null;
+            }
+
+            const first_index = current_page * page_size;
+            const last_index = Math.min(first_index + page_size, deck.length);
+            const buttons = [];
+
+            for (let index = first_index; index < last_index; index++) {
+                buttons.push(`<button type="button" class="fan_card" data-hand-fan-card data-index="${index}" aria-pressed="false" aria-label="第 ${current_page + 1} 頁，第 ${index - first_index + 1} 張牌，點擊浮起">${card_back_html()}</button>`);
+            }
+
+            fan_hand.innerHTML = buttons.join("");
+            fan_layout = SlowlyHandFanLayout.create(fan_hand, {
+                maxFanAngle: 26,
+                edgeDrop: 13,
+                selectedLift: 43,
+                hoverLift: 12,
+                minimumSpacing: 17,
+                maximumGap: 5
+            });
+
+            page_meter.textContent = `${current_page + 1} / ${page_count}`;
+            previous_page.disabled = current_page === 0;
+            next_page.disabled = current_page === page_count - 1;
+        }
+
+        function clear_focus() {
+            if (focused_index === null) {
+                return;
+            }
+
+            fan_layout?.setSelected(null);
+            const button = fan_hand.querySelector(`[data-index="${focused_index}"]`);
+            if (button) {
+                button.setAttribute("aria-pressed", "false");
+                button.setAttribute("aria-label", "點擊浮起");
+            }
+            focused_index = null;
+        }
+
+        function switch_page(next_index) {
+            if (current_phase !== "pick" || next_index < 0 || next_index >= page_count || next_index === current_page) {
+                return;
+            }
+
+            clear_focus();
+            current_page = next_index;
+            render_fan();
+        }
+
+        function focus_card(deck_index) {
+            if (current_phase !== "pick") {
+                return;
+            }
+
+            if (focused_index === deck_index) {
+                const chosen_card = deck[deck_index];
+                if (!chosen_card) {
+                    return;
+                }
+
+                selected_card = chosen_card;
+                current_phase = "ready";
+                clear_focus();
+                pick_stage.hidden = true;
+                reading_stage.hidden = false;
+                reading_card.classList.remove("revealed");
+                reading_card.disabled = false;
+                reading_card.setAttribute("aria-label", "點擊翻牌");
+                document.getElementById("card_name").textContent = chosen_card.name;
+                document.getElementById("card_orientation").textContent = chosen_card.orientation;
+                reading_hint.textContent = "牌已抽出，點擊牌背翻開";
+                reading_result.hidden = true;
+                return_pick.hidden = false;
+                draw_again.hidden = true;
+                return;
+            }
+
+            clear_focus();
+            const card_buttons = Array.from(fan_hand.querySelectorAll("[data-hand-fan-card]"));
+            const index_in_page = card_buttons.findIndex(card => Number(card.dataset.index) === deck_index);
+            if (index_in_page < 0) {
+                return;
+            }
+
+            focused_index = deck_index;
+            fan_layout.setSelected(index_in_page);
+            card_buttons[index_in_page].setAttribute("aria-pressed", "true");
+            card_buttons[index_in_page].setAttribute("aria-label", "已浮起，再點一次抽牌");
+        }
+
+        function reveal_card() {
+            if (current_phase !== "ready" || !selected_card) {
+                return;
+            }
+
+            current_phase = "revealed";
+            const reason = selected_card.orientation === "正位" ? selected_card.upright : selected_card.reversed;
+            document.getElementById("card_reason").textContent = reason;
+            reading_card.classList.add("revealed");
+            reading_card.disabled = true;
+            reading_card.setAttribute("aria-label", `${selected_card.name}，${selected_card.orientation}。去寫小說。${reason}`);
+            reading_hint.textContent = "";
+            reading_result.hidden = false;
+            return_pick.hidden = true;
+            draw_again.hidden = false;
+        }
+
+        function return_to_pick() {
+            if (current_phase !== "ready") {
+                return;
+            }
+
+            selected_card = null;
+            current_phase = "pick";
+            reading_stage.hidden = true;
+            pick_stage.hidden = false;
+            render_fan();
+        }
+
+        function restart() {
+            clear_focus();
+            deck = shuffle_deck();
+            selected_card = null;
+            current_phase = "pick";
+            current_page = 0;
+            pick_stage.hidden = false;
+            reading_stage.hidden = true;
+            render_fan();
+            window.scrollTo({ top: 0, behavior: "instant" });
+        }
+
+        fan_hand.addEventListener("click", event => {
+            if (performance.now() - last_drag_at < 250) {
+                return;
+            }
+
+            const button = event.target.closest("[data-index]");
+            if (button) {
+                focus_card(Number(button.dataset.index));
+            }
+        });
+
+        previous_page.addEventListener("click", () => switch_page(current_page - 1));
+        next_page.addEventListener("click", () => switch_page(current_page + 1));
+        document.getElementById("reshuffle").addEventListener("click", restart);
+        reading_card.addEventListener("click", reveal_card);
+        return_pick.addEventListener("click", return_to_pick);
+        draw_again.addEventListener("click", restart);
+
+        // 與原本塞爾特十字相同：左右滑動換頁；點擊只選牌，不誤判為滑動。
+        let swipe = null;
+
+        fan_window.addEventListener("touchstart", event => {
+            if (event.touches.length !== 1) {
+                return;
+            }
+
+            const touch = event.touches[0];
+            const target = document.elementFromPoint(touch.clientX, touch.clientY)?.closest("[data-index]");
+            swipe = {
+                type: "touch",
+                x: touch.clientX,
+                y: touch.clientY,
+                deck_index: target ? Number(target.dataset.index) : null
+            };
+        }, { passive: true });
+
+        fan_window.addEventListener("touchend", event => {
+            if (!swipe || swipe.type !== "touch" || !event.changedTouches.length) {
+                return;
+            }
+
+            const touch = event.changedTouches[0];
+            const delta_x = touch.clientX - swipe.x;
+            const delta_y = touch.clientY - swipe.y;
+            const deck_index = swipe.deck_index;
+            swipe = null;
+
+            if (Math.abs(delta_x) > 42 && Math.abs(delta_x) > Math.abs(delta_y) * 1.3) {
+                event.preventDefault();
+                last_drag_at = performance.now();
+                switch_page(current_page + (delta_x < 0 ? 1 : -1));
+            } else if (Math.abs(delta_x) < 15 && Math.abs(delta_y) < 15 && deck_index !== null) {
+                event.preventDefault();
+                last_drag_at = performance.now();
+                focus_card(deck_index);
+            }
+        }, { passive: false });
+
+        fan_window.addEventListener("touchcancel", () => {
+            swipe = null;
+        });
+
+        fan_window.addEventListener("pointerdown", event => {
+            if (event.pointerType !== "mouse" || event.button !== 0) {
+                return;
+            }
+
+            swipe = { type: "mouse", id: event.pointerId, x: event.clientX, y: event.clientY };
+        });
+
+        fan_window.addEventListener("pointerup", event => {
+            if (!swipe || swipe.type !== "mouse" || event.pointerId !== swipe.id) {
+                return;
+            }
+
+            const delta_x = event.clientX - swipe.x;
+            const delta_y = event.clientY - swipe.y;
+            swipe = null;
+            if (Math.abs(delta_x) > 42 && Math.abs(delta_x) > Math.abs(delta_y) * 1.3) {
+                last_drag_at = performance.now();
+                switch_page(current_page + (delta_x < 0 ? 1 : -1));
+            }
+        });
+
+        fan_window.addEventListener("pointercancel", () => {
+            if (swipe?.type === "mouse") {
+                swipe = null;
+            }
+        });
+
+        restart();
+    })();
+    </script>
+</body>
+</html>
