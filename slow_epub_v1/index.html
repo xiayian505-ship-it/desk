@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#ffffff" />
+    <title>慢 慢 | EPUB 製作器</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <script src="js/storage.js" defer></script>
+    <script src="js/text_import.js" defer></script>
+    <script src="js/zip_writer.js" defer></script>
+    <script src="js/epub.js" defer></script>
+    <script src="js/app.js" defer></script>
+</head>
+<body>
+    <header class="site-header">
+        <h1>慢 慢 <span class="muted">| EPUB 製作器</span></h1>
+    </header>
+
+    <main class="app-container">
+        <section id="home_view" class="view">
+            <p class="explanation">貼上小說或匯入 TXT，編輯後就能在手機匯出 EPUB。</p>
+            <div class="action-row">
+                <button id="create_book_button" type="button">＋ 新增書籍</button>
+                <label class="button-outline file-button">
+                    匯入專案備份
+                    <input id="restore_project_input" type="file" accept=".json,application/json" />
+                </label>
+            </div>
+            <h2>我的書籍</h2>
+            <div id="books_list" class="row-list"></div>
+            <p id="home_empty" class="muted">還沒有專案，先新增一本書吧。</p>
+        </section>
+
+        <section id="book_view" class="view" hidden>
+            <div class="top-row">
+                <button id="book_home_button" class="text-button" type="button">← 書籍列表</button>
+                <span id="save_status" class="muted" aria-live="polite">已暫存</span>
+            </div>
+            <h2 id="book_heading"></h2>
+            <div class="action-row">
+                <button id="export_epub_button" type="button">匯出 EPUB</button>
+                <button id="backup_project_button" class="button-outline" type="button">備份專案</button>
+            </div>
+
+            <details id="metadata_details" class="panel">
+                <summary>書籍資料與封面</summary>
+                <div class="panel-inner form-grid">
+                    <label>書名
+                        <input id="book_title" type="text" maxlength="200" autocomplete="off" />
+                    </label>
+                    <label>作者
+                        <input id="book_author" type="text" maxlength="200" autocomplete="off" />
+                    </label>
+                    <label>語言
+                        <select id="book_language">
+                            <option value="zh-TW">繁體中文（zh-TW）</option>
+                            <option value="zh-CN">簡體中文（zh-CN）</option>
+                            <option value="en">英文（en）</option>
+                        </select>
+                    </label>
+                    <label>出版者（可空）
+                        <input id="book_publisher" type="text" autocomplete="off" />
+                    </label>
+                    <label>簡介（可空）
+                        <textarea id="book_description" rows="3"></textarea>
+                    </label>
+                    <label>版權資訊（可空）
+                        <textarea id="book_rights" rows="2" placeholder="例如：Copyright © 2026 作者筆名"></textarea>
+                    </label>
+                    <label>封面（JPG／PNG，可空）
+                        <input id="cover_file_input" type="file" accept="image/jpeg,image/png,.jpg,.jpeg,.png" />
+                    </label>
+                    <div class="cover-area">
+                        <img id="cover_preview" alt="目前封面" hidden />
+                        <button id="remove_cover_button" class="button-outline" type="button" hidden>移除封面</button>
+                    </div>
+                </div>
+            </details>
+
+            <details id="import_details" class="panel">
+                <summary>貼上文字／匯入 TXT</summary>
+                <div class="panel-inner">
+                    <label>選擇 TXT（UTF-8；亦可改用 Big5）
+                        <input id="txt_file_input" type="file" accept=".txt,text/plain" />
+                    </label>
+                    <label>讀取編碼
+                        <select id="txt_encoding">
+                            <option value="utf-8">UTF-8</option>
+                            <option value="big5">Big5</option>
+                        </select>
+                    </label>
+                    <label>原稿文字
+                        <textarea id="import_text" rows="9" placeholder="從三星筆記複製並貼在這裡……"></textarea>
+                    </label>
+                    <p class="hint">匯入會新增在現有內容後面，不會覆蓋原本章節。保留原始換行與空白。</p>
+                    <div class="action-row">
+                        <button id="auto_import_button" type="button">自動辨識章節並匯入</button>
+                        <button id="plain_import_button" class="button-outline" type="button">原樣新增成一頁</button>
+                    </div>
+                </div>
+            </details>
+
+            <section class="section-list-wrapper">
+                <div class="section-heading">
+                    <h3>章節與內頁</h3>
+                    <span id="book_word_count" class="muted"></span>
+                </div>
+                <div class="action-row">
+                    <button id="add_chapter_button" class="button-outline" type="button">＋ 新增章節</button>
+                    <button id="add_page_button" class="button-outline" type="button">＋ 新增內頁／番外</button>
+                </div>
+                <p class="hint">各章可單獨編輯；上下移動可調整 EPUB 閱讀順序。</p>
+                <div id="sections_list" class="row-list"></div>
+                <p id="sections_empty" class="muted" hidden>目前沒有內容，請貼上原稿或新增章節。</p>
+            </section>
+
+            <details id="search_details" class="panel">
+                <summary>全書搜尋與取代</summary>
+                <div class="panel-inner">
+                    <label>尋找
+                        <input id="search_text" type="text" autocomplete="off" />
+                    </label>
+                    <label>取代為
+                        <input id="replace_text" type="text" autocomplete="off" />
+                    </label>
+                    <div class="action-row">
+                        <button id="search_button" class="button-outline" type="button">搜尋整本書</button>
+                        <button id="replace_all_button" class="button-outline" type="button">全書取代</button>
+                    </div>
+                    <div id="search_results" aria-live="polite"></div>
+                </div>
+            </details>
+            <p class="bottom-hint">草稿儲存在這個瀏覽器的裝置中。請定期匯出「專案備份」，避免清除瀏覽器資料造成遺失。</p>
+        </section>
+
+        <section id="editor_view" class="view" hidden>
+            <div class="top-row">
+                <button id="editor_back_button" class="text-button" type="button">← 返回章節列表</button>
+                <span id="editor_save_status" class="muted" aria-live="polite">已暫存</span>
+            </div>
+            <label>章節／內頁名稱
+                <input id="section_title" type="text" autocomplete="off" />
+            </label>
+            <div class="editor-options">
+                <label>首行縮排
+                    <select id="section_indent">
+                        <option value="preserve">保留原稿空格</option>
+                        <option value="css">CSS 縮排 2 字</option>
+                        <option value="none">不縮排</option>
+                    </select>
+                </label>
+                <label>對齊
+                    <select id="section_align">
+                        <option value="left">靠左</option>
+                        <option value="justify">左右對齊</option>
+                        <option value="center">置中</option>
+                        <option value="right">靠右</option>
+                    </select>
+                </label>
+                <label>行距
+                    <select id="section_line_height">
+                        <option value="1.4">1.4</option>
+                        <option value="1.6">1.6</option>
+                        <option value="1.8">1.8</option>
+                        <option value="2.0">2.0</option>
+                    </select>
+                </label>
+                <label>段距
+                    <select id="section_gap">
+                        <option value="0">0</option>
+                        <option value="0.5">0.5 字</option>
+                        <option value="1">1 字</option>
+                    </select>
+                </label>
+            </div>
+            <label class="checkbox-line">
+                <input id="section_in_toc" type="checkbox" />
+                列在 EPUB 目錄中
+            </label>
+            <label class="editor-label" for="section_body">正文（可直接改字、加字或刪除）</label>
+            <textarea id="section_body" rows="18" spellcheck="false" placeholder="在這裡輸入內容……"></textarea>
+            <div class="editor-footer">
+                <span id="section_char_count" class="muted"></span>
+                <button id="manual_split_button" class="button-outline" type="button">以游標所在行分章</button>
+            </div>
+            <p class="hint">手動分章：把游標放在獨立一行的章節標題上，再按「以游標所在行分章」。如果是第一行，就直接設為本章標題。</p>
+            <details id="preview_details" class="panel">
+                <summary>預覽本章排版</summary>
+                <div id="section_preview" class="epub-preview"></div>
+            </details>
+        </section>
+    </main>
+    <div id="notification" class="notification" role="status" hidden></div>
+</body>
+</html>
