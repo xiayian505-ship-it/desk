@@ -348,3 +348,30 @@ h3 {
         grid-template-columns: 1fr 1fr;
     }
 }
+
+/* The EPUB contents preview is isolated in a ShadowRoot by app.js.
+   These rules only size its host; EPUB styles live in epub.js. */
+.toc-preview {
+    border: 1px solid #d3d3d3;
+    min-height: 160px;
+    padding: 1rem;
+    overflow-wrap: anywhere;
+}
+
+#toc_css_error {
+    color: #a00000;
+}
+
+input[type="color"] {
+    min-height: 42px;
+    padding: 0.2rem;
+}
+
+.toc-underline-control {
+    align-self: center;
+}
+
+#toc_custom_css {
+    font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    font-size: 0.9rem;
+}

@@ -5,12 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="theme-color" content="#ffffff" />
     <title>慢 慢 | EPUB 製作器</title>
-    <link rel="stylesheet" href="css/style.css?v=1.1" />
-    <script src="js/storage.js?v=1.1" defer></script>
-    <script src="js/text_import.js?v=1.1" defer></script>
-    <script src="js/zip_writer.js?v=1.1" defer></script>
-    <script src="js/epub.js?v=1.1" defer></script>
-    <script src="js/app.js?v=1.1" defer></script>
+    <link rel="stylesheet" href="css/style.css?v=1.2" />
+    <script src="js/storage.js?v=1.2" defer></script>
+    <script src="js/text_import.js?v=1.2" defer></script>
+    <script src="js/zip_writer.js?v=1.2" defer></script>
+    <script src="js/epub.js?v=1.2" defer></script>
+    <script src="js/app.js?v=1.2" defer></script>
 </head>
 <body>
     <header class="site-header">
@@ -115,6 +115,53 @@
                     匯出時自動產生目錄內頁
                 </label>
                 <p class="hint">目錄內頁會放在正文之前，依勾選「列在 EPUB 目錄中」的章節自動更新，點選名稱即可跳轉。</p>
+                <details id="toc_style_details" class="panel">
+                    <summary>目錄樣式與即時預覽</summary>
+                    <div class="panel-inner">
+                        <p class="hint">這裡只調整書內可翻閱的「目錄內頁」，不會改變閱讀器側邊欄的目錄外觀。</p>
+                        <div class="editor-options">
+                            <label>目錄文字顏色
+                                <input id="toc_color" type="color" value="#242424" />
+                            </label>
+                            <label>目錄標題大小（em）
+                                <input id="toc_heading_size" type="number" min="1" max="3" step="0.1" value="1.5" />
+                            </label>
+                            <label>章節文字大小（em）
+                                <input id="toc_link_size" type="number" min="0.8" max="2.5" step="0.1" value="1" />
+                            </label>
+                            <label>章節行距
+                                <input id="toc_line_height" type="number" min="1" max="3" step="0.1" value="1.8" />
+                            </label>
+                            <label>章節間距（em）
+                                <input id="toc_item_gap" type="number" min="0" max="3" step="0.1" value="0.5" />
+                            </label>
+                            <label>章節縮排（em）
+                                <input id="toc_indent" type="number" min="0" max="5" step="0.1" value="0" />
+                            </label>
+                            <label>對齊方式
+                                <select id="toc_align">
+                                    <option value="left">靠左</option>
+                                    <option value="center">置中</option>
+                                    <option value="right">靠右</option>
+                                </select>
+                            </label>
+                            <label class="checkbox-line toc-underline-control">
+                                <input id="toc_underline" type="checkbox" />
+                                顯示連結底線
+                            </label>
+                        </div>
+                        <label for="toc_custom_css">進階：自訂目錄 CSS（可空）</label>
+                        <textarea id="toc_custom_css" rows="7" maxlength="12000" spellcheck="false" placeholder="#toc a {&#10;    font-weight: bold;&#10;}" ></textarea>
+                        <p class="hint">請用 <code>#toc</code>、<code>#toc h1</code>、<code>#toc ol</code>、<code>#toc li</code>、<code>#toc a</code> 等選擇器；自訂 CSS 會排在基本設定之後。為避免外部資源，禁止 @ 規則與 url()。</p>
+                        <p id="toc_css_error" class="hint" role="status" hidden></p>
+                        <div class="action-row">
+                            <button id="toc_reset_button" class="button-outline" type="button">恢復預設目錄樣式</button>
+                        </div>
+                        <p class="hint">以下直接預覽目前章節的目錄效果。點章名會顯示對應的跳轉目標，實際閱讀效果仍以閱讀器為準。</p>
+                        <div id="toc_preview" class="toc-preview"></div>
+                        <p id="toc_preview_jump" class="hint" aria-live="polite"></p>
+                    </div>
+                </details>
                 <p class="hint">各章可單獨編輯；上下移動可調整 EPUB 閱讀順序。</p>
                 <div id="sections_list" class="row-list"></div>
                 <p id="sections_empty" class="muted" hidden>目前沒有內容，請貼上原稿或新增章節。</p>

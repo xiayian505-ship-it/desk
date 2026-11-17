@@ -43,6 +43,116 @@
         return { indent, align, line_height, gap };
     }
 
+    // Contents-page settings belong to each book. The EPUB navigation panel
+    // remains controlled by the reader, so only nav.xhtml receives this CSS.
+    const default_toc_style = Object.freeze({
+        color: "#242424",
+        heading_size: 1.5,
+        link_size: 1,
+        line_height: 1.8,
+        item_gap: 0.5,
+        indent: 0,
+        align: "left",
+        underline: false,
+        custom_css: ""
+    });
+
+    function toc_default_style() {
+        return { ...default_toc_style };
+    }
+
+    function toc_number(value, fallback, minimum, maximum) {
+        const number = Number(value);
+        return Number.isFinite(number) && number >= minimum && number <= maximum
+            ? number
+            : fallback;
+    }
+
+    function normalize_toc_style(value) {
+        const source = value && typeof value === "object" ? value : {};
+
+        return {
+            color: /^#[0-9a-fA-F]{6}$/.test(source.color || "")
+                ? source.color
+                : default_toc_style.color,
+            heading_size: toc_number(source.heading_size, 1.5, 1, 3),
+            link_size: toc_number(source.link_size, 1, 0.8, 2.5),
+            line_height: toc_number(source.line_height, 1.8, 1, 3),
+            item_gap: toc_number(source.item_gap, 0.5, 0, 3),
+            indent: toc_number(source.indent, 0, 0, 5),
+            align: ["left", "center", "right"].includes(source.align)
+                ? source.align
+                : "left",
+            underline: source.underline === true,
+            custom_css: String(source.custom_css ?? "").slice(0, 12000)
+        };
+    }
+
+    function validate_toc_css(custom_css) {
+        const css = String(custom_css ?? "");
+
+        // Keep the EPUB self-contained. Raw CSS is inserted into a separate
+        // file rather than HTML, and only on nav.xhtml (not novel chapters).
+        // Prevent external requests, at-rules, and style-tag terminators.
+        if (/@|url\s*\(|expression\s*\(|(?:-moz-binding|behavior)\s*:|<\s*\/?\s*style/i.test(css)) {
+            throw new Error("自訂目錄 CSS 不可使用 @ 規則、url()、外部資源或 HTML 標籤。");
+        }
+
+        if (css.length > 12000) {
+            throw new Error("自訂目錄 CSS 不可超過 12000 字元。");
+        }
+
+        return css;
+    }
+
+    function build_toc_css(value) {
+        const style = normalize_toc_style(value);
+        const custom_css = validate_toc_css(style.custom_css);
+
+        return `@charset "utf-8";
+
+#toc {
+    font-family: serif;
+    color: ${style.color};
+}
+
+#toc h1 {
+    font-size: ${style.heading_size}em;
+    text-align: center;
+    line-height: 1.5;
+    margin: 1.5em 0 1.8em;
+}
+
+#toc ol {
+    list-style: none;
+    padding-left: ${style.indent}em;
+    margin: 0;
+    line-height: ${style.line_height};
+}
+
+#toc li {
+    margin: 0 0 ${style.item_gap}em;
+    text-align: ${style.align};
+}
+
+#toc a,
+#toc a:link,
+#toc a:visited {
+    color: ${style.color};
+    font-size: ${style.link_size}em;
+    text-decoration: ${style.underline ? "underline" : "none"};
+}
+
+/* 自訂目錄 CSS：以下樣式在基本設定後套用。 */
+${custom_css}
+`;
+    }
+
+    function get_toc_sections(sections) {
+        const listed_sections = sections.filter((section) => section.include_toc !== false);
+        return listed_sections.length ? listed_sections : sections.slice(0, 1);
+    }
+
     function adjust_line_for_indent(text, indent) {
         if (indent === "css" || indent === "none") {
             return text.replace(/^[ \t\u3000]+/, "");
@@ -95,8 +205,7 @@ ${section_text_html(section.body, format)}
     }
 
     function navigation_document(book, sections, language) {
-        const all_toc_sections = sections.filter((section) => section.include_toc !== false);
-        const toc_sections = all_toc_sections.length ? all_toc_sections : sections.slice(0, 1);
+        const toc_sections = get_toc_sections(sections);
         const items = toc_sections.map((section) => (
             `            <li><a href="text/${section.filename}">${escape_xml(safe_xml_text(section.title || "未命名頁面"))}</a></li>`
         )).join("\n");
@@ -108,6 +217,7 @@ ${section_text_html(section.body, format)}
     <meta charset="utf-8" />
     <title>目錄</title>
     <link rel="stylesheet" type="text/css" href="styles/book.css" />
+    <link rel="stylesheet" type="text/css" href="styles/toc.css" />
 </head>
 <body>
     <nav epub:type="toc" id="toc">
@@ -201,6 +311,7 @@ ${optional_meta}
     <manifest>
         <item id="nav" href="nav.xhtml" media-type="application/xhtml+xml" properties="nav" />
         <item id="style" href="styles/book.css" media-type="text/css" />
+        <item id="toc-style" href="styles/toc.css" media-type="text/css" />
 ${cover_manifest}
 ${manifest_sections}
     </manifest>
@@ -315,6 +426,7 @@ nav ol {
                 content: `<?xml version="1.0" encoding="utf-8"?>\n<container version="1.0" xmlns="urn:oasis:names:tc:opendocument:xmlns:container">\n    <rootfiles>\n        <rootfile full-path="OEBPS/package.opf" media-type="application/oebps-package+xml" />\n    </rootfiles>\n</container>`
             },
             { name: "OEBPS/styles/book.css", content: book_css },
+            { name: "OEBPS/styles/toc.css", content: build_toc_css(book.toc_style) },
             { name: "OEBPS/nav.xhtml", content: navigation_document(book, sections, language) },
             {
                 name: "OEBPS/package.opf",
@@ -340,6 +452,10 @@ nav ol {
     window.SlowEpub = {
         export_epub,
         sanitize_format,
-        adjust_line_for_indent
+        adjust_line_for_indent,
+        toc_default_style,
+        normalize_toc_style,
+        build_toc_css,
+        get_toc_sections
     };
 }());

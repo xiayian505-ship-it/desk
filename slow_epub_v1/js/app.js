@@ -87,6 +87,7 @@
             rights: "",
             cover: null,
             generate_toc_page: false,
+            toc_style: epub.toc_default_style(),
             sections: [],
             created_at: timestamp,
             updated_at: timestamp
@@ -107,6 +108,7 @@
         normalized.description = String(book.description ?? "");
         normalized.rights = String(book.rights ?? "");
         normalized.generate_toc_page = book.generate_toc_page === true;
+        normalized.toc_style = epub.normalize_toc_style(book.toc_style);
         normalized.sections = Array.isArray(book.sections)
             ? book.sections.map((section) => ({
                 id: String(section.id || create_id()),
@@ -266,10 +268,130 @@
         get_element("book_description").value = current_book.description;
         get_element("book_rights").value = current_book.rights;
         get_element("generate_toc_page").checked = current_book.generate_toc_page;
+        render_toc_settings();
         render_cover();
         render_sections();
         set_save_status("已暫存");
         show_view("book_view");
+    }
+
+    const toc_control_fields = {
+        toc_color: "color",
+        toc_heading_size: "heading_size",
+        toc_link_size: "link_size",
+        toc_line_height: "line_height",
+        toc_item_gap: "item_gap",
+        toc_indent: "indent",
+        toc_align: "align",
+        toc_underline: "underline",
+        toc_custom_css: "custom_css"
+    };
+
+    function render_toc_settings() {
+        const style = current_book.toc_style;
+
+        for (const [control_id, key] of Object.entries(toc_control_fields)) {
+            const control = get_element(control_id);
+
+            if (control.type === "checkbox") {
+                control.checked = style[key];
+            } else {
+                control.value = style[key];
+            }
+        }
+
+        render_toc_preview();
+    }
+
+    function render_toc_preview() {
+        if (!current_book) {
+            return;
+        }
+
+        const error_message = get_element("toc_css_error");
+        const host = get_element("toc_preview");
+        const shadow = host.shadowRoot || host.attachShadow({ mode: "open" });
+        const fragment = document.createDocumentFragment();
+        const style_element = document.createElement("style");
+
+        try {
+            // Same CSS text is exported to OEBPS/styles/toc.css. Shadow DOM
+            // confines user-authored selectors to this preview on the site.
+            style_element.textContent = `:host { display: block; font-family: serif; }
+` +
+                epub.build_toc_css(current_book.toc_style);
+            error_message.hidden = true;
+            error_message.textContent = "";
+        } catch (error) {
+            error_message.textContent = `CSS 設定有問題：${error.message}`;
+            error_message.hidden = false;
+            style_element.textContent = epub.build_toc_css(epub.toc_default_style());
+        }
+
+        const nav = document.createElement("nav");
+        nav.id = "toc";
+        const title = create_text_element("h1", "目錄");
+        const list = document.createElement("ol");
+        const sections = epub.get_toc_sections(current_book.sections);
+
+        for (const [index, section] of sections.entries()) {
+            const item = document.createElement("li");
+            const link = document.createElement("a");
+            link.textContent = section.title || "未命名頁面";
+            // This is the same relative path used by nav.xhtml in the EPUB.
+            const position = current_book.sections.indexOf(section);
+            link.href = `text/section-${String(position + 1).padStart(3, "0")}.xhtml`;
+            link.dataset.target_title = section.title || "未命名頁面";
+            item.append(link);
+            list.append(item);
+        }
+
+        if (!sections.length) {
+            list.append(create_text_element("li", "新增章節後，這裡會出現目錄。"));
+        }
+
+        nav.append(title, list);
+        fragment.append(style_element, nav);
+        shadow.replaceChildren(fragment);
+    }
+
+    function update_toc_style(control_id, control) {
+        if (!current_book) {
+            return;
+        }
+
+        const key = toc_control_fields[control_id];
+        const numeric_keys = ["heading_size", "link_size", "line_height", "item_gap", "indent"];
+        let value = control.type === "checkbox" ? control.checked : control.value;
+
+        if (numeric_keys.includes(key)) {
+            const number = Number(value);
+            const minimum = Number(control.min);
+            const maximum = Number(control.max);
+
+            // Number inputs are allowed to be briefly empty while typing.
+            // Wait for a complete in-range number before persisting it.
+            if (!value || !Number.isFinite(number) || number < minimum || number > maximum) {
+                return;
+            }
+
+            value = number;
+        }
+
+        current_book.toc_style[key] = value;
+        schedule_save();
+        render_toc_preview();
+    }
+
+    function reset_toc_style() {
+        if (!window.confirm("要恢復預設目錄樣式，並清除進階自訂 CSS 嗎？")) {
+            return;
+        }
+
+        current_book.toc_style = epub.toc_default_style();
+        render_toc_settings();
+        schedule_save();
+        notify("已恢復預設目錄樣式。");
     }
 
     function render_cover() {
@@ -919,6 +1041,31 @@
         get_element("generate_toc_page").addEventListener("change", (event) => {
             current_book.generate_toc_page = event.target.checked;
             schedule_save();
+        });
+        for (const control_id of Object.keys(toc_control_fields)) {
+            const control = get_element(control_id);
+            const event_name = control.tagName === "SELECT" || control.type === "checkbox"
+                ? "change"
+                : "input";
+            control.addEventListener(event_name, () => update_toc_style(control_id, control));
+        }
+
+        get_element("toc_reset_button").addEventListener("click", reset_toc_style);
+        get_element("toc_style_details").addEventListener("toggle", () => {
+            if (get_element("toc_style_details").open) {
+                render_toc_preview();
+            }
+        });
+        get_element("toc_preview").addEventListener("click", (event) => {
+            const link = event.composedPath().find((item) =>
+                item instanceof HTMLAnchorElement && item.dataset.target_title
+            );
+
+            if (link) {
+                event.preventDefault();
+                get_element("toc_preview_jump").textContent =
+                    `跳轉測試：將前往「${link.dataset.target_title}」。`;
+            }
         });
         get_element("txt_file_input").addEventListener("change", read_txt_file);
         get_element("txt_encoding").addEventListener("change", read_txt_file);
