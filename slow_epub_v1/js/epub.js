@@ -137,6 +137,16 @@
     text-align: ${style.align};
 }
 
+#toc ol ol {
+    padding-left: 1.5em;
+    margin-top: ${style.item_gap}em;
+}
+
+#toc li > span {
+    color: ${style.color};
+    font-size: ${style.link_size}em;
+}
+
 #toc a,
 #toc a:link,
 #toc a:visited {
@@ -151,8 +161,49 @@ ${custom_css}
     }
 
     function get_toc_sections(sections) {
-        const listed_sections = sections.filter((section) => section.include_toc !== false);
-        return listed_sections.length ? listed_sections : sections.slice(0, 1);
+        const physical_sections = sections.filter((section) => section.type !== "group");
+        const listed_sections = physical_sections.filter((section) => section.include_toc !== false);
+        return listed_sections.length ? listed_sections : physical_sections.slice(0, 1);
+    }
+
+    function get_toc_tree(sections) {
+        // EPUB 3 allows a <li> to contain either a link or a span heading,
+        // followed by a nested <ol>. Only the linked entries need XHTML files.
+        const readable_sections = get_toc_sections(sections);
+        const visible_ids = new Set(readable_sections.map((section) => section.id));
+        const group_ids = new Set(sections
+            .filter((section) => section.type === "group")
+            .map((section) => section.id));
+        const by_id = new Map();
+        const roots = [];
+
+        for (const section of sections) {
+            if (section.type === "group") {
+                by_id.set(section.id, { section, children: [] });
+            } else if (visible_ids.has(section.id)) {
+                by_id.set(section.id, { section, children: [] });
+            }
+        }
+
+        for (const section of sections) {
+            const node = by_id.get(section.id);
+
+            if (!node) {
+                continue;
+            }
+
+            const parent = by_id.get(section.parent_id);
+
+            if (parent && !parent.section.parent_id && parent.section.id !== section.id) {
+                parent.children.push(node);
+            } else {
+                roots.push(node);
+            }
+        }
+
+        // Standalone directory groups are omitted until they have at least
+        // one visible child; they must never create a blank EPUB page.
+        return roots.filter((node) => node.section.type !== "group" || node.children.length);
     }
 
     function adjust_line_for_indent(text, indent) {
@@ -233,10 +284,26 @@ ${section_text_html(section.body, format, image_assets)}
     }
 
     function navigation_document(book, sections, language) {
-        const toc_sections = get_toc_sections(sections);
-        const items = toc_sections.map((section) => (
-            `            <li><a href="text/${section.filename}">${escape_xml(safe_xml_text(section.title || "未命名頁面"))}</a></li>`
-        )).join("\n");
+        const toc_tree = get_toc_tree(sections);
+
+        function navigation_list(nodes, depth = 0) {
+            const indent = "    ".repeat(depth + 3);
+
+            return nodes.map((node) => {
+                const section = node.section;
+                const title = escape_xml(safe_xml_text(section.title || "未命名頁面"));
+                const heading = section.type === "group"
+                    ? `<span>${title}</span>`
+                    : `<a href="text/${section.filename}">${title}</a>`;
+                const children = node.children.length
+                    ? `\n${indent}    <ol>\n${navigation_list(node.children, depth + 2)}\n${indent}    </ol>\n${indent}`
+                    : "";
+
+                return `${indent}<li>${heading}${children}</li>`;
+            }).join("\n");
+        }
+
+        const items = navigation_list(toc_tree);
 
         return `<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html>
@@ -532,10 +599,20 @@ nav ol {
         const language = sanitize_language(book.language);
         const modified_time = new Date().toISOString().replace(/\.\d{3}Z$/, "Z");
         const cover = get_cover_info(book);
-        const sections = book.sections.map((section, index) => ({
+        const content_sections = book.sections.filter((section) => section.type !== "group");
+
+        if (!content_sections.length) {
+            throw new Error("至少需要一章有正文的章節／內頁，目錄分類不能單獨匯出。");
+        }
+
+        const sections = content_sections.map((section, index) => ({
             ...section,
             filename: `section-${String(index + 1).padStart(3, "0")}.xhtml`
         }));
+        const section_map = new Map(sections.map((section) => [section.id, section]));
+        const navigation_sections = book.sections.map((section) =>
+            section_map.get(section.id) || section
+        );
         const book_illustrations = get_book_illustrations(sections);
         const files = [
             // EPUB OCF requires this exact first, uncompressed entry.
@@ -546,7 +623,7 @@ nav ol {
             },
             { name: "OEBPS/styles/book.css", content: book_css },
             { name: "OEBPS/styles/toc.css", content: build_toc_css(book.toc_style) },
-            { name: "OEBPS/nav.xhtml", content: navigation_document(book, sections, language) },
+            { name: "OEBPS/nav.xhtml", content: navigation_document(book, navigation_sections, language) },
             {
                 name: "OEBPS/package.opf",
                 content: package_document(book, sections, cover, book_illustrations.all_images, modified_time, language)
@@ -579,6 +656,7 @@ nav ol {
         toc_default_style,
         normalize_toc_style,
         build_toc_css,
-        get_toc_sections
+        get_toc_sections,
+        get_toc_tree
     };
 }());

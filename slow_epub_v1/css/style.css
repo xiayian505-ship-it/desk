@@ -235,6 +235,11 @@ h3 {
     justify-content: space-between;
 }
 
+/* Visually distinguish one level of nested chapter entries. */
+.subsection-row {
+    padding-left: 1.25rem;
+}
+
 .row-main {
     min-width: 0;
     flex: 1;

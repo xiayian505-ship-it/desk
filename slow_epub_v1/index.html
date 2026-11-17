@@ -5,13 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="theme-color" content="#ffffff" />
     <title>慢 慢 | EPUB 製作器</title>
-    <link rel="stylesheet" href="css/style.css?v=1.4" />
-    <script src="js/storage.js?v=1.4" defer></script>
-    <script src="js/text_import.js?v=1.4" defer></script>
-    <script src="js/zip_writer.js?v=1.4" defer></script>
-    <script src="js/illustrations.js?v=1.4" defer></script>
-    <script src="js/epub.js?v=1.4" defer></script>
-    <script src="js/app.js?v=1.4" defer></script>
+    <link rel="stylesheet" href="css/style.css?v=1.5" />
+    <script src="js/storage.js?v=1.5" defer></script>
+    <script src="js/text_import.js?v=1.5" defer></script>
+    <script src="js/zip_writer.js?v=1.5" defer></script>
+    <script src="js/illustrations.js?v=1.5" defer></script>
+    <script src="js/epub.js?v=1.5" defer></script>
+    <script src="js/app.js?v=1.5" defer></script>
 </head>
 <body>
     <header class="site-header">
@@ -114,6 +114,7 @@
                 <div class="action-row">
                     <button id="add_chapter_button" class="button-outline" type="button">＋ 新增章節</button>
                     <button id="add_page_button" class="button-outline" type="button">＋ 新增內頁／番外</button>
+                    <button id="add_group_button" class="button-outline" type="button">＋ 目錄分類</button>
                 </div>
                 <label class="checkbox-line">
                     <input id="generate_toc_page" type="checkbox" />
@@ -167,7 +168,7 @@
                         <p id="toc_preview_jump" class="hint" aria-live="polite"></p>
                     </div>
                 </details>
-                <p class="hint">各章可單獨編輯；上下移動可調整 EPUB 閱讀順序。</p>
+                <p class="hint">按「＋ 子節」建立下一層；「目錄分類」適合後記等只需分類、不需要獨立正文頁的項目。上下移動時，上層會連同子節一起移動。</p>
                 <div id="sections_list" class="row-list"></div>
                 <p id="sections_empty" class="muted" hidden>目前沒有內容，請貼上原稿或新增章節。</p>
             </section>
@@ -196,77 +197,83 @@
                 <button id="editor_back_button" class="text-button" type="button">← 取消編輯</button>
                 <span id="editor_save_status" class="muted" aria-live="polite">未修改</span>
             </div>
-            <label>章節／內頁名稱
+            <label>章節／內頁／目錄分類名稱
                 <input id="section_title" type="text" autocomplete="off" />
             </label>
-            <div class="editor-options">
-                <label>首行縮排
-                    <select id="section_indent">
-                        <option value="preserve">保留原稿空格</option>
-                        <option value="css">CSS 縮排 2 字</option>
-                        <option value="none">不縮排</option>
-                    </select>
-                </label>
-                <label>對齊
-                    <select id="section_align">
-                        <option value="left">靠左</option>
-                        <option value="justify">左右對齊</option>
-                        <option value="center">置中</option>
-                        <option value="right">靠右</option>
-                    </select>
-                </label>
-                <label>行距
-                    <select id="section_line_height">
-                        <option value="1.4">1.4</option>
-                        <option value="1.6">1.6</option>
-                        <option value="1.8">1.8</option>
-                        <option value="2.0">2.0</option>
-                    </select>
-                </label>
-                <label>段距
-                    <select id="section_gap">
-                        <option value="0">0</option>
-                        <option value="0.5">0.5 字</option>
-                        <option value="1">1 字</option>
-                    </select>
-                </label>
-            </div>
-            <label class="checkbox-line">
-                <input id="section_in_toc" type="checkbox" />
-                列在 EPUB 目錄中
+            <label>隸屬於哪個上層（可空）
+                <select id="section_parent"></select>
             </label>
-            <label class="editor-label" for="section_body">正文（可直接改字、加字或刪除）</label>
-            <textarea id="section_body" rows="18" spellcheck="false" placeholder="在這裡輸入內容……"></textarea>
-            <div class="editor-footer">
-                <span id="section_char_count" class="muted"></span>
-                <button id="manual_split_button" class="button-outline" type="button">以游標所在行分章</button>
-            </div>
-            <details id="illustration_details" class="panel">
-                <summary>本章插圖（可空）</summary>
-                <div class="panel-inner">
-                    <p class="hint">支援 JPG、PNG，每張最多 8 MB。插圖會跟著專案備份保存，也會包進 EPUB，不必另外上傳圖片網址。</p>
-                    <label>選擇插圖
-                        <input id="illustration_file_input" type="file" accept="image/jpeg,image/png,.jpg,.jpeg,.png" />
-                    </label>
-                    <label>插入位置
-                        <select id="illustration_position">
-                            <option value="cursor">正文游標所在行之後</option>
-                            <option value="start">章首（標題之後）</option>
-                            <option value="end">章尾</option>
+            <p id="section_parent_hint" class="hint"></p>
+            <div id="section_content_fields">
+                <div class="editor-options">
+                    <label>首行縮排
+                        <select id="section_indent">
+                            <option value="preserve">保留原稿空格</option>
+                            <option value="css">CSS 縮排 2 字</option>
+                            <option value="none">不縮排</option>
                         </select>
                     </label>
-                    <div class="action-row">
-                        <button id="add_illustration_button" class="button-outline" type="button">插入圖片</button>
-                    </div>
-                    <p class="hint">插入後，正文會出現一行 <code>[[slow_image:...]]</code> 標記；它代表圖片的位置，可隨段落移動，但請保留整行。圖片的替代文字、圖說和尺寸可在下方調整。若要獨立插圖頁，可先新增「內頁」，再插入圖片。</p>
-                    <div id="illustrations_list" class="illustrations-list"></div>
+                    <label>對齊
+                        <select id="section_align">
+                            <option value="left">靠左</option>
+                            <option value="justify">左右對齊</option>
+                            <option value="center">置中</option>
+                            <option value="right">靠右</option>
+                        </select>
+                    </label>
+                    <label>行距
+                        <select id="section_line_height">
+                            <option value="1.4">1.4</option>
+                            <option value="1.6">1.6</option>
+                            <option value="1.8">1.8</option>
+                            <option value="2.0">2.0</option>
+                        </select>
+                    </label>
+                    <label>段距
+                        <select id="section_gap">
+                            <option value="0">0</option>
+                            <option value="0.5">0.5 字</option>
+                            <option value="1">1 字</option>
+                        </select>
+                    </label>
                 </div>
-            </details>
-            <p class="hint">手動分章：把游標放在獨立一行的章節標題上，再按「以游標所在行分章」。如果是第一行，就直接設為本章標題。</p>
-            <details id="preview_details" class="panel">
-                <summary>預覽本章排版</summary>
-                <div id="section_preview" class="epub-preview"></div>
-            </details>
+                <label class="checkbox-line">
+                    <input id="section_in_toc" type="checkbox" />
+                    列在 EPUB 目錄中
+                </label>
+                <label class="editor-label" for="section_body">正文（可直接改字、加字或刪除）</label>
+                <textarea id="section_body" rows="18" spellcheck="false" placeholder="在這裡輸入內容……"></textarea>
+                <div class="editor-footer">
+                    <span id="section_char_count" class="muted"></span>
+                    <button id="manual_split_button" class="button-outline" type="button">以游標所在行分章</button>
+                </div>
+                <details id="illustration_details" class="panel">
+                    <summary>本章插圖（可空）</summary>
+                    <div class="panel-inner">
+                        <p class="hint">支援 JPG、PNG，每張最多 8 MB。插圖會跟著專案備份保存，也會包進 EPUB，不必另外上傳圖片網址。</p>
+                        <label>選擇插圖
+                            <input id="illustration_file_input" type="file" accept="image/jpeg,image/png,.jpg,.jpeg,.png" />
+                        </label>
+                        <label>插入位置
+                            <select id="illustration_position">
+                                <option value="cursor">正文游標所在行之後</option>
+                                <option value="start">章首（標題之後）</option>
+                                <option value="end">章尾</option>
+                            </select>
+                        </label>
+                        <div class="action-row">
+                            <button id="add_illustration_button" class="button-outline" type="button">插入圖片</button>
+                        </div>
+                        <p class="hint">插入後，正文會出現一行 <code>[[slow_image:...]]</code> 標記；它代表圖片的位置，可隨段落移動，但請保留整行。圖片的替代文字、圖說和尺寸可在下方調整。若要獨立插圖頁，可先新增「內頁」，再插入圖片。</p>
+                        <div id="illustrations_list" class="illustrations-list"></div>
+                    </div>
+                </details>
+                <p class="hint">手動分章：把游標放在獨立一行的章節標題上，再按「以游標所在行分章」。如果是第一行，就直接設為本章標題。</p>
+                <details id="preview_details" class="panel">
+                    <summary>預覽本章排版</summary>
+                    <div id="section_preview" class="epub-preview"></div>
+                </details>
+            </div>
             <div class="action-row">
                 <button id="editor_save_button" type="button">儲存</button>
                 <button id="editor_cancel_button" class="button-outline" type="button">取消</button>

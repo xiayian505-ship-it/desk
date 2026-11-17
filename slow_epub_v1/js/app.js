@@ -72,6 +72,7 @@
             title,
             type,
             body,
+            parent_id: null,
             include_toc: true,
             format: create_format(),
             images: []
@@ -117,8 +118,9 @@
             ? book.sections.map((section) => ({
                 id: String(section.id || create_id()),
                 title: String(section.title ?? "未命名頁面"),
-                type: section.type === "page" ? "page" : "chapter",
+                type: ["chapter", "page", "group"].includes(section.type) ? section.type : "chapter",
                 body: String(section.body ?? ""),
+                parent_id: section.parent_id ? String(section.parent_id) : null,
                 include_toc: section.include_toc !== false,
                 format: epub.sanitize_format(section.format),
                 images: Array.isArray(section.images)
@@ -127,11 +129,53 @@
             }))
             : [];
 
+        // v1.4 projects did not have parent_id; they remain top-level.
+        // Invalid, nested and self-referencing parents are promoted to top-level.
+        const roots = new Map(normalized.sections
+            .filter((section) => !section.parent_id)
+            .map((section) => [section.id, section]));
+
+        for (const section of normalized.sections) {
+            if (!roots.has(section.parent_id) || section.id === section.parent_id || section.type === "group") {
+                section.parent_id = null;
+            }
+
+            if (section.type === "group") {
+                section.include_toc = true;
+                section.body = "";
+                section.images = [];
+            }
+        }
+
+        normalized.sections = arrange_sections(normalized.sections);
+
         if (!normalized.cover || typeof normalized.cover.data_url !== "string") {
             normalized.cover = null;
         }
 
         return normalized;
+    }
+
+    function arrange_sections(sections) {
+        // Keep each parent immediately before its children in reading order.
+        // This avoids a child appearing elsewhere in the EPUB spine after an
+        // import, a parent change or loading an older project backup.
+        const arranged = [];
+
+        for (const section of sections) {
+            if (section.parent_id) {
+                continue;
+            }
+
+            arranged.push(section);
+            arranged.push(...sections.filter((child) => child.parent_id === section.id));
+        }
+
+        return arranged;
+    }
+
+    function section_has_children(section_id) {
+        return current_book.sections.some((section) => section.parent_id === section_id);
     }
 
     function get_active_section() {
@@ -340,18 +384,40 @@
         nav.id = "toc";
         const title = create_text_element("h1", "目錄");
         const list = document.createElement("ol");
-        const sections = epub.get_toc_sections(current_book.sections);
+        const sections = epub.get_toc_tree(current_book.sections);
+        const real_sections = current_book.sections.filter((section) => section.type !== "group");
 
-        for (const [index, section] of sections.entries()) {
+        function create_toc_preview_item(node) {
             const item = document.createElement("li");
-            const link = document.createElement("a");
-            link.textContent = section.title || "未命名頁面";
-            // This is the same relative path used by nav.xhtml in the EPUB.
-            const position = current_book.sections.indexOf(section);
-            link.href = `text/section-${String(position + 1).padStart(3, "0")}.xhtml`;
-            link.dataset.target_title = section.title || "未命名頁面";
-            item.append(link);
-            list.append(item);
+            const section = node.section;
+            const title = section.title || "未命名頁面";
+
+            if (section.type === "group") {
+                item.append(create_text_element("span", title));
+            } else {
+                const link = document.createElement("a");
+                const position = real_sections.findIndex((entry) => entry.id === section.id);
+                link.textContent = title;
+                link.href = `text/section-${String(position + 1).padStart(3, "0")}.xhtml`;
+                link.dataset.target_title = title;
+                item.append(link);
+            }
+
+            if (node.children.length) {
+                const child_list = document.createElement("ol");
+
+                for (const child of node.children) {
+                    child_list.append(create_toc_preview_item(child));
+                }
+
+                item.append(child_list);
+            }
+
+            return item;
+        }
+
+        for (const node of sections) {
+            list.append(create_toc_preview_item(node));
         }
 
         if (!sections.length) {
@@ -427,28 +493,40 @@
         );
         get_element("book_word_count").textContent = `${book_character_count.toLocaleString("zh-TW")} 字元`;
 
-        for (const [index, section] of sections.entries()) {
+        for (const section of sections) {
             const row = create_text_element("div", "", "list-row");
             const main = create_text_element("div", "", "row-main");
+            const is_child = Boolean(section.parent_id);
+            const siblings = sections.filter((item) => item.parent_id === section.parent_id);
+            const sibling_index = siblings.findIndex((item) => item.id === section.id);
+
+            if (is_child) {
+                row.classList.add("subsection-row");
+            }
+
+            const type_label = section.type === "group"
+                ? "目錄分類"
+                : is_child ? "子節" : section.type === "page" ? "內頁" : "章節";
+            const details = section.type === "group"
+                ? `${type_label} · 不產生獨立正文頁`
+                : `${type_label} · ${get_character_count(section.body).toLocaleString("zh-TW")} 字元 · ${(section.images || []).length} 張插圖 · ${section.include_toc ? "列入目錄" : "不列目錄"}`;
             main.append(
                 create_text_element("strong", section.title || "未命名頁面"),
-                create_text_element(
-                    "span",
-                    `${section.type === "page" ? "內頁" : "章節"} · ${get_character_count(section.body).toLocaleString("zh-TW")} 字元 · ${(section.images || []).length} 張插圖 · ${section.include_toc ? "列入目錄" : "不列目錄"}`,
-                    "muted"
-                )
+                create_text_element("span", details, "muted")
             );
+
             const actions = create_text_element("div", "", "row-actions");
             const up = create_button("↑", "move-up", section.id);
             const down = create_button("↓", "move-down", section.id);
-            up.disabled = index === 0;
-            down.disabled = index === sections.length - 1;
-            actions.append(
-                create_button("編輯", "edit-section", section.id, ""),
-                up,
-                down,
-                create_button("刪除", "delete-section", section.id)
-            );
+            up.disabled = sibling_index === 0;
+            down.disabled = sibling_index === siblings.length - 1;
+            actions.append(create_button("編輯", "edit-section", section.id, ""));
+
+            if (!is_child) {
+                actions.append(create_button("＋ 子節", "add-child", section.id));
+            }
+
+            actions.append(up, down, create_button("刪除", "delete-section", section.id));
             row.append(main, actions);
             list.append(row);
         }
@@ -464,6 +542,29 @@
         get_element("section_title").value = section.title;
         get_element("section_body").value = section.body;
         get_element("section_in_toc").checked = section.include_toc;
+        get_element("section_content_fields").hidden = section.type === "group";
+
+        const parent_select = get_element("section_parent");
+        parent_select.replaceChildren(new Option("最上層（章節／內頁）", ""));
+        const has_children = section_has_children(section.id);
+
+        // Two levels only; a parent with existing children cannot become a
+        // child, or those grandchildren would disappear from the navigation.
+        for (const possible_parent of current_book.sections) {
+            if (possible_parent.id === section.id || possible_parent.parent_id) {
+                continue;
+            }
+
+            parent_select.append(new Option(possible_parent.title || "未命名頁面", possible_parent.id));
+        }
+
+        parent_select.value = section.parent_id || "";
+        parent_select.disabled = section.type === "group" || has_children;
+        get_element("section_parent_hint").textContent = section.type === "group"
+            ? "目錄分類只能放在最上層；它本身不產生空白頁。"
+            : has_children
+                ? "這一項已有子節；請先移走子節，才能將它改成子節。"
+                : "可指定上一層；未指定時是一般章節或內頁。";
         get_element("section_indent").value = section.format.indent;
         get_element("section_align").value = section.format.align;
         get_element("section_line_height").value = section.format.line_height;
@@ -845,6 +946,16 @@
 
         const saved_section = editor_draft;
         const section_index = current_book.sections.findIndex((item) => item.id === saved_section.id);
+        const previous_parent = section_index >= 0 ? current_book.sections[section_index].parent_id : null;
+
+        if (saved_section.parent_id) {
+            const parent = current_book.sections.find((entry) => entry.id === saved_section.parent_id);
+
+            if (!parent || parent.parent_id || parent.id === saved_section.id || section_has_children(saved_section.id)) {
+                notify("上層章節無效，或此章已有子節，無法儲存階層。");
+                return;
+            }
+        }
 
         if (editor_is_new) {
             current_book.sections.push(saved_section);
@@ -860,6 +971,21 @@
             current_book.sections.splice(position + 1, 0, editor_pending_split);
         }
 
+        if (saved_section.parent_id && saved_section.parent_id !== previous_parent) {
+            // Move a newly assigned child to the end of its parent's group.
+            current_book.sections = current_book.sections.filter((section) => section.id !== saved_section.id);
+            const parent_index = current_book.sections.findIndex((section) => section.id === saved_section.parent_id);
+            let insert_index = parent_index + 1;
+
+            while (insert_index < current_book.sections.length &&
+                current_book.sections[insert_index].parent_id === saved_section.parent_id) {
+                insert_index += 1;
+            }
+
+            current_book.sections.splice(insert_index, 0, saved_section);
+        }
+
+        current_book.sections = arrange_sections(current_book.sections);
         schedule_save();
         await go_book();
         notify("章節修改已儲存。");
@@ -961,6 +1087,7 @@
         section.body = first_part;
         editor.value = first_part;
         editor_pending_split = create_section(title, "chapter", remaining_part);
+        editor_pending_split.parent_id = section.parent_id;
         const moved_image_ids = new Set(illustrations.find_marker_ids(remaining_part));
         editor_pending_split.images = section.images.filter((image) => moved_image_ids.has(image.id));
         section.images = section.images.filter((image) => !moved_image_ids.has(image.id));
@@ -972,31 +1099,77 @@
     }
 
     function move_section(section_id, delta) {
-        const list = current_book.sections;
-        const position = list.findIndex((section) => section.id === section_id);
-        const next_position = position + delta;
+        const sections = current_book.sections;
+        const target = sections.find((section) => section.id === section_id);
 
-        if (position < 0 || next_position < 0 || next_position >= list.length) {
+        if (!target) {
             return;
         }
 
-        const [section] = list.splice(position, 1);
-        list.splice(next_position, 0, section);
+        if (target.parent_id) {
+            // Child sections can only move within their own parent's group.
+            const siblings = sections.filter((section) => section.parent_id === target.parent_id);
+            const current_index = siblings.findIndex((section) => section.id === section_id);
+            const other = siblings[current_index + delta];
+
+            if (!other) {
+                return;
+            }
+
+            const first_position = sections.findIndex((section) => section.id === section_id);
+            const second_position = sections.findIndex((section) => section.id === other.id);
+            [sections[first_position], sections[second_position]] = [sections[second_position], sections[first_position]];
+        } else {
+            // Move the entire parent-and-children block, not just its title.
+            const roots = sections.filter((section) => !section.parent_id);
+            const root_index = roots.findIndex((section) => section.id === section_id);
+            const other = roots[root_index + delta];
+
+            if (!other) {
+                return;
+            }
+
+            const blocks = roots.map((root) => [
+                root,
+                ...sections.filter((section) => section.parent_id === root.id)
+            ]);
+            [blocks[root_index], blocks[root_index + delta]] = [blocks[root_index + delta], blocks[root_index]];
+            current_book.sections = blocks.flat();
+        }
+
         schedule_save();
         render_sections();
+        render_toc_preview();
     }
 
     function delete_section(section_id) {
         const section = current_book.sections.find((item) => item.id === section_id);
 
-        if (!section || !window.confirm(`確定刪除「${section.title}」及其全部內文？此操作不能復原。`)) {
+        if (!section) {
             return;
+        }
+
+        const has_children = section_has_children(section_id);
+        const message = has_children
+            ? `確定刪除「${section.title}」？它的子節會保留並提升為最上層，此操作不能復原。`
+            : `確定刪除「${section.title}」及其全部內文？此操作不能復原。`;
+
+        if (!window.confirm(message)) {
+            return;
+        }
+
+        // Do not silently delete children's manuscripts with their parent.
+        for (const child of current_book.sections) {
+            if (child.parent_id === section_id) {
+                child.parent_id = null;
+            }
         }
 
         current_book.sections = current_book.sections.filter((item) => item.id !== section_id);
         schedule_save();
         render_sections();
-        notify("已刪除章節。請記得另外備份重要原稿。");
+        render_toc_preview();
+        notify(has_children ? "已刪除上層項目；子節已保留。" : "已刪除章節。請記得另外備份重要原稿。");
     }
 
     function count_occurrences(content, needle) {
@@ -1351,6 +1524,14 @@
             move_section(section_id, -1);
         } else if (action === "move-down") {
             move_section(section_id, 1);
+        } else if (action === "add-child") {
+            const parent = current_book.sections.find((section) => section.id === section_id);
+
+            if (parent && !parent.parent_id) {
+                const child = create_section("新子節", "page");
+                child.parent_id = parent.id;
+                open_editor(child.id, child);
+            }
         } else if (action === "delete-section") {
             delete_section(section_id);
         }
@@ -1415,6 +1596,10 @@
             const section = create_section("新內頁／番外", "page");
             open_editor(section.id, section);
         });
+        get_element("add_group_button").addEventListener("click", () => {
+            const group = create_section("新目錄分類", "group");
+            open_editor(group.id, group);
+        });
         get_element("generate_toc_page").addEventListener("change", (event) => {
             current_book.generate_toc_page = event.target.checked;
             schedule_save();
@@ -1477,6 +1662,15 @@
                 section.title = event.target.value;
                 mark_editor_changed();
                 schedule_preview();
+            }
+        });
+
+        get_element("section_parent").addEventListener("change", (event) => {
+            const section = get_active_section();
+
+            if (section) {
+                section.parent_id = event.target.value || null;
+                mark_editor_changed();
             }
         });
 
