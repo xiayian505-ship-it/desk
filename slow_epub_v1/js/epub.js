@@ -182,6 +182,11 @@ ${items}
             ? `        <item id="cover-page" href="cover.xhtml" media-type="application/xhtml+xml" />\n        <item id="cover-image" href="${cover.path}" media-type="${cover.mime}" properties="cover-image" />`
             : "";
         const cover_spine = cover ? '        <itemref idref="cover-page" />\n' : "";
+        // nav.xhtml is already a valid XHTML document with clickable chapter
+        // links. Adding it to the spine makes it a visible contents page.
+        const visible_toc_spine = book.generate_toc_page === true
+            ? '        <itemref idref="nav" />\n'
+            : "";
 
         return `<?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://www.idpf.org/2007/opf" version="3.0" unique-identifier="book-id" xml:lang="${escape_xml(language)}">
@@ -200,7 +205,7 @@ ${cover_manifest}
 ${manifest_sections}
     </manifest>
     <spine page-progression-direction="ltr">
-${cover_spine}${spine_sections}
+${cover_spine}${visible_toc_spine}${spine_sections}
     </spine>
 </package>`;
     }

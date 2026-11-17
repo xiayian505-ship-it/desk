@@ -5,12 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="theme-color" content="#ffffff" />
     <title>慢 慢 | EPUB 製作器</title>
-    <link rel="stylesheet" href="css/style.css" />
-    <script src="js/storage.js" defer></script>
-    <script src="js/text_import.js" defer></script>
-    <script src="js/zip_writer.js" defer></script>
-    <script src="js/epub.js" defer></script>
-    <script src="js/app.js" defer></script>
+    <link rel="stylesheet" href="css/style.css?v=1.1" />
+    <script src="js/storage.js?v=1.1" defer></script>
+    <script src="js/text_import.js?v=1.1" defer></script>
+    <script src="js/zip_writer.js?v=1.1" defer></script>
+    <script src="js/epub.js?v=1.1" defer></script>
+    <script src="js/app.js?v=1.1" defer></script>
 </head>
 <body>
     <header class="site-header">
@@ -110,6 +110,11 @@
                     <button id="add_chapter_button" class="button-outline" type="button">＋ 新增章節</button>
                     <button id="add_page_button" class="button-outline" type="button">＋ 新增內頁／番外</button>
                 </div>
+                <label class="checkbox-line">
+                    <input id="generate_toc_page" type="checkbox" />
+                    匯出時自動產生目錄內頁
+                </label>
+                <p class="hint">目錄內頁會放在正文之前，依勾選「列在 EPUB 目錄中」的章節自動更新，點選名稱即可跳轉。</p>
                 <p class="hint">各章可單獨編輯；上下移動可調整 EPUB 閱讀順序。</p>
                 <div id="sections_list" class="row-list"></div>
                 <p id="sections_empty" class="muted" hidden>目前沒有內容，請貼上原稿或新增章節。</p>
@@ -136,8 +141,8 @@
 
         <section id="editor_view" class="view" hidden>
             <div class="top-row">
-                <button id="editor_back_button" class="text-button" type="button">← 返回章節列表</button>
-                <span id="editor_save_status" class="muted" aria-live="polite">已暫存</span>
+                <button id="editor_back_button" class="text-button" type="button">← 取消編輯</button>
+                <span id="editor_save_status" class="muted" aria-live="polite">未修改</span>
             </div>
             <label>章節／內頁名稱
                 <input id="section_title" type="text" autocomplete="off" />
@@ -189,6 +194,11 @@
                 <summary>預覽本章排版</summary>
                 <div id="section_preview" class="epub-preview"></div>
             </details>
+            <div class="action-row">
+                <button id="editor_save_button" type="button">儲存</button>
+                <button id="editor_cancel_button" class="button-outline" type="button">取消</button>
+            </div>
+            <p class="hint">「儲存」才會套用本章修改；「取消」會還原進入編輯器前的內容。書籍資料與其他章節仍照常自動暫存。</p>
         </section>
     </main>
     <div id="notification" class="notification" role="status" hidden></div>

@@ -15,6 +15,9 @@
 
     let current_book = null;
     let active_section_id = null;
+    let editor_draft = null;
+    let editor_is_new = false;
+    let editor_pending_split = null;
     let save_timer = null;
     let preview_timer = null;
     let notification_timer = null;
@@ -83,6 +86,7 @@
             description: "",
             rights: "",
             cover: null,
+            generate_toc_page: false,
             sections: [],
             created_at: timestamp,
             updated_at: timestamp
@@ -102,6 +106,7 @@
         normalized.publisher = String(book.publisher ?? "");
         normalized.description = String(book.description ?? "");
         normalized.rights = String(book.rights ?? "");
+        normalized.generate_toc_page = book.generate_toc_page === true;
         normalized.sections = Array.isArray(book.sections)
             ? book.sections.map((section) => ({
                 id: String(section.id || create_id()),
@@ -121,7 +126,7 @@
     }
 
     function get_active_section() {
-        return current_book?.sections.find((section) => section.id === active_section_id) || null;
+        return editor_draft && editor_draft.id === active_section_id ? editor_draft : null;
     }
 
     function show_view(view_id) {
@@ -260,6 +265,7 @@
         get_element("book_publisher").value = current_book.publisher;
         get_element("book_description").value = current_book.description;
         get_element("book_rights").value = current_book.rights;
+        get_element("generate_toc_page").checked = current_book.generate_toc_page;
         render_cover();
         render_sections();
         set_save_status("已暫存");
@@ -333,7 +339,7 @@
         get_element("section_line_height").value = section.format.line_height;
         get_element("section_gap").value = section.format.gap;
         get_element("preview_details").open = false;
-        set_save_status(save_timer === null ? "已暫存" : "尚未暫存");
+        get_element("editor_save_status").textContent = "未修改";
         render_editor_count();
         show_view("editor_view");
     }
@@ -389,6 +395,8 @@
 
         current_book = normalize_book(book);
         active_section_id = null;
+        editor_draft = null;
+        editor_pending_split = null;
         revision = 0;
         render_book();
     }
@@ -397,6 +405,8 @@
         await flush_save();
         current_book = null;
         active_section_id = null;
+        editor_draft = null;
+        editor_pending_split = null;
         await render_home();
         show_view("home_view");
     }
@@ -404,12 +414,68 @@
     async function go_book() {
         await flush_save();
         active_section_id = null;
+        editor_draft = null;
+        editor_is_new = false;
+        editor_pending_split = null;
         render_book();
     }
 
-    function open_editor(section_id) {
-        active_section_id = section_id;
+    function open_editor(section_id, new_section = null) {
+        const source = new_section || current_book.sections.find((item) => item.id === section_id);
+
+        if (!source) {
+            notify("找不到章節，請返回書籍列表再試一次。");
+            return;
+        }
+
+        // Separate editable state from the persisted book. Cancel can then
+        // discard this entire edit without racing IndexedDB autosaves.
+        active_section_id = source.id;
+        editor_draft = JSON.parse(JSON.stringify(source));
+        editor_is_new = Boolean(new_section);
+        editor_pending_split = null;
         render_editor();
+    }
+
+    function mark_editor_changed() {
+        get_element("editor_save_status").textContent = "尚未儲存修改";
+    }
+
+    async function save_editor() {
+        if (!current_book || !editor_draft) {
+            return;
+        }
+
+        const saved_section = editor_draft;
+        const section_index = current_book.sections.findIndex((item) => item.id === saved_section.id);
+
+        if (editor_is_new) {
+            current_book.sections.push(saved_section);
+        } else if (section_index >= 0) {
+            current_book.sections[section_index] = saved_section;
+        } else {
+            notify("原章節已不存在，無法儲存修改。");
+            return;
+        }
+
+        if (editor_pending_split) {
+            const position = current_book.sections.findIndex((item) => item.id === saved_section.id);
+            current_book.sections.splice(position + 1, 0, editor_pending_split);
+        }
+
+        schedule_save();
+        await go_book();
+        notify("章節修改已儲存。");
+    }
+
+    async function cancel_editor() {
+        if (!editor_draft) {
+            return;
+        }
+
+        // A newly added page is provisional too: Cancel leaves no empty page.
+        await go_book();
+        notify("已取消本次編輯，原內容沒有變動。");
     }
 
     function append_section(title, type, body = "") {
@@ -451,6 +517,16 @@
 
     function manual_split() {
         const section = get_active_section();
+
+        if (!section) {
+            return;
+        }
+
+        if (editor_pending_split) {
+            notify("本章已有一處待儲存的分章，請先按儲存再繼續。");
+            return;
+        }
+
         const editor = get_element("section_body");
         const body = editor.value;
         const cursor = editor.selectionStart;
@@ -475,19 +551,22 @@
         if (!first_part.trim()) {
             section.title = title;
             section.body = remaining_part;
-            schedule_save();
-            render_editor();
-            notify("已將第一行設為本章標題。");
+            get_element("section_title").value = title;
+            editor.value = remaining_part;
+            render_editor_count();
+            schedule_preview();
+            mark_editor_changed();
+            notify("已將第一行設為章節標題；按儲存才會套用。");
             return;
         }
 
         section.body = first_part;
-        const new_section = create_section(title, "chapter", remaining_part);
-        const index = current_book.sections.findIndex((item) => item.id === section.id);
-        current_book.sections.splice(index + 1, 0, new_section);
-        schedule_save();
-        open_editor(new_section.id);
-        notify("已依標題行分成兩章。");
+        editor.value = first_part;
+        editor_pending_split = create_section(title, "chapter", remaining_part);
+        render_editor_count();
+        schedule_preview();
+        mark_editor_changed();
+        notify("已準備拆成兩章；按儲存會新增，按取消則不變動。");
     }
 
     function move_section(section_id, delta) {
@@ -800,7 +879,7 @@
         }
 
         section.format[key] = value;
-        schedule_save();
+        mark_editor_changed();
         schedule_preview();
     }
 
@@ -822,18 +901,24 @@
         get_element("sections_list").addEventListener("click", handle_section_row_click);
         get_element("restore_project_input").addEventListener("change", restore_project);
         get_element("book_home_button").addEventListener("click", go_home);
-        get_element("editor_back_button").addEventListener("click", go_book);
+        get_element("editor_back_button").addEventListener("click", cancel_editor);
+        get_element("editor_cancel_button").addEventListener("click", cancel_editor);
+        get_element("editor_save_button").addEventListener("click", save_editor);
         get_element("export_epub_button").addEventListener("click", export_book);
         get_element("backup_project_button").addEventListener("click", backup_project);
         get_element("auto_import_button").addEventListener("click", () => handle_import(true));
         get_element("plain_import_button").addEventListener("click", () => handle_import(false));
         get_element("add_chapter_button").addEventListener("click", () => {
-            const section = append_section("新章節", "chapter");
-            open_editor(section.id);
+            const section = create_section("新章節", "chapter");
+            open_editor(section.id, section);
         });
         get_element("add_page_button").addEventListener("click", () => {
-            const section = append_section("新內頁／番外", "page");
-            open_editor(section.id);
+            const section = create_section("新內頁／番外", "page");
+            open_editor(section.id, section);
+        });
+        get_element("generate_toc_page").addEventListener("change", (event) => {
+            current_book.generate_toc_page = event.target.checked;
+            schedule_save();
         });
         get_element("txt_file_input").addEventListener("change", read_txt_file);
         get_element("txt_encoding").addEventListener("change", read_txt_file);
@@ -865,7 +950,7 @@
 
             if (section) {
                 section.title = event.target.value;
-                schedule_save();
+                mark_editor_changed();
                 schedule_preview();
             }
         });
@@ -875,7 +960,7 @@
 
             if (section) {
                 section.body = event.target.value;
-                schedule_save();
+                mark_editor_changed();
                 schedule_preview();
                 render_editor_count();
             }
@@ -886,7 +971,7 @@
 
             if (section) {
                 section.include_toc = event.target.checked;
-                schedule_save();
+                mark_editor_changed();
             }
         });
 
