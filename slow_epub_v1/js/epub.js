@@ -2,6 +2,8 @@
 (function () {
     "use strict";
 
+    const illustrations = window.SlowIllustrations;
+
     function escape_xml(input) {
         return String(input ?? "")
             .replace(/&/g, "&amp;")
@@ -161,10 +163,36 @@ ${custom_css}
         return text;
     }
 
-    function section_text_html(text, format) {
+    function illustration_html(image) {
+        const image_class = image.separate_page
+            ? "book-illustration illustration-new-page"
+            : "book-illustration";
+        const caption = image.caption
+            ? `\n            <figcaption>${escape_xml(safe_xml_text(image.caption))}</figcaption>`
+            : "";
+
+        return `<figure class="${image_class}" style="width: ${image.width}%;">
+            <img src="../${image.path}" alt="${escape_xml(safe_xml_text(image.alt))}" />${caption}
+        </figure>`;
+    }
+
+    function section_text_html(text, format, image_assets = []) {
         const lines = String(text ?? "").replace(/\r\n?/g, "\n").split("\n");
+        const image_map = new Map(image_assets.map((image) => [image.id, image]));
 
         return lines.map((line) => {
+            const image_id = illustrations.read_marker(line);
+
+            if (image_id) {
+                const image = image_map.get(image_id);
+
+                if (!image) {
+                    throw new Error("正文包含無法找到對應檔案的插圖標記。");
+                }
+
+                return illustration_html(image);
+            }
+
             if (line.length === 0) {
                 return '<p class="blank-line">&#160;</p>';
             }
@@ -179,7 +207,7 @@ ${custom_css}
         }).join("\n");
     }
 
-    function section_document(section, language) {
+    function section_document(section, language, image_assets = []) {
         const format = sanitize_format(section.format);
         const classes = `indent-${format.indent} align-${format.align}`;
         const style = `line-height: ${format.line_height};`;
@@ -197,7 +225,7 @@ ${custom_css}
     <section class="book-section ${classes}" style="${style}">
         <h1 class="chapter-title">${title}</h1>
         <div class="chapter-text">
-${section_text_html(section.body, format)}
+${section_text_html(section.body, format, image_assets)}
         </div>
     </section>
 </body>
@@ -256,6 +284,60 @@ ${items}
         };
     }
 
+    function get_illustration_info(image, path) {
+        const match = /^data:(image\/(?:jpeg|png));base64,([A-Za-z0-9+/=]+)$/i.exec(image.data_url);
+
+        if (!match) {
+            throw new Error(`插圖「${image.name}」格式無法辨識，請重新加入 JPG 或 PNG。`);
+        }
+
+        const binary = atob(match[2]);
+        const bytes = new Uint8Array(binary.length);
+
+        for (let index = 0; index < binary.length; index += 1) {
+            bytes[index] = binary.charCodeAt(index);
+        }
+
+        const is_png = match[1].toLowerCase() === "image/png";
+        const valid_signature = is_png
+            ? [137, 80, 78, 71, 13, 10, 26, 10].every((value, index) => bytes[index] === value)
+            : bytes[0] === 0xFF && bytes[1] === 0xD8 && bytes[2] === 0xFF;
+
+        if (!valid_signature) {
+            throw new Error(`插圖「${image.name}」檔案格式不正確，請重新加入。`);
+        }
+
+        return {
+            ...illustrations.normalize_image(image),
+            path,
+            mime: match[1].toLowerCase(),
+            data: bytes
+        };
+    }
+
+    function get_book_illustrations(sections) {
+        const all_images = [];
+        const section_images = [];
+
+        for (const [section_index, section] of sections.entries()) {
+            illustrations.validate_images(section);
+            const assets = [];
+
+            for (const [image_index, image] of (section.images || []).entries()) {
+                const extension = image.data_url.toLowerCase().startsWith("data:image/png;")
+                    ? "png" : "jpg";
+                const filename = `illustration-${String(section_index + 1).padStart(3, "0")}-${String(image_index + 1).padStart(3, "0")}.${extension}`;
+                const asset = get_illustration_info(image, `images/${filename}`);
+                assets.push(asset);
+                all_images.push(asset);
+            }
+
+            section_images.push(assets);
+        }
+
+        return { all_images, section_images };
+    }
+
     function cover_document(book, language, cover) {
         return `<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html>
@@ -273,7 +355,7 @@ ${items}
 </html>`;
     }
 
-    function package_document(book, sections, cover, modified_time, language) {
+    function package_document(book, sections, cover, images, modified_time, language) {
         const title = escape_xml(safe_xml_text(book.title || "未命名書籍"));
         const author = escape_xml(safe_xml_text(book.author || "未署名"));
         const identifier = escape_xml(book.id || "slow-epub-book");
@@ -292,6 +374,9 @@ ${items}
             ? `        <item id="cover-page" href="cover.xhtml" media-type="application/xhtml+xml" />\n        <item id="cover-image" href="${cover.path}" media-type="${cover.mime}" properties="cover-image" />`
             : "";
         const cover_spine = cover ? '        <itemref idref="cover-page" />\n' : "";
+        const illustration_manifest = images.map((image, index) => (
+            `        <item id="illustration-${index + 1}" href="${image.path}" media-type="${image.mime}" />`
+        )).join("\n");
         // nav.xhtml is already a valid XHTML document with clickable chapter
         // links. Adding it to the spine makes it a visible contents page.
         const visible_toc_spine = book.generate_toc_page === true
@@ -313,6 +398,7 @@ ${optional_meta}
         <item id="style" href="styles/book.css" media-type="text/css" />
         <item id="toc-style" href="styles/toc.css" media-type="text/css" />
 ${cover_manifest}
+${illustration_manifest}
 ${manifest_sections}
     </manifest>
     <spine page-progression-direction="ltr">
@@ -384,6 +470,38 @@ body {
     text-align: right;
 }
 
+.book-illustration {
+    display: block;
+    max-width: 100%;
+    margin: 1.2em auto;
+    padding: 0;
+    text-align: center;
+    break-inside: avoid;
+    page-break-inside: avoid;
+}
+
+.book-illustration img {
+    display: block;
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: 95vh;
+    margin: 0 auto;
+}
+
+.book-illustration figcaption {
+    margin-top: 0.5em;
+    font-size: 0.9em;
+    line-height: 1.5;
+}
+
+.illustration-new-page {
+    break-before: page;
+    break-after: page;
+    page-break-before: always;
+    page-break-after: always;
+}
+
 nav h1 {
     text-align: center;
 }
@@ -418,6 +536,7 @@ nav ol {
             ...section,
             filename: `section-${String(index + 1).padStart(3, "0")}.xhtml`
         }));
+        const book_illustrations = get_book_illustrations(sections);
         const files = [
             // EPUB OCF requires this exact first, uncompressed entry.
             { name: "mimetype", content: "application/epub+zip" },
@@ -430,7 +549,7 @@ nav ol {
             { name: "OEBPS/nav.xhtml", content: navigation_document(book, sections, language) },
             {
                 name: "OEBPS/package.opf",
-                content: package_document(book, sections, cover, modified_time, language)
+                content: package_document(book, sections, cover, book_illustrations.all_images, modified_time, language)
             }
         ];
 
@@ -439,10 +558,14 @@ nav ol {
             files.push({ name: "OEBPS/cover.xhtml", content: cover_document(book, language, cover) });
         }
 
-        for (const section of sections) {
+        for (const image of book_illustrations.all_images) {
+            files.push({ name: `OEBPS/${image.path}`, content: image.data });
+        }
+
+        for (const [index, section] of sections.entries()) {
             files.push({
                 name: `OEBPS/text/${section.filename}`,
-                content: section_document(section, language)
+                content: section_document(section, language, book_illustrations.section_images[index])
             });
         }
 

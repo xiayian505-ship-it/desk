@@ -11,6 +11,7 @@
     const storage = window.SlowProjectStorage;
     const text_import = window.SlowTextImport;
     const epub = window.SlowEpub;
+    const illustrations = window.SlowIllustrations;
     const get_element = (id) => document.getElementById(id);
 
     let current_book = null;
@@ -72,7 +73,8 @@
             type,
             body,
             include_toc: true,
-            format: create_format()
+            format: create_format(),
+            images: []
         };
     }
 
@@ -118,7 +120,10 @@
                 type: section.type === "page" ? "page" : "chapter",
                 body: String(section.body ?? ""),
                 include_toc: section.include_toc !== false,
-                format: epub.sanitize_format(section.format)
+                format: epub.sanitize_format(section.format),
+                images: Array.isArray(section.images)
+                    ? section.images.map(illustrations.normalize_image)
+                    : []
             }))
             : [];
 
@@ -227,7 +232,8 @@
     }
 
     function get_character_count(text) {
-        return [...String(text || "")].length;
+        // Image anchors are editor controls, not characters of the novel.
+        return illustrations.count_visible_characters(text);
     }
 
     async function render_home() {
@@ -428,7 +434,7 @@
                 create_text_element("strong", section.title || "未命名頁面"),
                 create_text_element(
                     "span",
-                    `${section.type === "page" ? "內頁" : "章節"} · ${get_character_count(section.body).toLocaleString("zh-TW")} 字元 · ${section.include_toc ? "列入目錄" : "不列目錄"}`,
+                    `${section.type === "page" ? "內頁" : "章節"} · ${get_character_count(section.body).toLocaleString("zh-TW")} 字元 · ${(section.images || []).length} 張插圖 · ${section.include_toc ? "列入目錄" : "不列目錄"}`,
                     "muted"
                 )
             );
@@ -463,14 +469,113 @@
         get_element("section_line_height").value = section.format.line_height;
         get_element("section_gap").value = section.format.gap;
         get_element("preview_details").open = false;
+        get_element("illustration_details").open = false;
+        get_element("illustration_file_input").value = "";
+        get_element("illustration_position").value = "cursor";
         get_element("editor_save_status").textContent = "未修改";
         render_editor_count();
+        render_illustrations();
         show_view("editor_view");
     }
 
     function render_editor_count() {
         get_element("section_char_count").textContent =
             `${get_character_count(get_element("section_body").value).toLocaleString("zh-TW")} 字元`;
+    }
+
+    function create_illustration_field(title, image, field, type = "text") {
+        const label = document.createElement("label");
+        label.append(document.createTextNode(title));
+        let control;
+
+        if (type === "select") {
+            control = document.createElement("select");
+
+            for (const value of ["60", "80", "100"]) {
+                const option = document.createElement("option");
+                option.value = value;
+                option.textContent = `${value}%`;
+                control.append(option);
+            }
+
+            control.value = image.width;
+        } else if (type === "checkbox") {
+            control = document.createElement("input");
+            control.type = "checkbox";
+            control.checked = image.separate_page;
+            label.className = "checkbox-line";
+        } else {
+            control = document.createElement("input");
+            control.type = "text";
+            control.value = image[field];
+            control.maxLength = 500;
+        }
+
+        control.dataset.image_id = image.id;
+        control.dataset.image_field = field;
+        label.append(control);
+        return label;
+    }
+
+    function render_illustrations() {
+        const section = get_active_section();
+        const host = get_element("illustrations_list");
+        host.replaceChildren();
+
+        if (!section || !section.images?.length) {
+            host.append(create_text_element("p", "本章尚未插入圖片。", "hint"));
+            return;
+        }
+
+        const located_ids = new Set(illustrations.find_marker_ids(section.body));
+
+        for (const image of section.images) {
+            const row = create_text_element("div", "", "illustration-row");
+            const preview = document.createElement("img");
+            preview.src = image.data_url;
+            preview.alt = "圖片縮圖";
+            preview.loading = "lazy";
+            const info = create_text_element("div", "", "illustration-info");
+            info.append(create_text_element("strong", image.name));
+
+            if (!located_ids.has(image.id)) {
+                info.append(create_text_element("p", "尚未放入正文：請重新插入，或移除圖片。", "hint"));
+            }
+
+            info.append(
+                create_illustration_field("替代文字（裝飾圖可留空）", image, "alt"),
+                create_illustration_field("圖說（可空）", image, "caption"),
+                create_illustration_field("顯示寬度", image, "width", "select"),
+                create_illustration_field("獨立一頁（閱讀器支援程度可能不同）", image, "separate_page", "checkbox")
+            );
+
+            const actions = create_text_element("div", "", "action-row");
+            actions.append(
+                create_button("定位標記", "locate-illustration", image.id),
+                create_button("插入游標處", "reinsert-illustration", image.id),
+                create_button("移除圖片", "remove-illustration", image.id)
+            );
+            info.append(actions);
+            row.append(preview, info);
+            host.append(row);
+        }
+    }
+
+    function create_preview_illustration(image) {
+        const figure = document.createElement("figure");
+        figure.className = "book-illustration";
+        figure.style.width = `${image.width}%`;
+        const picture = document.createElement("img");
+        picture.src = image.data_url;
+        picture.alt = image.alt;
+        picture.loading = "lazy";
+        figure.append(picture);
+
+        if (image.caption) {
+            figure.append(create_text_element("figcaption", image.caption));
+        }
+
+        return figure;
     }
 
     function render_preview() {
@@ -488,10 +593,22 @@
         const preview = get_element("section_preview");
         const title = create_text_element("h4", section.title || "未命名頁面");
         const fragment = document.createDocumentFragment();
+        const image_map = new Map((section.images || []).map((image) => [image.id, image]));
         fragment.append(title);
         preview.style.lineHeight = format.line_height;
 
         for (const line of text_import.normalize_newlines(section.body).split("\n")) {
+            const image_id = illustrations.read_marker(line);
+
+            if (image_id) {
+                const image = image_map.get(image_id);
+                fragment.append(image
+                    ? create_preview_illustration(image)
+                    : create_text_element("p", "〔找不到對應的插圖，請檢查標記〕", "hint")
+                );
+                continue;
+            }
+
             const paragraph = document.createElement("p");
             paragraph.textContent = epub.adjust_line_for_indent(line, format.indent) || "\u00A0";
             paragraph.style.textIndent = format.indent === "css" && line.trim() ? "2em" : "0";
@@ -501,6 +618,162 @@
         }
 
         preview.replaceChildren(fragment);
+    }
+
+    async function add_illustration() {
+        const section = get_active_section();
+        const input = get_element("illustration_file_input");
+        const file = input.files[0];
+
+        if (!section || !file) {
+            notify("請先選擇 JPG 或 PNG 圖片。");
+            return;
+        }
+
+        const file_name = file.name.toLowerCase();
+        const mime = file.type === "image/png" || file.type === "image/jpeg"
+            ? file.type
+            : /\.png$/i.test(file_name) ? "image/png"
+                : /\.jpe?g$/i.test(file_name) ? "image/jpeg" : "";
+
+        if (!mime) {
+            notify("插圖僅支援 JPG 或 PNG。");
+            return;
+        }
+
+        if (file.size > 8 * 1024 * 1024) {
+            notify("圖片超過 8 MB，請先縮小後再插入。");
+            return;
+        }
+
+        const button = get_element("add_illustration_button");
+        button.disabled = true;
+
+        try {
+            const header = new Uint8Array(await file.slice(0, 12).arrayBuffer());
+            const valid_png = mime === "image/png" &&
+                [137, 80, 78, 71, 13, 10, 26, 10].every((value, index) => header[index] === value);
+            const valid_jpeg = mime === "image/jpeg" &&
+                header[0] === 0xFF && header[1] === 0xD8 && header[2] === 0xFF;
+
+            if (!valid_png && !valid_jpeg) {
+                throw new Error("檔案內容不是有效的 JPG 或 PNG。");
+            }
+
+            const data_url = await read_file_as_data_url(file);
+
+            if (get_active_section() !== section) {
+                throw new Error("章節已切換，請重新插入圖片。");
+            }
+
+            const image = illustrations.normalize_image({
+                id: create_id(),
+                name: file.name,
+                data_url: data_url.replace(/^data:[^,]*,/i, `data:${mime};base64,`),
+                alt: "",
+                caption: "",
+                width: "100",
+                separate_page: false
+            });
+            const editor = get_element("section_body");
+            const placement = illustrations.insert_marker(
+                editor.value,
+                image.id,
+                get_element("illustration_position").value,
+                editor.selectionStart
+            );
+
+            section.images.push(image);
+            section.body = placement.body;
+            editor.value = placement.body;
+            editor.setSelectionRange(placement.marker_position, placement.marker_position);
+            input.value = "";
+            mark_editor_changed();
+            render_editor_count();
+            render_illustrations();
+            schedule_preview();
+            notify("圖片已插入；按下方「儲存」才會保留本次修改。");
+        } catch (error) {
+            console.error("插入圖片失敗：", error);
+            notify(`無法插入圖片：${error.message}`);
+        } finally {
+            button.disabled = false;
+        }
+    }
+
+    function update_illustration(event) {
+        const control = event.target.closest("[data-image-field]");
+        const section = get_active_section();
+
+        if (!control || !section) {
+            return;
+        }
+
+        const image = section.images.find((item) => item.id === control.dataset.image_id);
+
+        if (!image) {
+            return;
+        }
+
+        const field = control.dataset.image_field;
+        image[field] = control.type === "checkbox" ? control.checked : control.value;
+        mark_editor_changed();
+        schedule_preview();
+    }
+
+    function handle_illustration_action(event) {
+        const button = event.target.closest("button[data-action]");
+        const section = get_active_section();
+
+        if (!button || !section) {
+            return;
+        }
+
+        const image = section.images.find((item) => item.id === button.dataset.id);
+
+        if (!image) {
+            return;
+        }
+
+        const editor = get_element("section_body");
+        const marker = illustrations.create_marker(image.id);
+        const marker_position = editor.value.indexOf(marker);
+
+        if (button.dataset.action === "locate-illustration") {
+            if (marker_position < 0) {
+                notify("這張圖片尚未放入正文，請按「插入游標處」。");
+                return;
+            }
+
+            editor.focus();
+            editor.setSelectionRange(marker_position, marker_position + marker.length);
+        } else if (button.dataset.action === "reinsert-illustration") {
+            if (marker_position >= 0) {
+                notify("這張圖片已有標記，請使用「定位標記」後移動該行。");
+                return;
+            }
+
+            const placement = illustrations.insert_marker(editor.value, image.id, "cursor", editor.selectionStart);
+            editor.value = placement.body;
+            section.body = placement.body;
+            mark_editor_changed();
+            render_editor_count();
+            render_illustrations();
+            schedule_preview();
+            notify("已將圖片放到正文游標所在行之後。");
+        } else if (button.dataset.action === "remove-illustration") {
+            if (!window.confirm(`確定移除「${image.name}」及正文中的插圖標記？`)) {
+                return;
+            }
+
+            section.images = section.images.filter((item) => item.id !== image.id);
+            section.body = illustrations.remove_marker(editor.value, image.id);
+            editor.value = section.body;
+            mark_editor_changed();
+            render_editor_count();
+            render_illustrations();
+            schedule_preview();
+        }
     }
 
     function schedule_preview() {
@@ -688,7 +961,11 @@
         section.body = first_part;
         editor.value = first_part;
         editor_pending_split = create_section(title, "chapter", remaining_part);
+        const moved_image_ids = new Set(illustrations.find_marker_ids(remaining_part));
+        editor_pending_split.images = section.images.filter((image) => moved_image_ids.has(image.id));
+        section.images = section.images.filter((image) => !moved_image_ids.has(image.id));
         render_editor_count();
+        render_illustrations();
         schedule_preview();
         mark_editor_changed();
         notify("已準備拆成兩章；按儲存會新增，按取消則不變動。");
@@ -777,6 +1054,13 @@
 
         if (!total) {
             notify("沒有找到符合的文字。");
+            return;
+        }
+
+        if (current_book.sections.some((section) => (section.images || []).some((image) =>
+            illustrations.create_marker(image.id).includes(needle)
+        ))) {
+            notify("搜尋字詞包含插圖定位標記，為避免圖片失聯，請改用章節編輯器處理。");
             return;
         }
 
@@ -1206,6 +1490,11 @@
                 render_editor_count();
             }
         });
+        get_element("illustration_details").addEventListener("toggle", () => {
+            if (get_element("illustration_details").open) {
+                render_illustrations();
+            }
+        });
 
         get_element("section_in_toc").addEventListener("change", (event) => {
             const section = get_active_section();
@@ -1230,6 +1519,10 @@
         }
 
         get_element("manual_split_button").addEventListener("click", manual_split);
+        get_element("add_illustration_button").addEventListener("click", add_illustration);
+        get_element("illustrations_list").addEventListener("input", update_illustration);
+        get_element("illustrations_list").addEventListener("change", update_illustration);
+        get_element("illustrations_list").addEventListener("click", handle_illustration_action);
         get_element("preview_details").addEventListener("toggle", render_preview);
         get_element("search_button").addEventListener("click", search_book);
         get_element("replace_all_button").addEventListener("click", replace_all);

@@ -5,12 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="theme-color" content="#ffffff" />
     <title>慢 慢 | EPUB 製作器</title>
-    <link rel="stylesheet" href="css/style.css?v=1.3" />
-    <script src="js/storage.js?v=1.3" defer></script>
-    <script src="js/text_import.js?v=1.3" defer></script>
-    <script src="js/zip_writer.js?v=1.3" defer></script>
-    <script src="js/epub.js?v=1.3" defer></script>
-    <script src="js/app.js?v=1.3" defer></script>
+    <link rel="stylesheet" href="css/style.css?v=1.4" />
+    <script src="js/storage.js?v=1.4" defer></script>
+    <script src="js/text_import.js?v=1.4" defer></script>
+    <script src="js/zip_writer.js?v=1.4" defer></script>
+    <script src="js/illustrations.js?v=1.4" defer></script>
+    <script src="js/epub.js?v=1.4" defer></script>
+    <script src="js/app.js?v=1.4" defer></script>
 </head>
 <body>
     <header class="site-header">
@@ -240,6 +241,27 @@
                 <span id="section_char_count" class="muted"></span>
                 <button id="manual_split_button" class="button-outline" type="button">以游標所在行分章</button>
             </div>
+            <details id="illustration_details" class="panel">
+                <summary>本章插圖（可空）</summary>
+                <div class="panel-inner">
+                    <p class="hint">支援 JPG、PNG，每張最多 8 MB。插圖會跟著專案備份保存，也會包進 EPUB，不必另外上傳圖片網址。</p>
+                    <label>選擇插圖
+                        <input id="illustration_file_input" type="file" accept="image/jpeg,image/png,.jpg,.jpeg,.png" />
+                    </label>
+                    <label>插入位置
+                        <select id="illustration_position">
+                            <option value="cursor">正文游標所在行之後</option>
+                            <option value="start">章首（標題之後）</option>
+                            <option value="end">章尾</option>
+                        </select>
+                    </label>
+                    <div class="action-row">
+                        <button id="add_illustration_button" class="button-outline" type="button">插入圖片</button>
+                    </div>
+                    <p class="hint">插入後，正文會出現一行 <code>[[slow_image:...]]</code> 標記；它代表圖片的位置，可隨段落移動，但請保留整行。圖片的替代文字、圖說和尺寸可在下方調整。若要獨立插圖頁，可先新增「內頁」，再插入圖片。</p>
+                    <div id="illustrations_list" class="illustrations-list"></div>
+                </div>
+            </details>
             <p class="hint">手動分章：把游標放在獨立一行的章節標題上，再按「以游標所在行分章」。如果是第一行，就直接設為本章標題。</p>
             <details id="preview_details" class="panel">
                 <summary>預覽本章排版</summary>
