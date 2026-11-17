@@ -369,7 +369,7 @@
         try {
             // Same CSS text is exported to OEBPS/styles/toc.css. Shadow DOM
             // confines user-authored selectors to this preview on the site.
-            style_element.textContent = `:host { display: block; font-family: serif; }
+            style_element.textContent = `:host { display: block; }
 ` +
                 epub.build_toc_css(current_book.toc_style);
             error_message.hidden = true;

@@ -5,13 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="theme-color" content="#ffffff" />
     <title>慢 慢 | EPUB 製作器</title>
-    <link rel="stylesheet" href="css/style.css?v=1.5" />
-    <script src="js/storage.js?v=1.5" defer></script>
-    <script src="js/text_import.js?v=1.5" defer></script>
-    <script src="js/zip_writer.js?v=1.5" defer></script>
-    <script src="js/illustrations.js?v=1.5" defer></script>
-    <script src="js/epub.js?v=1.5" defer></script>
-    <script src="js/app.js?v=1.5" defer></script>
+    <link rel="stylesheet" href="css/style.css?v=1.6" />
+    <script src="js/storage.js?v=1.6" defer></script>
+    <script src="js/text_import.js?v=1.6" defer></script>
+    <script src="js/zip_writer.js?v=1.6" defer></script>
+    <script src="js/illustrations.js?v=1.6" defer></script>
+    <script src="js/epub.js?v=1.6" defer></script>
+    <script src="js/app.js?v=1.6" defer></script>
 </head>
 <body>
     <header class="site-header">
@@ -158,7 +158,7 @@
                         </div>
                         <label for="toc_custom_css">進階：自訂目錄 CSS（可空）</label>
                         <textarea id="toc_custom_css" rows="7" maxlength="12000" spellcheck="false" placeholder="#toc a {&#10;    font-weight: bold;&#10;}" ></textarea>
-                        <p class="hint">請用 <code>#toc</code>、<code>#toc h1</code>、<code>#toc ol</code>、<code>#toc li</code>、<code>#toc a</code> 等選擇器；自訂 CSS 會排在基本設定之後。為避免外部資源，禁止 @ 規則與 url()。</p>
+                        <p class="hint">請用 <code>#toc</code>、<code>#toc h1</code>、<code>#toc ol</code>、<code>#toc li</code>、<code>#toc a</code> 等選擇器；自訂 CSS 會排在基本設定之後。為避免外部資源，禁止 @ 規則與 url()。為維持字型一致，請勿自行加入 font-family 或 font 字型速記屬性。</p>
                         <p id="toc_css_error" class="hint" role="status" hidden></p>
                         <div class="action-row">
                             <button id="toc_reset_button" class="button-outline" type="button">恢復預設目錄樣式</button>

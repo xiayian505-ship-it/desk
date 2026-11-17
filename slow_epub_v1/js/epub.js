@@ -107,6 +107,8 @@
         return css;
     }
 
+    // Do not specify a font family for either the contents page or chapters.
+    // Both should follow the font chosen in the reader rather than forcing serif.
     function build_toc_css(value) {
         const style = normalize_toc_style(value);
         const custom_css = validate_toc_css(style.custom_css);
@@ -114,7 +116,6 @@
         return `@charset "utf-8";
 
 #toc {
-    font-family: serif;
     color: ${style.color};
 }
 
@@ -474,6 +475,8 @@ ${cover_spine}${visible_toc_spine}${spine_sections}
 </package>`;
     }
 
+    // Keep font-family unset throughout exported XHTML. The reading app
+    // remains in charge of the font for chapters, preliminaries, and appendices.
     const book_css = `@charset "utf-8";
 
 html {
@@ -483,7 +486,6 @@ html {
 body {
     margin: 0;
     padding: 0;
-    font-family: serif;
 }
 
 .chapter-title {
