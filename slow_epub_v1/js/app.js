@@ -23,6 +23,8 @@
     let notification_timer = null;
     let save_queue = Promise.resolve();
     let revision = 0;
+    let importing_txt_files = false;
+    let txt_selection_revision = 0;
 
     function create_id() {
         if (window.crypto && typeof window.crypto.randomUUID === "function") {
@@ -633,6 +635,7 @@
 
         input.value = "";
         get_element("txt_file_input").value = "";
+        reset_txt_selection_status();
         get_element("import_details").open = false;
         schedule_save();
     }
@@ -791,22 +794,112 @@
         notify(`已取代 ${total} 處文字。`);
     }
 
-    async function read_txt_file() {
-        const file = get_element("txt_file_input").files[0];
+    function reset_txt_selection_status() {
+        get_element("txt_selection_status").textContent =
+            "可一次選取多個 TXT；各檔會以檔名建立獨立章節，依檔名自然排序。";
+    }
 
-        if (!file) {
+    async function decode_txt_file(file, encoding) {
+        if (!/\.txt$/iu.test(file.name)) {
+            throw new Error(`「${file.name}」不是 TXT 檔案。`);
+        }
+
+        // Fail explicitly on an encoding mismatch instead of silently
+        // replacing broken characters throughout a novel's manuscript.
+        const decoder = new TextDecoder(encoding, { fatal: true });
+        const raw_data = await file.arrayBuffer();
+        return decoder.decode(raw_data).replace(/^\uFEFF/u, "");
+    }
+
+    async function read_txt_file() {
+        const files = Array.from(get_element("txt_file_input").files);
+        const selected_revision = ++txt_selection_revision;
+
+        if (!files.length) {
+            reset_txt_selection_status();
+            return;
+        }
+
+        if (files.length > 1) {
+            get_element("txt_selection_status").textContent =
+                `已選取 ${files.length} 個 TXT。按「批次匯入」會各建一章，不會覆蓋下方貼上的文字。`;
             return;
         }
 
         try {
+            const file = files[0];
             const encoding = get_element("txt_encoding").value;
-            const raw_data = await file.arrayBuffer();
-            const decoder = new TextDecoder(encoding);
-            get_element("import_text").value = decoder.decode(raw_data).replace(/^\uFEFF/, "");
-            notify(`已讀取 ${file.name}，確認內容後再匯入。`);
+            const decoded_text = await decode_txt_file(file, encoding);
+
+            // Keep the original one-file workflow: preview in the textarea
+            // and choose whether to auto-split. Multi-file selection never
+            // silently replaces the pasted text in that textarea.
+            if (selected_revision !== txt_selection_revision) {
+                return;
+            }
+
+            get_element("import_text").value = decoded_text;
+            get_element("txt_selection_status").textContent =
+                `已讀取「${file.name}」。可用下方文字匯入，或直接按「批次匯入」以檔名建立一章。`;
         } catch (error) {
             console.error("讀取 TXT 失敗：", error);
-            notify("TXT 讀取失敗。請確認檔案與編碼設定。");
+            get_element("txt_selection_status").textContent = "TXT 讀取失敗，請檢查編碼與檔案。";
+            notify(`無法讀取 TXT：${error.message}`);
+        }
+    }
+
+    async function batch_import_txt_files() {
+        if (!current_book || importing_txt_files) {
+            return;
+        }
+
+        const input = get_element("txt_file_input");
+        const selected_files = Array.from(input.files);
+
+        if (!selected_files.length) {
+            notify("請先選擇一個或多個 TXT 檔案。");
+            return;
+        }
+
+        const target_book = current_book;
+        const encoding = get_element("txt_encoding").value;
+        const sorted_files = text_import.sort_files_by_name(selected_files);
+        const button = get_element("batch_import_button");
+        importing_txt_files = true;
+        button.disabled = true;
+
+        try {
+            const imported_sections = [];
+
+            // Read all files before changing the book. If one fails, none
+            // are added: there is no accidental half-import or missing chapter.
+            for (const file of sorted_files) {
+                const body = await decode_txt_file(file, encoding);
+                imported_sections.push(create_section(
+                    text_import.filename_to_chapter_title(file.name),
+                    "chapter",
+                    body
+                ));
+            }
+
+            if (current_book !== target_book) {
+                throw new Error("書籍已切換，請重新選擇要匯入的檔案。");
+            }
+
+            current_book.sections.push(...imported_sections);
+            schedule_save();
+            render_sections();
+            render_toc_preview();
+            input.value = "";
+            txt_selection_revision += 1;
+            reset_txt_selection_status();
+            notify(`已依檔名順序新增 ${imported_sections.length} 個章節。`);
+        } catch (error) {
+            console.error("批次匯入 TXT 失敗：", error);
+            notify(`批次匯入失敗，原章節未變動：${error.message}`);
+        } finally {
+            importing_txt_files = false;
+            button.disabled = false;
         }
     }
 
@@ -1069,6 +1162,7 @@
         });
         get_element("txt_file_input").addEventListener("change", read_txt_file);
         get_element("txt_encoding").addEventListener("change", read_txt_file);
+        get_element("batch_import_button").addEventListener("click", batch_import_txt_files);
         get_element("cover_file_input").addEventListener("change", change_cover);
         get_element("remove_cover_button").addEventListener("click", () => {
             current_book.cover = null;

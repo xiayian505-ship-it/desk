@@ -5,12 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="theme-color" content="#ffffff" />
     <title>慢 慢 | EPUB 製作器</title>
-    <link rel="stylesheet" href="css/style.css?v=1.2" />
-    <script src="js/storage.js?v=1.2" defer></script>
-    <script src="js/text_import.js?v=1.2" defer></script>
-    <script src="js/zip_writer.js?v=1.2" defer></script>
-    <script src="js/epub.js?v=1.2" defer></script>
-    <script src="js/app.js?v=1.2" defer></script>
+    <link rel="stylesheet" href="css/style.css?v=1.3" />
+    <script src="js/storage.js?v=1.3" defer></script>
+    <script src="js/text_import.js?v=1.3" defer></script>
+    <script src="js/zip_writer.js?v=1.3" defer></script>
+    <script src="js/epub.js?v=1.3" defer></script>
+    <script src="js/app.js?v=1.3" defer></script>
 </head>
 <body>
     <header class="site-header">
@@ -81,8 +81,8 @@
             <details id="import_details" class="panel">
                 <summary>貼上文字／匯入 TXT</summary>
                 <div class="panel-inner">
-                    <label>選擇 TXT（UTF-8；亦可改用 Big5）
-                        <input id="txt_file_input" type="file" accept=".txt,text/plain" />
+                    <label>選擇 TXT（可一次多選；UTF-8／Big5）
+                        <input id="txt_file_input" type="file" accept=".txt,text/plain" multiple />
                     </label>
                     <label>讀取編碼
                         <select id="txt_encoding">
@@ -90,6 +90,10 @@
                             <option value="big5">Big5</option>
                         </select>
                     </label>
+                    <p id="txt_selection_status" class="hint" aria-live="polite">可一次選取多個 TXT；各檔會以檔名建立獨立章節，依檔名自然排序。</p>
+                    <div class="action-row">
+                        <button id="batch_import_button" class="button-outline" type="button">批次匯入所選 TXT（各檔一章）</button>
+                    </div>
                     <label>原稿文字
                         <textarea id="import_text" rows="9" placeholder="從三星筆記複製並貼在這裡……"></textarea>
                     </label>

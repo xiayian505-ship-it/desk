@@ -74,5 +74,76 @@
         return result;
     }
 
-    window.SlowTextImport = { normalize_newlines, detect_chapters };
+    function filename_to_chapter_title(filename) {
+        // Each TXT is already a chapter. Use its filename as the heading,
+        // preserving punctuation and Chinese characters (only remove .txt).
+        return String(filename || "")
+            .replace(/\.txt$/iu, "")
+            .trim() || "未命名章節";
+    }
+
+    function chinese_chapter_number(filename) {
+        // Chinese chapter filenames also need ordinal sorting: 第二章
+        // comes before 第十章, and 章之二 before 章之十.
+        const title = filename_to_chapter_title(filename);
+        const match = /^(?:第([零〇一二三四五六七八九十百千兩两\d]+)[章回卷節]|章之([零〇一二三四五六七八九十百千兩两\d]+))/u.exec(title);
+
+        if (!match) {
+            return null;
+        }
+
+        const number_text = match[1] || match[2];
+
+        if (/^\d+$/u.test(number_text)) {
+            return Number(number_text);
+        }
+
+        const digits = {
+            "零": 0, "〇": 0, "一": 1, "二": 2, "兩": 2, "两": 2,
+            "三": 3, "四": 4, "五": 5, "六": 6, "七": 7,
+            "八": 8, "九": 9
+        };
+        const units = { "十": 10, "百": 100, "千": 1000 };
+        let result = 0;
+        let current_digit = 0;
+
+        for (const character of number_text) {
+            if (Object.hasOwn(digits, character)) {
+                current_digit = digits[character];
+            } else if (Object.hasOwn(units, character)) {
+                result += (current_digit || 1) * units[character];
+                current_digit = 0;
+            }
+        }
+
+        return result + current_digit;
+    }
+
+    function sort_files_by_name(files) {
+        const collator = new Intl.Collator("zh-Hant", {
+            numeric: true,
+            sensitivity: "base"
+        });
+
+        // Preserve the file picker's order for names considered equal.
+        return Array.from(files, (file, index) => ({ file, index }))
+            .sort((first, second) => {
+                const first_number = chinese_chapter_number(first.file.name);
+                const second_number = chinese_chapter_number(second.file.name);
+
+                if (first_number !== null && second_number !== null && first_number !== second_number) {
+                    return first_number - second_number;
+                }
+
+                return collator.compare(first.file.name, second.file.name) || first.index - second.index;
+            })
+            .map((entry) => entry.file);
+    }
+
+    window.SlowTextImport = {
+        normalize_newlines,
+        detect_chapters,
+        filename_to_chapter_title,
+        sort_files_by_name
+    };
 }());
