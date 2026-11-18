@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title>慢 慢 | EPUB 閱讀器</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header class="toolbar">
+        <div class="toolbar_row">
+            <strong>慢 慢 | EPUB 閱讀器</strong>
+            <label class="file_button" for="epub_file">開啟 EPUB</label>
+            <input type="file" id="epub_file" accept=".epub,application/epub+zip" hidden>
+            <span id="book_name" class="book_name">尚未選擇書籍</span>
+        </div>
+        <div class="toolbar_row toolbar_controls">
+            <select id="toc_select" aria-label="章節目錄" disabled>
+                <option>請先開啟 EPUB</option>
+            </select>
+            <button type="button" id="previous_chapter" disabled>上一章</button>
+            <button type="button" id="next_chapter" disabled>下一章</button>
+            <select id="reading_mode" aria-label="閱讀模式">
+                <option value="page">翻頁</option>
+                <option value="scroll">捲動</option>
+            </select>
+            <button type="button" id="decrease_font" aria-label="縮小字體">A−</button>
+            <button type="button" id="increase_font" aria-label="放大字體">A＋</button>
+        </div>
+    </header>
+
+    <main class="reading_area">
+        <div id="empty_state" class="empty_state">
+            選擇一本 EPUB，即可直接預覽章節與排版。<br>
+            檔案只在你的瀏覽器內讀取，不會上傳。
+        </div>
+        <iframe
+            id="book_frame"
+            title="EPUB 正文"
+            sandbox="allow-same-origin"
+            referrerpolicy="no-referrer"
+            hidden
+        ></iframe>
+    </main>
+
+    <footer class="page_controls">
+        <button type="button" id="previous_page" disabled>‹ 上一頁</button>
+        <span id="page_status" aria-live="polite">尚未開啟書籍</span>
+        <button type="button" id="next_page" disabled>下一頁 ›</button>
+    </footer>
+
+    <script src="js/zip_reader.js"></script>
+    <script src="js/epub_reader.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
